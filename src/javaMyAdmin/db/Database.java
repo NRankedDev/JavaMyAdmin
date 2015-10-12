@@ -7,6 +7,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javaMyAdmin.db.DBManager;
+import javaMyAdmin.db.Table;
+
 public class Database {
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
@@ -86,7 +89,47 @@ public class Database {
 	}
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
+	/* test */public void addTable(String tablename, String unique, ArrayList<String>cname, ArrayList<String> datatyp, ArrayList<String> length, ArrayList<String> index) throws SQLException{
+		String cmd = "";
+		String komma = ",";
+		for(int i = 0; i < cname.size(); i++){
+			if(cname.get(i) == null){
+				cname.set(i, "null");
+			}
+			if(datatyp.get(i) == null){
+				cname.set(i, "null");
+			}
+			if(length.get(i) == null){
+				length.set(i, "10");
+			}
+			if(index.get(i) == null){
+				index.set(i, "DEFAULT NULL");
+			}
+			if(i == cname.size() -1 ){
+				komma = "";
+			}
+			cmd = cmd + "`" + cname.get(i) + "` " + datatyp.get(i) + "(" + length.get(i) + ") " + index.get(i) + komma + "\n";
+		}
+		System.out.println(cmd);
+		cmd = "CREATE TABLE " + /*IF NOT EXISTS + */ "`" + tablename + "` ( "+ cmd +
+				") ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;\n";
+		try{
+			connect.createStatement().executeUpdate(cmd);
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		if(!unique.equalsIgnoreCase("null")){
+			cmd = "ALTER TABLE `"+ tablename + "`"+
+					" ADD UNIQUE (`"+ unique+"`);";
+			try{
+				connect.createStatement().executeUpdate(cmd);
+			}catch(Exception e){
+				System.out.println(e);
+			}
+			
+		}
+		
+	}
 	/* still gelegt */public Table selectTable(int c) throws SQLException {
 		Table t = null; // vllt ist es richtig Table t;
 		// try{
@@ -120,7 +163,6 @@ public class Database {
 		// }
 		return t;
 	}
-
 	/* test */public Table search() {
 		// sucht durch alle tabllen in der datenbank
 		// sql command
