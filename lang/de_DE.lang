@@ -1,0 +1,69 @@
+#
+# Basic
+#
+
+frame.title=javaMyAdmin
+
+#
+# Dialogs
+#
+dialog.ok=OK
+dialog.cancel=Zurück
+dialog.connect=Verbinden
+dialog.connect.title=Verbindung herstellen
+dialog.connect.url=URL
+dialog.connect.username=Benutzername
+dialog.connect.password=Passwort
+dialog.connect.remember=Login merken
+dialog.connect.connecting=Verbinden...
+dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
+dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
+
+#
+# Menu
+#
+menu.file=Datei
+menu.settings=Einstellungen
+menu.settings.language=Sprache
+menu.settings.language.header=Du musst das Programm neustarten.
+menu.settings.language.content=Die Einstellungen werden übernommen.
+
+
+#
+# Toolbar
+#
+sql_commands.label=SQL-Befehl(e) ausführen
+sql_commands.execute=Ausführen
+sql_commands.clear=Leeren
+
+#
+# Table list
+#
+connection=Verbindung
+database.add=Datenbank hinzufügen
+database.add.name=Name
+database.remove=Datenbank löschen
+table.add=Tabelle hinzufügen
+table.edit=Tabelle bearbeiten
+table.edit.table=Tabellenname
+table.edit.column=Spalte
+table.edit.add=Spalte hinzufügen
+table.edit.remove=Spalte löschen
+table.remove=Tabelle löschen
+
+#
+# Table content
+#
+
+table.no_content=Keine Datensätze in dieser Tabelle
+column.edit=Spalten editieren...
+column.edit.columns=Spalten
+column.edit.title=Titel
+column.edit.datatype=Datentyp
+column.edit.length=Länge
+column.remove=Spalten löschen...
+column.remove.column=Spalte
+column.remove.header=Diese Option wird die Spalte löschen.
+column.remove.content=Willst du wirklich fortfahren?
+record.add=Datensatz hinzufügen
+record.remove=Datensatz löschen
