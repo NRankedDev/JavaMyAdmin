@@ -7,8 +7,6 @@ import javaMyAdmin.ui.util.Lang;
 import javaMyAdmin.ui.util.OptionDialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -89,11 +87,7 @@ public class LoginDialog extends OptionDialog {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							e.printStackTrace();
-							Alert a = new Alert(AlertType.ERROR);
-							a.setHeaderText(Lang.getString("dialog.connect.error.header", "Couldn't connect to database."));
-							a.setContentText(Lang.getString("dialog.connect.error.content", "Please check the connection to the database."));
-							a.showAndWait();
+							Frame.showErrorLog(e);
 							Platform.exit();
 							System.exit(0);
 						}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.util.Lang;
 import javaMyAdmin.ui.util.OptionDialog;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,6 +13,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
@@ -31,6 +34,8 @@ public abstract class DialogEditTable extends OptionDialog {
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
 	private ArrayList<TextField> datatypes = new ArrayList<TextField>();
 	private ArrayList<TextField> lengths = new ArrayList<TextField>();
+	private ArrayList<CheckBox> defaultNullOptions = new ArrayList<CheckBox>();
+	private ArrayList<ComboBox<String>> indices = new ArrayList<ComboBox<String>>();
 
 	public DialogEditTable(Table table) {
 		super(table == null ? Lang.getString("table.add", "Add table") : Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
@@ -73,9 +78,15 @@ public abstract class DialogEditTable extends OptionDialog {
 		TextField title = new TextField(defaultTitle);
 		TextField datatype = new TextField(defaultDatatype);
 		TextField length = new TextField(defaultLength);
+		ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList("---", "PRIMARY", "UNIQUE", "INDEX", "FULLTEXT"));
+		index.getSelectionModel().selectFirst();
+		CheckBox defaultNull = new CheckBox();
+
 		titles.add(title);
 		datatypes.add(datatype);
 		lengths.add(length);
+		indices.add(index);
+		defaultNullOptions.add(defaultNull);
 
 		final Button add = new Button("+");
 		add.setTooltip(new Tooltip(Lang.getString("table.edit.add", "Add column")));
@@ -99,11 +110,11 @@ public abstract class DialogEditTable extends OptionDialog {
 
 		bottom.addRow(rowIndex++, field, new Label(Lang.getString("column.edit.title", "Title")), title, new Separator(Orientation.VERTICAL),
 				new Label(Lang.getString("column.edit.datatype", "Datatype")), datatype, new Separator(Orientation.VERTICAL), new Label(Lang.getString("column.edit.length", "Length")), length,
-				remove, add);
+				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull", "Default Null")), defaultNull, new Separator(Orientation.VERTICAL),
+				new Label(Lang.getString("table.edit.index", "Index")), index, remove, add);
 	}
 
 	public void removeRow(int index) {
-		System.out.println("Test");
 		int nodesInRow = ((bottom.getChildren().size() - 1) / (rowIndex - 1));
 		ObservableList<Node> items = bottom.getChildren();
 		items.remove(nodesInRow * index + 1, nodesInRow * index + nodesInRow);
@@ -134,21 +145,47 @@ public abstract class DialogEditTable extends OptionDialog {
 	}
 
 	public ArrayList<String> getTitles() {
-		return convert(titles);
+		return convertTextFields(titles);
 	}
 
 	public ArrayList<String> getDatatypes() {
-		return convert(datatypes);
+		return convertTextFields(datatypes);
 	}
 
 	public ArrayList<String> getLength() {
-		return convert(lengths);
+		return convertTextFields(lengths);
 	}
 
-	private ArrayList<String> convert(ArrayList<TextField> fields) {
+	public ArrayList<Boolean> getDefaultNull() {
+		return convertCheckBoxes(defaultNullOptions);
+	}
+
+	public ArrayList<String> getIndices() {
+		return convertComboBoxes(indices);
+	}
+
+	private ArrayList<String> convertTextFields(ArrayList<TextField> fields) {
 		ArrayList<String> arrayList = new ArrayList<String>();
 		for (TextField textField : fields) {
 			arrayList.add(textField.getText());
+		}
+
+		return arrayList;
+	}
+
+	private ArrayList<Boolean> convertCheckBoxes(ArrayList<CheckBox> boxes) {
+		ArrayList<Boolean> arrayList = new ArrayList<Boolean>();
+		for (CheckBox checkBox : boxes) {
+			arrayList.add(checkBox.isSelected());
+		}
+
+		return arrayList;
+	}
+
+	private ArrayList<String> convertComboBoxes(ArrayList<ComboBox<String>> boxes) {
+		ArrayList<String> arrayList = new ArrayList<String>();
+		for (ComboBox<String> comboBox : boxes) {
+			arrayList.add(comboBox.getValue());
 		}
 
 		return arrayList;

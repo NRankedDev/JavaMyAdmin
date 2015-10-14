@@ -3,6 +3,11 @@
 #
 
 frame.title=javaMyAdmin
+error=Fehler
+error.header=Ein Fehler ist aufgetreten.
+error.sql=Verbindung zur Datenbank fehlgeschlagen
+error.unknown=Ein unbekannter Fehler ist aufgetreten
+error.stacktrace=Der Stacktrace war:
 
 #
 # Dialogs
@@ -47,8 +52,10 @@ table.add=Tabelle hinzufügen
 table.edit=Tabelle bearbeiten
 table.edit.table=Tabellenname
 table.edit.column=Spalte
-table.edit.add=Spalte hinzufügen
+table.edit.defaultNull=Standard Null
+table.edit.index=Index
 table.edit.remove=Spalte löschen
+table.edit.add=Spalte hinzufügen
 table.remove=Tabelle löschen
 
 #

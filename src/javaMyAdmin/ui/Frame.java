@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.util.Config;
@@ -11,9 +15,15 @@ import javaMyAdmin.ui.util.Lang;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class Frame extends Application {
@@ -45,12 +55,18 @@ public class Frame extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				showErrorLog(e);
+			}
+		});
+
 		/* Config laden */
 		try {
 			CONFIG.load(new FileReader(configFile));
 		} catch (IOException e) {
-			System.err.println("Couln't load config.");
-			e.printStackTrace();
+			showErrorLog(new IOException("Couldn't load config", e));
 		}
 
 		/* Login Dialog starten und auf Usereingaben warten */
@@ -101,6 +117,40 @@ public class Frame extends Application {
 
 	public PaneTableContent getTableValues() {
 		return tableContent;
+	}
+
+	public static void showErrorLog(Throwable t) {
+		t.printStackTrace();
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle(Lang.getString("error", "Error: " + t.getLocalizedMessage()));
+		alert.setHeaderText(Lang.getString("error.header", "Ein Fehler ist aufgetreten."));
+		alert.setContentText(t.getClass().equals(SQLException.class) ? Lang.getString("error.sql", "Couldn't connect to database") : Lang.getString("error.unknown", ""));
+
+		// Create expandable Exception.
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		String exceptionText = sw.toString();
+
+		Label label = new Label(Lang.getString("error.stacktrace", "The exception stacktrace was:"));
+
+		TextArea textArea = new TextArea(exceptionText);
+		textArea.setEditable(false);
+		textArea.setWrapText(true);
+
+		textArea.setMaxWidth(Double.MAX_VALUE);
+		textArea.setMaxHeight(Double.MAX_VALUE);
+		GridPane.setVgrow(textArea, Priority.ALWAYS);
+		GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+		GridPane expContent = new GridPane();
+		expContent.setMaxWidth(Double.MAX_VALUE);
+		expContent.add(label, 0, 0);
+		expContent.add(textArea, 0, 1);
+
+		alert.getDialogPane().setExpandableContent(expContent);
+
+		alert.showAndWait();
 	}
 
 }

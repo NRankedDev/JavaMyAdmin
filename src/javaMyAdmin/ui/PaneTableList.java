@@ -151,7 +151,6 @@ public class PaneTableList extends TreeView<String> {
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println(getSelectionModel().getSelectedIndex());
 					new DialogEditTable(null) {
 						@Override
 						protected void handle() {
@@ -171,9 +170,9 @@ public class PaneTableList extends TreeView<String> {
 
 							if (db != null) {
 								try {
-									Frame.getDbManager().getDB(db).addTable(getTableName().getText(), null, getTitles(), getDatatypes(), getLength(), null);
+									Frame.getDbManager().getDB(db).addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
 								} catch (SQLException e) {
-									e.printStackTrace();
+									Frame.showErrorLog(e);
 								}
 
 								refresh();
