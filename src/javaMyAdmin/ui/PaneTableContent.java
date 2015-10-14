@@ -217,7 +217,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 
-			MenuItem removeColumn = new MenuItem(Lang.getString("column.remove", "Remove columns..."));
+			final MenuItem removeColumn = new MenuItem(Lang.getString("column.remove", "Remove columns..."));
 			removeColumn.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {

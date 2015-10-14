@@ -109,7 +109,7 @@ public class PaneTableList extends TreeView<String> {
 	private class EmptyContextMenu extends ContextMenu {
 
 		public EmptyContextMenu() {
-			MenuItem addDatabase = new MenuItem(Lang.getString("database.add", "Add database"));
+			final MenuItem addDatabase = new MenuItem(Lang.getString("database.add", "Add database"));
 			addDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {

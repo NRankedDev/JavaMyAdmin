@@ -85,7 +85,7 @@ public class LoginDialog extends OptionDialog {
 							hideDialog();
 						}
 					});
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
