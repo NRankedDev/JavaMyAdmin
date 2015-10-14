@@ -126,46 +126,6 @@ public class Database {
 			}catch(Exception e){
 				System.out.println(e);
 			}
-			
 		}
-		
-	}
-	/* still gelegt */public Table selectTable(int c) throws SQLException {
-		Table t = null; // vllt ist es richtig Table t;
-		// try{
-		// table.get(c);
-		// }catch(Exception e){
-		// loadTables();
-		// System.out.println("Error Code:\n" + e +
-		// "\nTabellen wurden nicht vor geladen!!!\n\n");
-		// }
-		// t = table.get(c);
-		// ResultSet rs =
-		// connect.createStatement().executeQuery("SELECT * FROM `" +
-		// t.getName() + "`");
-		// ResultSetMetaData metaData = rs.getMetaData();
-		// int i = 1;
-		// int count = metaData.getColumnCount();
-		// while(i < count+1){
-		// t.AddColumn(metaData.getColumnName(i));
-		// i++;
-		// }
-		// while(rs.next()){
-		// Line line = new Line();
-		// for(int a = 1; a < count+1; a++){
-		// try{
-		// line.AddValue(rs.getString(a));
-		// }catch(Exception e){
-		// line.AddValue(null);
-		// }
-		// }
-		// t.AddLine(line);
-		// }
-		return t;
-	}
-	/* test */public Table search() {
-		// sucht durch alle tabllen in der datenbank
-		// sql command
-		return null;
 	}
 }
