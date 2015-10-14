@@ -103,6 +103,7 @@ public abstract class DialogEditTable extends OptionDialog {
 	}
 
 	public void removeRow(int index) {
+		System.out.println("Test");
 		int nodesInRow = ((bottom.getChildren().size() - 1) / (rowIndex - 1));
 		ObservableList<Node> items = bottom.getChildren();
 		items.remove(nodesInRow * index + 1, nodesInRow * index + nodesInRow);
