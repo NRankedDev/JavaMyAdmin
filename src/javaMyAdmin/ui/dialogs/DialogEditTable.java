@@ -133,15 +133,24 @@ public abstract class DialogEditTable extends OptionDialog {
 		return tableName;
 	}
 
-	public ArrayList<TextField> getTitles() {
-		return titles;
+	public ArrayList<String> getTitles() {
+		return convert(titles);
 	}
 
-	public ArrayList<TextField> getDatatypes() {
-		return datatypes;
+	public ArrayList<String> getDatatypes() {
+		return convert(datatypes);
 	}
 
-	public ArrayList<TextField> getLength() {
-		return lengths;
+	public ArrayList<String> getLength() {
+		return convert(lengths);
+	}
+
+	private ArrayList<String> convert(ArrayList<TextField> fields) {
+		ArrayList<String> arrayList = new ArrayList<String>();
+		for (TextField textField : fields) {
+			arrayList.add(textField.getText());
+		}
+
+		return arrayList;
 	}
 }

@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -150,14 +151,33 @@ public class PaneTableList extends TreeView<String> {
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
+					System.out.println(getSelectionModel().getSelectedIndex());
 					new DialogEditTable(null) {
 						@Override
 						protected void handle() {
-							getTableName().getText();
+							SelectionModel<TreeItem<String>> model = getSelectionModel();
+							String db = null;
+							for (int i = 0; i < getItems().size(); i++) {
+								if (model.getSelectedIndex() == i) {
+									TreeItem<String> item = PaneTableList.this.getTreeItem(i);
 
-							// TODO SQL
-							System.err.println("AddTable: TODO SQL");
-							refresh();
+									if (item.isLeaf()) {
+										db = item.getParent().getValue();
+									} else {
+										db = item.getValue();
+									}
+								}
+							}
+
+							if (db != null) {
+								try {
+									Frame.getDbManager().getDB(db).addTable(getTableName().getText(), null, getTitles(), getDatatypes(), getLength(), null);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+
+								refresh();
+							}
 						}
 					}.show();
 				}
