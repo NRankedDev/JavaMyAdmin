@@ -100,6 +100,10 @@ public class Database {
 			}else{
 				checknull = "NOT NULL";
 			}
+			
+			if(length.get(i).equals("")){
+				length.set(i, "10");
+			}
 			cmd += "`" + titles.get(i) + "` " + datatypes.get(i) + "(" + length.get(i) + ") " + checknull + komma + "\n";
 		}
 		System.out.println(cmd);
