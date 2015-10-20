@@ -72,7 +72,7 @@ public class PaneToolbar extends BorderPane {
 	}
 
 	/**
-	 * Zeigt im {@link #getSqlArea()} die SQL command line an und <b>führt diese
+	 * Zeigt im {@link #getSqlArea()} die SQL command line an und <b>fï¿½hrt diese
 	 * aus</b>.
 	 * 
 	 * @param sql

@@ -7,8 +7,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javaMyAdmin.db.DBManager;
-import javaMyAdmin.db.Table;
 
 public class Database {
 
@@ -89,26 +87,20 @@ public class Database {
 	}
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	/* test */public void addTable(String tablename, String unique, ArrayList<String>cname, ArrayList<String> datatyp, ArrayList<String> length, ArrayList<String> index) throws SQLException{
+	/* test */public void addTable(String tablename, ArrayList<String> titles, ArrayList<String>datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index) throws SQLException{
 		String cmd = "";
+		String checknull = "";
 		String komma = ",";
-		for(int i = 0; i < cname.size(); i++){
-			if(cname.get(i) == null){
-				cname.set(i, "null");
-			}
-			if(datatyp.get(i) == null){
-				cname.set(i, "null");
-			}
-			if(length.get(i) == null){
-				length.set(i, "10");
-			}
-			if(index.get(i) == null){
-				index.set(i, "DEFAULT NULL");
-			}
-			if(i == cname.size() -1 ){
+		for(int i = 0; i < titles.size(); i++){
+			if(i == titles.size() -1 ){
 				komma = "";
 			}
-			cmd = cmd + "`" + cname.get(i) + "` " + datatyp.get(i) + "(" + length.get(i) + ") " + index.get(i) + komma + "\n";
+			if(check.get(i) == true){
+				checknull = "DEFAULT NULL";
+			}else{
+				checknull = "NOT NULL";
+			}
+			cmd += "`" + titles.get(i) + "` " + datatypes.get(i) + "(" + length.get(i) + ") " + checknull + komma + "\n";
 		}
 		System.out.println(cmd);
 		cmd = "CREATE TABLE " + /*IF NOT EXISTS + */ "`" + tablename + "` ( "+ cmd +
@@ -118,13 +110,10 @@ public class Database {
 		}catch(Exception e){
 			System.out.println(e);
 		}
-		if(!unique.equalsIgnoreCase("null")){
-			cmd = "ALTER TABLE `"+ tablename + "`"+
-					" ADD UNIQUE (`"+ unique+"`);";
-			try{
-				connect.createStatement().executeUpdate(cmd);
-			}catch(Exception e){
-				System.out.println(e);
+		for(int i = 0; i < index.size(); i++){
+			if(index.get(i).equals("PRIMARY")){
+					connect.createStatement().executeUpdate("ALTER TABLE `"+ tablename + "`"+
+							" ADD PRIMARY KEY(`"+titles.get(i)+"`);");
 			}
 		}
 	}
