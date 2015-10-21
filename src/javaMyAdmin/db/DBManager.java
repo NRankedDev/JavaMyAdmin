@@ -20,7 +20,7 @@ public class DBManager extends Connector {
 	public DBManager(String url, String user, String password) throws SQLException {
 		this.user = user;
 		this.password = password;
-		this.url = url;
+		this.url = Debug.check(url);
 		connect = doConnection("");
 	}
 
