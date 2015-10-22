@@ -171,7 +171,7 @@ public class PaneTableList extends TreeView<String> {
 							if (db != null) {
 								try {
 									Frame.getDbManager().getDB(db).addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
-								} catch (SQLException e) {
+								} catch (Exception e) {
 									Frame.showErrorLog(e);
 								}
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.util.Lang;
 import javaMyAdmin.ui.util.OptionDialog;
+import javaMyAdmin.util.Datatype;
+import javaMyAdmin.util.Index;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,7 +34,7 @@ public abstract class DialogEditTable extends OptionDialog {
 
 	private TextField tableName = new TextField();
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
-	private ArrayList<TextField> datatypes = new ArrayList<TextField>();
+	private ArrayList<ComboBox<String>> datatypes = new ArrayList<ComboBox<String>>();
 	private ArrayList<TextField> lengths = new ArrayList<TextField>();
 	private ArrayList<CheckBox> defaultNullOptions = new ArrayList<CheckBox>();
 	private ArrayList<ComboBox<String>> indices = new ArrayList<ComboBox<String>>();
@@ -66,27 +68,38 @@ public abstract class DialogEditTable extends OptionDialog {
 	}
 
 	public void addRow() {
-		addRow("", "", "");
+		addRow("", Datatype.VARCHAR, "", Index.NONE, false);
 	}
 
-	public void addRow(String defaultTitle, String defaultDatatype, String defaultLength) {
+	public void addRow(String defaultTitle, Datatype defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
 		final int currentIndex = rowIndex;
 		final TextField field = new TextField(String.format("%02d", rowIndex));
 		field.setDisable(true);
 		field.setMaxWidth(33);
 
 		TextField title = new TextField(defaultTitle);
-		TextField datatype = new TextField(defaultDatatype);
+
+		ComboBox<String> datatype = new ComboBox<String>(FXCollections.observableArrayList(Datatype.nameValues()));
+		for (Datatype.Kind kind : Datatype.Kind.values()) {
+			for (Datatype type : Datatype.values(kind)) {
+				datatype.getItems().add(type.getName());
+			}
+		}
+		datatype.getSelectionModel().select(defaultDatatype.getName());
+
 		TextField length = new TextField(defaultLength);
-		ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList("---", "PRIMARY", "UNIQUE", "INDEX", "FULLTEXT"));
-		index.getSelectionModel().selectFirst();
-		CheckBox defaultNull = new CheckBox();
+
+		ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList(Index.nameValues()));
+		index.getSelectionModel().select(defaultIndex.getName());
+
+		CheckBox nullCheckBox = new CheckBox();
+		nullCheckBox.setSelected(defaultNull);
 
 		titles.add(title);
 		datatypes.add(datatype);
 		lengths.add(length);
 		indices.add(index);
-		defaultNullOptions.add(defaultNull);
+		defaultNullOptions.add(nullCheckBox);
 
 		final Button add = new Button("+");
 		add.setTooltip(new Tooltip(Lang.getString("table.edit.add", "Add column")));
@@ -110,7 +123,7 @@ public abstract class DialogEditTable extends OptionDialog {
 
 		bottom.addRow(rowIndex++, field, new Label(Lang.getString("column.edit.title", "Title")), title, new Separator(Orientation.VERTICAL),
 				new Label(Lang.getString("column.edit.datatype", "Datatype")), datatype, new Separator(Orientation.VERTICAL), new Label(Lang.getString("column.edit.length", "Length")), length,
-				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull", "Default Null")), defaultNull, new Separator(Orientation.VERTICAL),
+				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nullCheckBox, new Separator(Orientation.VERTICAL),
 				new Label(Lang.getString("table.edit.index", "Index")), index, remove, add);
 	}
 
@@ -149,7 +162,7 @@ public abstract class DialogEditTable extends OptionDialog {
 	}
 
 	public ArrayList<String> getDatatypes() {
-		return convertTextFields(datatypes);
+		return convertComboBoxes(datatypes);
 	}
 
 	public ArrayList<String> getLength() {
