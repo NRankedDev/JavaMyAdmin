@@ -97,7 +97,7 @@ public class PaneTableList extends TreeView<String> {
 				root.getChildren().add(name);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Frame.showErrorLog(e);
 		}
 
 		root.setExpanded(true);

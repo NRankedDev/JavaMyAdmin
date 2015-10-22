@@ -5,9 +5,8 @@
 frame.title=javaMyAdmin
 error=Fehler
 error.header=Ein Fehler ist aufgetreten.
-error.sql=Verbindung zur Datenbank fehlgeschlagen
-error.unknown=Ein unbekannter Fehler ist aufgetreten
-error.stacktrace=Der Stacktrace war:
+error.sql=Verbindung zur einer Datenbank fehlgeschlagen.
+error.unknown=Ein unbekannter Fehler ist aufgetreten.
 
 #
 # Dialogs
@@ -51,6 +50,9 @@ database.remove=Datenbank löschen
 table.add=Tabelle hinzufügen
 table.edit=Tabelle bearbeiten
 table.edit.table=Tabellenname
+table.edit.title=Titel
+table.edit.datatype=Datentyp
+table.edit.length=Länge
 table.edit.defaultNull=Standard Null
 table.edit.index=Index
 table.edit.remove=Spalte löschen
@@ -63,13 +65,5 @@ table.remove=Tabelle löschen
 
 table.no_content=Keine Datensätze in dieser Tabelle
 column.edit=Spalten editieren...
-column.edit.columns=Spalten
-column.edit.title=Titel
-column.edit.datatype=Datentyp
-column.edit.length=Länge
-column.remove=Spalten löschen...
-column.remove.column=Spalte
-column.remove.header=Diese Option wird die Spalte löschen.
-column.remove.content=Willst du wirklich fortfahren?
 record.add=Datensatz hinzufügen
 record.remove=Datensatz löschen

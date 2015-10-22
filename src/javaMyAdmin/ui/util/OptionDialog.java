@@ -1,5 +1,6 @@
 package javaMyAdmin.ui.util;
 
+import javaMyAdmin.ui.Frame;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  * Abstrakte Klasse, die als Basis für alle Einstellungsdialoge gilt. Alle
@@ -28,8 +28,8 @@ public abstract class OptionDialog {
 
 		public DialogStage() {
 			initModality(Modality.APPLICATION_MODAL);
-			initStyle(StageStyle.UTILITY);
 			setResizable(false);
+			getIcons().addAll(Frame.getIcons());
 		}
 
 	}
