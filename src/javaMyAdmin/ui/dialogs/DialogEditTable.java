@@ -120,7 +120,13 @@ public abstract class DialogEditTable extends OptionDialog {
 					return;
 				}
 
-				removeRow(Integer.valueOf(field.getText()) - 1);
+				int index = Integer.valueOf(field.getText()) - 1;
+				titles.remove(index);
+				datatypes.remove(index);
+				lengths.remove(index);
+				indices.remove(index);
+				defaultNullOptions.remove(index);
+				removeRow(index);
 				layout.setBottom(grid.getGrid());
 				dialogStage.sizeToScene();
 			}
