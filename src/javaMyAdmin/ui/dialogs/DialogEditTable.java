@@ -3,6 +3,8 @@ package javaMyAdmin.ui.dialogs;
 import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
+import javaMyAdmin.ui.util.ExtendedGridPane;
+import javaMyAdmin.ui.util.ExtendedGridPane.GridOperation;
 import javaMyAdmin.ui.util.Lang;
 import javaMyAdmin.ui.util.OptionDialog;
 import javaMyAdmin.util.Datatype;
@@ -27,10 +29,10 @@ import javafx.scene.layout.GridPane;
 public abstract class DialogEditTable extends OptionDialog {
 
 	private final Table table;
+	private final ExtendedGridPane grid;
 	private BorderPane layout;
 	private GridPane top;
-	private GridPane bottom;
-	private int rowIndex = 0;
+	private int indexCounter = 0;
 
 	private TextField tableName = new TextField();
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
@@ -43,12 +45,13 @@ public abstract class DialogEditTable extends OptionDialog {
 		super(table == null ? Lang.getString("table.add", "Add table") : Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
+		this.grid = new ExtendedGridPane();
 	}
 
 	@Override
 	protected void init(BorderPane root) {
-		super.init(root);
 		layout = new BorderPane();
+		super.init(root);
 		top = new GridPane();
 		top.setPadding(new Insets(10));
 		top.setHgap(10);
@@ -56,14 +59,12 @@ public abstract class DialogEditTable extends OptionDialog {
 		top.addRow(0, new Label(Lang.getString("table.edit.table", "Tablename")), tableName);
 		layout.setTop(top);
 		layout.setCenter(new Separator(Orientation.HORIZONTAL));
-		layout.setBottom(bottom);
 		root.setTop(layout);
 	}
 
 	@Override
 	protected void initGrid(GridPane grid) {
-		this.bottom = grid;
-		grid.addRow(rowIndex++, new Label(Lang.getString("table.edit.column", "Column")));
+		this.grid.setGrid(grid);
 		addRow();
 	}
 
@@ -72,14 +73,13 @@ public abstract class DialogEditTable extends OptionDialog {
 	}
 
 	public void addRow(String defaultTitle, Datatype defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
-		final int currentIndex = rowIndex;
-		final TextField field = new TextField(String.format("%02d", rowIndex));
+		final TextField field = new TextField();
 		field.setDisable(true);
 		field.setMaxWidth(33);
 
-		TextField title = new TextField(defaultTitle);
+		final TextField title = new TextField(defaultTitle);
 
-		ComboBox<String> datatype = new ComboBox<String>(FXCollections.observableArrayList(Datatype.nameValues()));
+		final ComboBox<String> datatype = new ComboBox<String>(FXCollections.observableArrayList(Datatype.nameValues()));
 		for (Datatype.Kind kind : Datatype.Kind.values()) {
 			for (Datatype type : Datatype.values(kind)) {
 				datatype.getItems().add(type.getName());
@@ -87,12 +87,12 @@ public abstract class DialogEditTable extends OptionDialog {
 		}
 		datatype.getSelectionModel().select(defaultDatatype.getName());
 
-		TextField length = new TextField(defaultLength);
+		final TextField length = new TextField(defaultLength);
 
-		ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList(Index.nameValues()));
+		final ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList(Index.nameValues()));
 		index.getSelectionModel().select(defaultIndex.getName());
 
-		CheckBox nullCheckBox = new CheckBox();
+		final CheckBox nullCheckBox = new CheckBox();
 		nullCheckBox.setSelected(defaultNull);
 
 		titles.add(title);
@@ -108,7 +108,6 @@ public abstract class DialogEditTable extends OptionDialog {
 			public void handle(ActionEvent event) {
 				add.setVisible(false);
 				addRow();
-				getDialogStage().sizeToScene();
 			}
 		});
 
@@ -117,40 +116,68 @@ public abstract class DialogEditTable extends OptionDialog {
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				removeRow(currentIndex);
+				if (grid.getRowCount() == 1) {
+					return;
+				}
+
+				removeRow(Integer.valueOf(field.getText()) - 1);
+				layout.setBottom(grid.getGrid());
+				dialogStage.sizeToScene();
 			}
 		});
 
-		bottom.addRow(rowIndex++, field, new Label(Lang.getString("column.edit.title", "Title")), title, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("column.edit.datatype", "Datatype")), datatype, new Separator(Orientation.VERTICAL), new Label(Lang.getString("column.edit.length", "Length")), length,
-				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nullCheckBox, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.index", "Index")), index, remove, add);
+		addRow(field, new Label(Lang.getString("column.edit.title", "Title")), title, new Separator(Orientation.VERTICAL), new Label(Lang.getString("column.edit.datatype", "Datatype")), datatype,
+				new Separator(Orientation.VERTICAL), new Label(Lang.getString("column.edit.length", "Length")), length, new Separator(Orientation.VERTICAL),
+				new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nullCheckBox, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index", "Index")), index,
+				remove, add);
+		layout.setBottom(grid.getGrid());
+		dialogStage.sizeToScene();
 	}
 
-	public void removeRow(int index) {
-		int nodesInRow = ((bottom.getChildren().size() - 1) / (rowIndex - 1));
-		ObservableList<Node> items = bottom.getChildren();
-		items.remove(nodesInRow * index + 1, nodesInRow * index + nodesInRow);
-
-		bottom = new GridPane();
-		bottom.setPadding(new Insets(10));
-		bottom.setHgap(10);
-		bottom.setVgap(10);
-
-		bottom.addRow(0, items.get(0));
-		items.remove(0);
-
-		for (int i = 0; i < (items.size() - 1) / nodesInRow; i++) {
-			Node[] nodes = new Node[nodesInRow];
-			for (int j = 0; j < nodes.length; j++) {
-				nodes[j] = items.get(i * nodesInRow + j);
-			}
-
-			bottom.addRow(i, nodes);
+	public void addRow(final Node... nodes) {
+		if (grid.getColumnCount() > 0 && nodes.length != grid.getColumnCount()) {
+			throw new IllegalArgumentException(grid.getColumnCount() + " != " + nodes.length);
 		}
 
-		layout.setBottom(bottom);
-		getDialogStage().sizeToScene();
+		grid.recreateGrid(new GridOperation() {
+			@Override
+			public void onPreRecreate(ObservableList<Node> oldItems) {
+			}
+
+			@Override
+			public void onPostRecreate() {
+				grid.getGrid().addRow(grid.getRowCount(), nodes);
+
+				// Indices der Reihen anpassen
+				for (int i = 0; i < grid.getChildren().size(); i++) {
+					if (i % grid.getColumnCount() == 0) {
+						((TextField) grid.getChildren().get(i)).setText(String.valueOf((i / grid.getColumnCount()) + 1));
+					}
+				}
+			}
+		}, nodes.length);
+	}
+
+	public void removeRow(final int index) {
+		grid.recreateGrid(new GridOperation() {
+			@Override
+			public void onPreRecreate(ObservableList<Node> oldItems) {
+				oldItems.remove(index * grid.getColumnCount(), index * grid.getColumnCount() + grid.getColumnCount());
+			}
+
+			@Override
+			public void onPostRecreate() {
+				// Indices der Reihen anpassen
+				for (int i = 0; i < grid.getChildren().size(); i++) {
+					if (i % grid.getColumnCount() == 0) {
+						((TextField) grid.getChildren().get(i)).setText(String.valueOf((i / grid.getColumnCount()) + 1));
+					}
+				}
+
+				// Letzten "Add" Button sichtbar machen
+				grid.getChildren().get(grid.getChildren().size() - 1).setVisible(true);
+			}
+		});
 	}
 
 	public TextField getTableName() {
@@ -203,4 +230,5 @@ public abstract class DialogEditTable extends OptionDialog {
 
 		return arrayList;
 	}
+
 }

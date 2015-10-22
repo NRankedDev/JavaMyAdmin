@@ -51,7 +51,6 @@ database.remove=Datenbank löschen
 table.add=Tabelle hinzufügen
 table.edit=Tabelle bearbeiten
 table.edit.table=Tabellenname
-table.edit.column=Spalte
 table.edit.defaultNull=Standard Null
 table.edit.index=Index
 table.edit.remove=Spalte löschen
