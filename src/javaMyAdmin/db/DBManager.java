@@ -77,16 +77,4 @@ public class DBManager extends Connector {
 	}
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
-	/* still gelegt */public Database selectDB(int c) throws SQLException {
-		Database d;
-		try {
-			db.get(c);
-		} catch (Exception e) {
-			loadDB();
-			System.out.println("Error Code:\n" + e + "\nDatenbanken wurden nicht vor geladen!!!\n\n");
-		}
-		d = db.get(c);
-		return d;
-	}
 }

@@ -84,26 +84,14 @@ public class Table {
 		loadLines(rs);
 		return lines;
 	}
-
-	// test--------
-	// /*test*/public void setLine(int s, ArrayList<String> values) throws
-	// SQLException{
-	// ResultSet rs = connect.createStatement().executeQuery("UPDATE `"+
-	// getName() + "` SET `zeny` = '999999' WHERE `char`.`char_id` = 150000;);
-	// Line line = new Line();
-	// for(int i = 0; i < columnNames.size(); i++){
-	// line.AddValue(values.get(0));
-	// }
-	// lines.set(s, line);
+	
 	/* test */public void setValue(int line, int column, int value) throws SQLException {
 		if (lines.isEmpty()) {
 			loadLines(null);
 		}
 		connect.createStatement().executeUpdate("UPDATE `" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
-		// ResultSet rs = connect.createStatement().executeQuery("UPDATE `"+
-		// getName() +
-		// "` SET `zeny` = '999999' WHERE `char`.`char_id` = 150000;");
 	}
+	
 	public ArrayList<Line> addTupel(ArrayList<String> input) throws SQLException{
 		String cmd = "INSERT INTO `"+ getName() +"` (";
 		String value = " VALUES (";
@@ -120,6 +108,7 @@ public class Table {
 		connect.createStatement().executeUpdate(cmd);
 		return null;
 	}
+	
 	public ArrayList<Line> search(String suche, int column) throws SQLException {
 		return getLines(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "` WHERE `" + getColumnNames(column) + "` =" + suche));
 	}
