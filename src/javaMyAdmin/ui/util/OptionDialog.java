@@ -93,6 +93,7 @@ public abstract class OptionDialog {
 		dialogStage.setScene(new Scene(root));
 		dialogStage.sizeToScene();
 		dialogStage.showAndWait();
+		dialogStage.toFront();
 	}
 
 	protected void init(BorderPane root) {

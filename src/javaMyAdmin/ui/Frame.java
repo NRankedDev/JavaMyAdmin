@@ -10,6 +10,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
+import javaMyAdmin.ui.dialogs.DialogLogin;
 import javaMyAdmin.ui.util.Config;
 import javaMyAdmin.ui.util.Lang;
 import javafx.application.Application;
@@ -69,7 +70,7 @@ public class Frame extends Application {
 		}
 
 		/* Login Dialog starten und auf Usereingaben warten */
-		new LoginDialog();
+		new DialogLogin();
 
 		/* Root-Layout initialisieren */
 		BorderPane pane = new BorderPane();

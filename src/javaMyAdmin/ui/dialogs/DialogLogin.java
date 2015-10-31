@@ -1,8 +1,9 @@
-package javaMyAdmin.ui;
+package javaMyAdmin.ui.dialogs;
 
 import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
+import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.util.Lang;
 import javaMyAdmin.ui.util.OptionDialog;
 import javafx.application.Platform;
@@ -19,14 +20,14 @@ import javafx.scene.layout.GridPane;
  * 
  * @author Nicolas
  */
-public class LoginDialog extends OptionDialog {
+public class DialogLogin extends OptionDialog {
 
 	private TextField url;
 	private TextField username;
 	private PasswordField password;
 	private CheckBox remember;
 
-	public LoginDialog() {
+	public DialogLogin() {
 		super(Lang.getString("dialog.connect.title", "Connect to server"), Lang.getString("dialog.connect", "Connect"));
 		show();
 	}

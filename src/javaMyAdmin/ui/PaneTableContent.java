@@ -68,14 +68,14 @@ public class PaneTableContent extends TableView<TableRecord> {
 		TableColumn<TableRecord, String>[] columns = new TableColumn[columnNames.size()];
 
 		for (int i = 0; i < columns.length; i++) {
-			columns[i] = new TableColumn<TableRecord, String>(columnNames.get(i));
-			columns[i].setCellValueFactory(new Callback<CellDataFeatures<TableRecord, String>, ObservableValue<String>>() {
+			TableColumn<TableRecord, String> column = new TableColumn<TableRecord, String>(columnNames.get(i));
+			column.setCellValueFactory(new Callback<CellDataFeatures<TableRecord, String>, ObservableValue<String>>() {
 				@Override
 				public ObservableValue<String> call(CellDataFeatures<TableRecord, String> param) {
 					return param.getValue().getData().get(param.getTableColumn().getText());
 				}
 			});
-			columns[i].setCellFactory(new Callback<TableColumn<TableRecord, String>, TableCell<TableRecord, String>>() {
+			column.setCellFactory(new Callback<TableColumn<TableRecord, String>, TableCell<TableRecord, String>>() {
 
 				@Override
 				public TableCell<TableRecord, String> call(TableColumn<TableRecord, String> param) {
@@ -144,6 +144,8 @@ public class PaneTableContent extends TableView<TableRecord> {
 					};
 				}
 			});
+
+			columns[i] = column;
 		}
 
 		getColumns().addAll(columns);

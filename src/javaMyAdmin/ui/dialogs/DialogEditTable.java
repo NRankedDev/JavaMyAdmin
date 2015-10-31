@@ -71,7 +71,6 @@ public abstract class DialogEditTable extends OptionDialog {
 		bottom.setMaxHeight(500);
 
 		layout.setTop(top);
-		// layout.setCenter(new Separator(Orientation.HORIZONTAL));
 		layout.setBottom(bottom);
 		root.setTop(layout);
 	}
