@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- * LoginDialog, der benötigt wird, um eine Verbindung mit dem Server und den
+ * LoginDialog, der benoetigt wird, um eine Verbindung mit dem Server und den
  * Datenbanken herzustellen
  * 
  * @author Nicolas

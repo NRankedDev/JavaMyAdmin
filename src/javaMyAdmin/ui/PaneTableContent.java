@@ -38,7 +38,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 	}
 
 	/**
-	 * Lädt den Content einer Tabelle und zeigt ihn an
+	 * Laedt den Content einer Tabelle und zeigt ihn an
 	 * 
 	 * @param table
 	 *            Die Tabelle
@@ -172,7 +172,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 	}
 
 	/**
-	 * Wrapper Klasse, um aus einem String Daten für die Tabelle in JavaFX zu
+	 * Wrapper Klasse, um aus einem String Daten fuer die Tabelle in JavaFX zu
 	 * erzeugen
 	 */
 	public final class TableRecord {

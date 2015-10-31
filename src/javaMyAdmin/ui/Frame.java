@@ -26,6 +26,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
+/**
+ * 'Hauptklasse' der UI-Anwendung
+ * 
+ * @author Nicolas
+ */
 public class Frame extends Application {
 
 	public static final Config CONFIG = new Config();
@@ -41,14 +46,29 @@ public class Frame extends Application {
 		instance = this;
 	}
 
+	/**
+	 * Aktuelle Instanz der 'Hauptklasse'
+	 * 
+	 * @return
+	 */
 	public static Frame getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Anbindung an die Datenbank
+	 * 
+	 * @return
+	 */
 	public static DBManager getDbManager() {
 		return dbManager;
 	}
 
+	/**
+	 * Setzt die Anbindung an die Datenbank
+	 * 
+	 * @param dbManager
+	 */
 	public static void setDbManager(DBManager dbManager) {
 		Frame.dbManager = dbManager;
 	}
@@ -57,8 +77,8 @@ public class Frame extends Application {
 	public void start(Stage stage) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				showErrorLog(e);
+			public void uncaughtException(Thread thread, Throwable t) {
+				showErrorLog(t);
 			}
 		});
 
@@ -85,7 +105,7 @@ public class Frame extends Application {
 
 		stage.setTitle(Lang.getString("frame.title", "javaMyAdmin"));
 
-		/* Fenstergröße bestimmen und Frame Content zuweisen */
+		/* Fenstergrï¿½ï¿½e bestimmen und Frame Content zuweisen */
 		stage.setScene(new Scene(pane, 800, 600));
 
 		/* Icons setzen */
@@ -123,6 +143,13 @@ public class Frame extends Application {
 		return new Image[] { new Image(Frame.class.getResource("/res/mario.png").toExternalForm()) };
 	}
 
+	/**
+	 * Zeigt einen Fehler in einem Fenster an. Dieser Fehler wird auÃŸerdem
+	 * automatisch in der Konsole ausgegeben.
+	 * 
+	 * @param t
+	 *            Der Stacktrace des Fehlers
+	 */
 	public static void showErrorLog(Throwable t) {
 		t.printStackTrace();
 		Alert alert = new Alert(AlertType.ERROR);
