@@ -93,6 +93,7 @@ public class Database {
 		if(JOptionPane.showConfirmDialog(null, "Remove Table " + tablename ) != 1){
 			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
 		}
+		loadTables();
 	}
 	/* test */public void addTable(String tablename, ArrayList<String> titles, ArrayList<String>datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index) throws SQLException{
 		String cmd = "";
@@ -113,7 +114,6 @@ public class Database {
 			}
 			cmd += "`" + titles.get(i) + "` " + datatypes.get(i) + "(" + length.get(i) + ") " + checknull + komma + "\n";
 		}
-		System.out.println(cmd);
 		cmd = "CREATE TABLE " + /*IF NOT EXISTS + */ "`" + tablename + "` ( "+ cmd +
 				") ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;\n";
 		try{
@@ -127,5 +127,6 @@ public class Database {
 							" ADD PRIMARY KEY(`"+titles.get(i)+"`);");
 			}
 		}
+		loadTables();
 	}
 }

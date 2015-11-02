@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class DBManager extends Connector {
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 
@@ -75,6 +77,17 @@ public class DBManager extends Connector {
 		}
 		return d;
 	}
-
+	
+	public void addDB(String dbname) throws SQLException{
+		connect.createStatement().executeUpdate("CREATE DATABASE " + dbname);
+		loadDB();
+	}
+	
+	public void rmDB(String dbname) throws SQLException {
+		if(JOptionPane.showConfirmDialog(null, "Remove Database: '" + dbname + "' ?") != 1){
+			connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
+			loadDB();
+		}
+	}
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 }
