@@ -117,10 +117,12 @@ public class PaneTableList extends TreeView<String> {
 					new DialogStringInput(addDatabase.getText(), Lang.getString("database.add.name", "Name")) {
 						@Override
 						protected void handle() {
-							input.getText();
-							// TODO SQL
-							System.err.println("AddDatabase: TODO SQL");
-							refresh();
+							try {
+								Frame.getDbManager().addDB(input.getText());
+								refresh();
+							} catch (SQLException e) {
+								Frame.showErrorLog(e);
+							}
 						}
 					}.show();
 				}
@@ -140,10 +142,12 @@ public class PaneTableList extends TreeView<String> {
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println(getSelectionModel().getSelectedItem());
-					// TODO SQL
-					System.err.println("RemoveDatabase: TODO SQL");
-					refresh();
+					try {
+						Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
+						refresh();
+					} catch (SQLException e) {
+						Frame.showErrorLog(e);
+					}
 				}
 			});
 
@@ -196,10 +200,13 @@ public class PaneTableList extends TreeView<String> {
 			removeTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println(getSelectionModel().getSelectedItem());
-					// TODO SQL
-					System.err.println("RemoveTable: TODO SQL");
-					refresh();
+					try {
+						TreeItem<String> item = getSelectionModel().getSelectedItem();
+						Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
+						refresh();
+					} catch (SQLException e) {
+						Frame.showErrorLog(e);
+					}
 				}
 			});
 			getItems().addAll(removeTable);
