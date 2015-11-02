@@ -75,6 +75,11 @@ public class DBManager extends Connector {
 		}
 		return d;
 	}
+	
+	public void addDB(String dbname) throws SQLException{
+		connect.createStatement().executeUpdate("CREATE DATABASE " + dbname);
+		loadDB();
+	}
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 }
