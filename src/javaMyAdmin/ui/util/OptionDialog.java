@@ -1,5 +1,6 @@
 package javaMyAdmin.ui.util;
 
+import javaMyAdmin.ui.Frame;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -12,11 +13,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
- * Abstrakte Klasse, die als Basis für alle Einstellungsdialoge gilt. Alle
- * Klassen, die von dieser erben, befinden sich im package 'javaMyAdmin.dialogs'
+ * Abstrakte Klasse, die als Basis fuer alle Einstellungsdialoge gilt. Alle
+ * Klassen, die von dieser erben, befinden sich im package
+ * 'javaMyAdmin.ui.dialogs'
  * 
  * @author Nicolas
  */
@@ -28,8 +29,8 @@ public abstract class OptionDialog {
 
 		public DialogStage() {
 			initModality(Modality.APPLICATION_MODAL);
-			initStyle(StageStyle.UTILITY);
 			setResizable(false);
+			getIcons().addAll(Frame.getIcons());
 		}
 
 	}
@@ -56,7 +57,7 @@ public abstract class OptionDialog {
 	 * @param title
 	 *            Der Fenstertitel
 	 * @param okButtonText
-	 *            Der Titel des 'OK'-Buttons, wenn anderer Titel benötigt
+	 *            Der Titel des 'OK'-Buttons, wenn anderer Titel benoetigt
 	 * 
 	 * @see #show()
 	 */
@@ -69,9 +70,9 @@ public abstract class OptionDialog {
 	 * @param title
 	 *            Der Fenstertitel
 	 * @param okButtonText
-	 *            Der Titel des 'OK'-Buttons, wenn anderer Titel benötigt
+	 *            Der Titel des 'OK'-Buttons, wenn anderer Titel benoetigt
 	 * @param cancelButtonText
-	 *            Der Titel des 'Cancel'-Buttons, wenn anderer Titel benötigt
+	 *            Der Titel des 'Cancel'-Buttons, wenn anderer Titel benoetigt
 	 * 
 	 * @see #show()
 	 */
@@ -93,11 +94,12 @@ public abstract class OptionDialog {
 		dialogStage.setScene(new Scene(root));
 		dialogStage.sizeToScene();
 		dialogStage.showAndWait();
+		dialogStage.toFront();
 	}
 
 	protected void init(BorderPane root) {
 		/*
-		 * Initalisierung des Fensters. Wird erst ausgeführt, wenn das Fenster
+		 * Initalisierung des Fensters. Wird erst ausgefï¿½hrt, wenn das Fenster
 		 * gezeigt werden soll (von der Methode show())
 		 */
 		GridPane grid = new GridPane();
@@ -139,20 +141,20 @@ public abstract class OptionDialog {
 	 * 
 	 * @param grid
 	 *            Das {@link GridPane}, auf dem sich alle Elemente befinden
-	 *            müssen
+	 *            muessen
 	 */
 	protected abstract void initGrid(GridPane grid);
 
 	/**
-	 * Wird ausgeführt, sobald der 'OK'-Button gedrückt wurde. Es wird
-	 * <b>nicht</b> ausgeführt, wenn der 'Cancel'-Button gedrückt wurde. Hierzu
-	 * kann die Methode {@link #onCancelButtonPressed(ActionEvent)}
-	 * überschrieben werden.
+	 * Wird ausgefuehrt, sobald der 'OK'-Button gedrueckt wurde. Es wird
+	 * <b>nicht</b> ausgefuehrt, wenn der 'Cancel'-Button gedrueckt wurde.
+	 * Hierzu kann die Methode {@link #onCancelButtonPressed(ActionEvent)}
+	 * ueberschrieben werden.
 	 */
 	protected abstract void handle();
 
 	/**
-	 * Wird ausgeführt, sobald der 'OK'-Button gedrückt wurde. Ruft
+	 * Wird ausgefuehrt, sobald der 'OK'-Button gedrueckt wurde. Ruft
 	 * {@link #handle()} und {@link #hideDialog()} auf.
 	 * 
 	 * @param event
@@ -163,7 +165,7 @@ public abstract class OptionDialog {
 	}
 
 	/**
-	 * Wird ausgeführt, sobald der 'Cancel'-Button gedrückt wurde. Ruft
+	 * Wird ausgefuehrt, sobald der 'Cancel'-Button gedrueckt wurde. Ruft
 	 * {@link #hideDialog()} auf.
 	 * 
 	 * @param event
@@ -189,7 +191,7 @@ public abstract class OptionDialog {
 
 	/**
 	 * 
-	 * @return
+	 * @return Dialog Stage
 	 */
 	public static Stage getDialogStage() {
 		return dialogStage;

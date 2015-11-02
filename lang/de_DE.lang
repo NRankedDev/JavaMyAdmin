@@ -1,19 +1,17 @@
-#
+ï»¿#
 # Basic
 #
-
 frame.title=javaMyAdmin
 error=Fehler
 error.header=Ein Fehler ist aufgetreten.
-error.sql=Verbindung zur Datenbank fehlgeschlagen
-error.unknown=Ein unbekannter Fehler ist aufgetreten
-error.stacktrace=Der Stacktrace war:
+error.sql=Verbindung zur einer Datenbank fehlgeschlagen.
+error.unknown=Ein unbekannter Fehler ist aufgetreten.
 
 #
 # Dialogs
 #
 dialog.ok=OK
-dialog.cancel=Zurück
+dialog.cancel=ZurÃ¼ck
 dialog.connect=Verbinden
 dialog.connect.title=Verbindung herstellen
 dialog.connect.url=URL
@@ -22,7 +20,7 @@ dialog.connect.password=Passwort
 dialog.connect.remember=Login merken
 dialog.connect.connecting=Verbinden...
 dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
-dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
+dialog.connect.error.content=Bitte Ã¼berprÃ¼fe die Verbindung zur Datenbank.
 
 #
 # Menu
@@ -31,45 +29,40 @@ menu.file=Datei
 menu.settings=Einstellungen
 menu.settings.language=Sprache
 menu.settings.language.header=Du musst das Programm neustarten.
-menu.settings.language.content=Die Einstellungen werden übernommen.
+menu.settings.language.content=Die Einstellungen werden Ã¼bernommen.
 
 
 #
 # Toolbar
 #
-sql_commands.label=SQL-Befehl(e) ausführen
-sql_commands.execute=Ausführen
+sql_commands.label=SQL-Befehl(e) ausfÃ¼hren
+sql_commands.execute=AusfÃ¼hren
 sql_commands.clear=Leeren
 
 #
 # Table list
 #
 connection=Verbindung
-database.add=Datenbank hinzufügen
+database.add=Datenbank hinzufÃ¼gen
 database.add.name=Name
-database.remove=Datenbank löschen
-table.add=Tabelle hinzufügen
+database.remove=Datenbank lÃ¶schen
+table.add=Tabelle hinzufÃ¼gen
 table.edit=Tabelle bearbeiten
 table.edit.table=Tabellenname
+table.edit.title=Titel
+table.edit.datatype=Datentyp
+table.edit.length=LÃ¤nge
 table.edit.defaultNull=Standard Null
 table.edit.index=Index
-table.edit.remove=Spalte löschen
-table.edit.add=Spalte hinzufügen
-table.remove=Tabelle löschen
+table.edit.remove=Spalte lÃ¶schen
+table.edit.add=Spalte hinzufÃ¼gen
+table.remove=Tabelle lÃ¶schen
 
 #
 # Table content
 #
 
-table.no_content=Keine Datensätze in dieser Tabelle
+table.no_content=Keine DatensÃ¤tze in dieser Tabelle
 column.edit=Spalten editieren...
-column.edit.columns=Spalten
-column.edit.title=Titel
-column.edit.datatype=Datentyp
-column.edit.length=Länge
-column.remove=Spalten löschen...
-column.remove.column=Spalte
-column.remove.header=Diese Option wird die Spalte löschen.
-column.remove.content=Willst du wirklich fortfahren?
-record.add=Datensatz hinzufügen
-record.remove=Datensatz löschen
+record.add=Datensatz hinzufÃ¼gen
+record.remove=Datensatz lÃ¶schen

@@ -7,17 +7,12 @@ import java.util.HashMap;
 import javaMyAdmin.db.Line;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.PaneTableContent.TableRecord;
-import javaMyAdmin.ui.dialogs.DialogChooseValue;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
 import javaMyAdmin.ui.util.Lang;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -43,7 +38,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 	}
 
 	/**
-	 * Lädt den Content einer Tabelle und zeigt ihn an
+	 * Laedt den Content einer Tabelle und zeigt ihn an
 	 * 
 	 * @param table
 	 *            Die Tabelle
@@ -73,14 +68,14 @@ public class PaneTableContent extends TableView<TableRecord> {
 		TableColumn<TableRecord, String>[] columns = new TableColumn[columnNames.size()];
 
 		for (int i = 0; i < columns.length; i++) {
-			columns[i] = new TableColumn<TableRecord, String>(columnNames.get(i));
-			columns[i].setCellValueFactory(new Callback<CellDataFeatures<TableRecord, String>, ObservableValue<String>>() {
+			TableColumn<TableRecord, String> column = new TableColumn<TableRecord, String>(columnNames.get(i));
+			column.setCellValueFactory(new Callback<CellDataFeatures<TableRecord, String>, ObservableValue<String>>() {
 				@Override
 				public ObservableValue<String> call(CellDataFeatures<TableRecord, String> param) {
 					return param.getValue().getData().get(param.getTableColumn().getText());
 				}
 			});
-			columns[i].setCellFactory(new Callback<TableColumn<TableRecord, String>, TableCell<TableRecord, String>>() {
+			column.setCellFactory(new Callback<TableColumn<TableRecord, String>, TableCell<TableRecord, String>>() {
 
 				@Override
 				public TableCell<TableRecord, String> call(TableColumn<TableRecord, String> param) {
@@ -149,6 +144,8 @@ public class PaneTableContent extends TableView<TableRecord> {
 					};
 				}
 			});
+
+			columns[i] = column;
 		}
 
 		getColumns().addAll(columns);
@@ -175,7 +172,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 	}
 
 	/**
-	 * Wrapper Klasse, um aus einem String Daten für die Tabelle in JavaFX zu
+	 * Wrapper Klasse, um aus einem String Daten fuer die Tabelle in JavaFX zu
 	 * erzeugen
 	 */
 	public final class TableRecord {
@@ -217,38 +214,6 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 
-			final MenuItem removeColumn = new MenuItem(Lang.getString("column.remove", "Remove columns..."));
-			removeColumn.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					ArrayList<String> columns = new ArrayList<String>();
-					for (TableColumn<TableRecord, ?> column : getColumns()) {
-						columns.add(column.getText());
-					}
-
-					new DialogChooseValue(removeColumn.getText(), Lang.getString("column.remove.column", "Column"), columns) {
-						@Override
-						protected void handle() {
-							ObservableList<TableColumn<TableRecord, ?>> columns = PaneTableContent.this.getColumns();
-							for (int i = 0; i < columns.size(); i++) {
-								if (columns.get(i).getText().equals(comboBox.getValue())) {
-									Alert alert = new Alert(AlertType.CONFIRMATION);
-									alert.setHeaderText(Lang.getString("column.remove.header", "This option will delete the column '" + comboBox.getValue() + "'."));
-									alert.setContentText(Lang.getString("column.remove.content", "Do you really want to do this?"));
-									if (alert.showAndWait().get() == ButtonType.OK) {
-										columns.remove(i);
-										// TODO SQL
-										System.err.println("Remove column: TODO SQL");
-									}
-								}
-							}
-
-							hideDialog();
-						}
-					}.show();
-				}
-			});
-
 			MenuItem addRecord = new MenuItem(Lang.getString("record.add", "Add record"));
 			addRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -266,7 +231,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 					System.err.println("RemoveDialog: TODO SQL");
 				}
 			});
-			getItems().addAll(editColumn, removeColumn, new SeparatorMenuItem(), addRecord, removeRecord);
+			getItems().addAll(editColumn, new SeparatorMenuItem(), addRecord, removeRecord);
 		}
 	}
 }

@@ -10,6 +10,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
+import javaMyAdmin.ui.dialogs.DialogLogin;
 import javaMyAdmin.ui.util.Config;
 import javaMyAdmin.ui.util.Lang;
 import javafx.application.Application;
@@ -17,7 +18,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -26,6 +26,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
+/**
+ * 'Hauptklasse' der UI-Anwendung
+ * 
+ * @author Nicolas
+ */
 public class Frame extends Application {
 
 	public static final Config CONFIG = new Config();
@@ -41,14 +46,29 @@ public class Frame extends Application {
 		instance = this;
 	}
 
+	/**
+	 * Aktuelle Instanz der 'Hauptklasse'
+	 * 
+	 * @return
+	 */
 	public static Frame getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Anbindung an die Datenbank
+	 * 
+	 * @return
+	 */
 	public static DBManager getDbManager() {
 		return dbManager;
 	}
 
+	/**
+	 * Setzt die Anbindung an die Datenbank
+	 * 
+	 * @param dbManager
+	 */
 	public static void setDbManager(DBManager dbManager) {
 		Frame.dbManager = dbManager;
 	}
@@ -57,8 +77,8 @@ public class Frame extends Application {
 	public void start(Stage stage) throws Exception {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				showErrorLog(e);
+			public void uncaughtException(Thread thread, Throwable t) {
+				showErrorLog(t);
 			}
 		});
 
@@ -70,7 +90,7 @@ public class Frame extends Application {
 		}
 
 		/* Login Dialog starten und auf Usereingaben warten */
-		new LoginDialog();
+		new DialogLogin();
 
 		/* Root-Layout initialisieren */
 		BorderPane pane = new BorderPane();
@@ -85,11 +105,11 @@ public class Frame extends Application {
 
 		stage.setTitle(Lang.getString("frame.title", "javaMyAdmin"));
 
-		/* Fenstergröße bestimmen und Frame Content zuweisen */
+		/* Fenstergrï¿½ï¿½e bestimmen und Frame Content zuweisen */
 		stage.setScene(new Scene(pane, 800, 600));
 
 		/* Icons setzen */
-		stage.getIcons().add(new Image(Frame.class.getResource("/res/mario.png").toExternalForm()));
+		stage.getIcons().addAll(getIcons());
 
 		/* Fenster anzeigen */
 		stage.show();
@@ -119,20 +139,29 @@ public class Frame extends Application {
 		return tableContent;
 	}
 
+	public static Image[] getIcons() {
+		return new Image[] { new Image(Frame.class.getResource("/res/mario.png").toExternalForm()) };
+	}
+
+	/**
+	 * Zeigt einen Fehler in einem Fenster an. Dieser Fehler wird auÃŸerdem
+	 * automatisch in der Konsole ausgegeben.
+	 * 
+	 * @param t
+	 *            Der Stacktrace des Fehlers
+	 */
 	public static void showErrorLog(Throwable t) {
 		t.printStackTrace();
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle(Lang.getString("error", "Error: " + t.getLocalizedMessage()));
 		alert.setHeaderText(Lang.getString("error.header", "Ein Fehler ist aufgetreten."));
-		alert.setContentText(t.getClass().equals(SQLException.class) ? Lang.getString("error.sql", "Couldn't connect to database") : Lang.getString("error.unknown", ""));
+		alert.setContentText(t.getClass().equals(SQLException.class) ? Lang.getString("error.sql", "Couldn't connect to a database") : Lang.getString("error.unknown", ""));
 
 		// Create expandable Exception.
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		t.printStackTrace(pw);
 		String exceptionText = sw.toString();
-
-		Label label = new Label(Lang.getString("error.stacktrace", "The exception stacktrace was:"));
 
 		TextArea textArea = new TextArea(exceptionText);
 		textArea.setEditable(false);
@@ -145,11 +174,11 @@ public class Frame extends Application {
 
 		GridPane expContent = new GridPane();
 		expContent.setMaxWidth(Double.MAX_VALUE);
-		expContent.add(label, 0, 0);
-		expContent.add(textArea, 0, 1);
+		expContent.addRow(1, textArea);
 
 		alert.getDialogPane().setExpandableContent(expContent);
-
+		alert.getDialogPane().setMinWidth(500);
+		((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().addAll(getIcons());
 		alert.showAndWait();
 	}
 

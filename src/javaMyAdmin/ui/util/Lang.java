@@ -3,13 +3,15 @@ package javaMyAdmin.ui.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
+import javaMyAdmin.ui.Frame;
 
 /**
- * Klasse, die beim Start alle unterstützen Sprachen lädt. Wird für das
- * Übersetzen von Strings genutzt.
+ * Klasse, die beim Start alle unterstuetzen Sprachen laedt. Wird fuer das
+ * uebersetzen von Strings genutzt.
  * 
  * @see #getString(String, String)
  * 
@@ -25,12 +27,31 @@ public class Lang {
 	static {
 		loadLanguages();
 
-		if (availableLanguages().contains(Locale.getDefault())) {
-			changeLocale(Locale.getDefault());
-		} else {
-			locale = Locale.US;
-			System.out.println(Locale.getDefault());
+		Locale locale = null;
+
+		if (Frame.CONFIG != null && Frame.CONFIG.containsKey("lang")) {
+			try {
+				String lang = Frame.CONFIG.getProperty("lang");
+				if (lang.equals("debug")) {
+					locale = new Locale(lang);
+				} else {
+					String[] split = lang.split("_");
+					locale = new Locale(split[0], split[1]);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+
+		if (locale == null) {
+			if (availableLanguages().contains(Locale.getDefault())) {
+				locale = Locale.getDefault();
+			} else {
+				locale = Locale.US;
+			}
+		}
+
+		changeLocale(locale);
 	}
 
 	private static void loadLanguages() {
@@ -55,7 +76,7 @@ public class Lang {
 	}
 
 	/**
-	 * @return Alle Sprachen ({@link Locale}), die vom Programm unterstützt
+	 * @return Alle Sprachen ({@link Locale}), die vom Programm unterstuetzt
 	 *         werden
 	 */
 	public static ArrayList<Locale> availableLanguages() {
@@ -63,7 +84,7 @@ public class Lang {
 	}
 
 	/**
-	 * Ändert die aktuell genutzte Sprache
+	 * Aendert die aktuell genutzte Sprache
 	 * 
 	 * @param locale
 	 */
@@ -71,8 +92,8 @@ public class Lang {
 		if (locale != null && !locale.getLanguage().equals("debug")) {
 			if (!locale.equals(Locale.US)) {
 				strings.clear();
-				try (FileInputStream fis = new FileInputStream(new File(langDirectory, locale.toString() + ".lang"))) {
-					strings.load(fis);
+				try (InputStreamReader isr = new InputStreamReader(new FileInputStream(new File(langDirectory, locale.toString() + ".lang")), "UTF-8")) {
+					strings.load(isr);
 				} catch (Exception e) {
 					locale = Locale.US;
 				}
@@ -92,19 +113,19 @@ public class Lang {
 	}
 
 	/**
-	 * Übersetzt einen String. Der angegebene Key führt zu einem übersetzten
+	 * Uebersetzt einen String. Der angegebene Key fuehrt zu einem uebersetzten
 	 * String.
 	 * 
 	 * @param key
-	 *            Der Key für den übersetzten String
+	 *            Der Key fuer den uebersetzten String
 	 * @param defaultValue
-	 *            Wenn der Key nicht übersetzte ist, wird dieser Wert zurück
+	 *            Wenn der Key nicht uebersetzte ist, wird dieser Wert zurueck
 	 *            gegeben
-	 * @return Der übersetzte String. Wenn {@link #getLocale()}
-	 *         <code>null</code> ist, wird der Key zurück gegeben.
+	 * @return Der uebersetzte String. Wenn {@link #getLocale()}
+	 *         <code>null</code> ist, wird der Key zurueck gegeben.
 	 */
 	public static String getString(String key, String defaultValue) {
-		if (locale == null) {
+		if (locale == null || locale.getLanguage().equals("debug")) {
 			return key;
 		} else if (locale.equals(Locale.US)) {
 			return defaultValue;
