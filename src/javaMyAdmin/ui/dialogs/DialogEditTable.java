@@ -10,8 +10,12 @@ import javaMyAdmin.ui.util.Lang;
 import javaMyAdmin.util.Datatype;
 import javaMyAdmin.util.Index;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -112,6 +116,23 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		lengths.remove(index);
 		indices.remove(index);
 		defaultNullOptions.remove(index);
+	}
+
+	@Override
+	protected void onOkButtonPressed(ActionEvent event) {
+		for (String index : getIndices()) {
+			if (Index.valueOfName(index) == Index.PRIMARY) {
+				super.onOkButtonPressed(event);
+				return;
+			}
+		}
+
+		Alert a = new Alert(AlertType.CONFIRMATION);
+		a.setHeaderText(Lang.getString("table.edit.no_primary.header", "This table has no primary key."));
+		a.setContentText(Lang.getString("table.edit.no_primary.content", "Are you sure you want to proceed without a primary key?"));
+		if (a.showAndWait().get() == ButtonType.OK) {
+			super.onOkButtonPressed(event);
+		}
 	}
 
 	public TextField getTableName() {
