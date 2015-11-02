@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-
 public class Database {
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
@@ -89,42 +88,42 @@ public class Database {
 	}
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	/* test */public void rmTable(String tablename) throws SQLException{
-		if(JOptionPane.showConfirmDialog(null, "Remove Table " + tablename ) != 1){
+	/* test */public void rmTable(String tablename) throws SQLException {
+		if (JOptionPane.showConfirmDialog(null, "Remove Table " + tablename) != 1) {
 			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
 		}
 		loadTables();
 	}
-	/* test */public void addTable(String tablename, ArrayList<String> titles, ArrayList<String>datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index) throws SQLException{
+
+	/* test */public void addTable(String tablename, ArrayList<String> titles, ArrayList<String> datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index)
+			throws SQLException {
 		String cmd = "";
 		String checknull = "";
 		String komma = ",";
-		for(int i = 0; i < titles.size(); i++){
-			if(i == titles.size() -1 ){
+		for (int i = 0; i < titles.size(); i++) {
+			if (i == titles.size() - 1) {
 				komma = "";
 			}
-			if(check.get(i) == true){
+			if (check.get(i) == true) {
 				checknull = "DEFAULT NULL";
-			}else{
+			} else {
 				checknull = "NOT NULL";
 			}
-			
-			if(length.get(i).equals("")){
+
+			if (length.get(i).equals("")) {
 				length.set(i, "10");
 			}
 			cmd += "`" + titles.get(i) + "` " + datatypes.get(i) + "(" + length.get(i) + ") " + checknull + komma + "\n";
 		}
-		cmd = "CREATE TABLE " + /*IF NOT EXISTS + */ "`" + tablename + "` ( "+ cmd +
-				") ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;\n";
-		try{
+		cmd = "CREATE TABLE " + /* IF NOT EXISTS + */"`" + tablename + "` ( " + cmd + ") ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;\n";
+		try {
 			connect.createStatement().executeUpdate(cmd);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e);
 		}
-		for(int i = 0; i < index.size(); i++){
-			if(index.get(i).equals("PRIMARY")){
-					connect.createStatement().executeUpdate("ALTER TABLE `"+ tablename + "`"+
-							" ADD PRIMARY KEY(`"+titles.get(i)+"`);");
+		for (int i = 0; i < index.size(); i++) {
+			if (index.get(i).equals("PRIMARY")) {
+				connect.createStatement().executeUpdate("ALTER TABLE `" + tablename + "`" + " ADD PRIMARY KEY(`" + titles.get(i) + "`);");
 			}
 		}
 		loadTables();
