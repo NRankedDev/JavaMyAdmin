@@ -92,23 +92,31 @@ public class Table {
 		connect.createStatement().executeUpdate("UPDATE `" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
 	}
 	
-	public ArrayList<Line> addTupel(ArrayList<String> input) throws SQLException{
+	public void addTupel(ArrayList<String> input) throws SQLException{
 		String cmd = "INSERT INTO `"+ getName() +"` (";
 		String value = " VALUES (";
 		for(int i = 0; i < columnNames.size(); i++){
 			cmd += "`" + columnNames.get(i) + "`";
 			value += "'" + input.get(i) + "'";
-			if(columnNames.size() != i + 1){
+			if(columnNames.size() != i+1){
 				cmd += ", ";
 				value += ", ";
 			}
 		}
 		cmd += ")" + value + ");";
-		System.out.println(cmd);
 		connect.createStatement().executeUpdate(cmd);
-		return null;
 	}
 	
+	public void rmTupel(ArrayList<String> values) throws SQLException{
+		String cmd = "DELETE FROM `"+ getName() +"` WHERE";
+		for(int i = 0; i < values.size(); i++){
+			cmd += " `"+getColumnNames(i)+"`='"+values.get(i)+"'";
+			if(values.size() != i+1){
+				cmd += " AND ";
+			}
+		}
+		connect.createStatement().executeUpdate(cmd);
+	}
 	public ArrayList<Line> search(String suche, int column) throws SQLException {
 		return getLines(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "` WHERE `" + getColumnNames(column) + "` =" + suche));
 	}
