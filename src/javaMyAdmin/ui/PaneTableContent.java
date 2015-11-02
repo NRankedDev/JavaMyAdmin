@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javaMyAdmin.db.Line;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.PaneTableContent.TableRecord;
+import javaMyAdmin.ui.dialogs.DialogAddRecords;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
 import javaMyAdmin.ui.util.Lang;
 import javafx.beans.property.SimpleStringProperty;
@@ -218,8 +219,25 @@ public class PaneTableContent extends TableView<TableRecord> {
 			addRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					// TODO SQL
-					System.err.println("AddDialog: TODO SQL");
+					new DialogAddRecords(getCurrentShownTable()) {
+						@Override
+						protected void handle() {
+							for (TextField[] record : records) {
+								ArrayList<String> strings = new ArrayList<String>();
+								for (int i = 0; i < record.length; i++) {
+									strings.add(record[i].getText());
+								}
+
+								try {
+									table.addTupel(strings);
+								} catch (SQLException e) {
+									Frame.showErrorLog(e);
+								}
+							}
+
+							refresh(getCurrentShownTable());
+						}
+					}.show();
 				}
 			});
 

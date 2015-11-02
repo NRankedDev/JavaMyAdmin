@@ -1,6 +1,6 @@
 package javaMyAdmin.ui.dialogs;
 
-import javaMyAdmin.ui.util.OptionDialog;
+import javaMyAdmin.ui.dialogs.util.OptionDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
