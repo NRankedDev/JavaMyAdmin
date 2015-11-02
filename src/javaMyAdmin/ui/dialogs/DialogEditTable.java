@@ -5,38 +5,23 @@ import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.Frame;
-import javaMyAdmin.ui.util.ExtendedGridPane;
-import javaMyAdmin.ui.util.ExtendedGridPane.GridOperation;
+import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
 import javaMyAdmin.ui.util.Lang;
-import javaMyAdmin.ui.util.OptionDialog;
 import javaMyAdmin.util.Datatype;
 import javaMyAdmin.util.Index;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
-public abstract class DialogEditTable extends OptionDialog {
+public abstract class DialogEditTable extends DialogDynamicRows {
 
 	private final Table table;
-	private final ExtendedGridPane grid;
-	private BorderPane layout;
-	private GridPane top;
-	private ScrollPane bottom;
-
 	private TextField tableName = new TextField();
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
 	private ArrayList<ComboBox<String>> datatypes = new ArrayList<ComboBox<String>>();
@@ -52,32 +37,15 @@ public abstract class DialogEditTable extends OptionDialog {
 		super(table == null ? Lang.getString("table.add", "Add table") : Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
-		this.grid = new ExtendedGridPane();
-	}
-
-	@Override
-	protected void init(BorderPane root) {
-		layout = new BorderPane();
-		top = new GridPane();
-		bottom = new ScrollPane();
-		super.init(root);
-
-		top.setPadding(new Insets(10));
-		top.setHgap(10);
-		top.setVgap(10);
-		top.addRow(0, new Label(Lang.getString("table.edit.table", "Tablename")), tableName);
-
-		bottom.setFocusTraversable(false);
-		bottom.setMaxHeight(500);
-
-		layout.setTop(top);
-		layout.setBottom(bottom);
-		root.setTop(layout);
 	}
 
 	@Override
 	protected void initGrid(GridPane grid) {
-		this.grid.setGrid(grid);
+		super.initGrid(grid);
+
+		top.addRow(0, new Label(Lang.getString("table.edit.table", "Tablename")), tableName);
+		top.addRow(1);
+		top.addRow(2, new Label(Lang.getString("table.edit.columns", "Columns") + ":"));
 
 		if (table != null) {
 			try {
@@ -101,10 +69,6 @@ public abstract class DialogEditTable extends OptionDialog {
 	}
 
 	public void addRow(String defaultTitle, Datatype defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
-		final TextField field = new TextField();
-		field.setDisable(true);
-		field.setMaxWidth(33);
-
 		final TextField title = new TextField(defaultTitle);
 
 		final ComboBox<String> datatype = new ComboBox<String>();
@@ -129,89 +93,25 @@ public abstract class DialogEditTable extends OptionDialog {
 		indices.add(index);
 		defaultNullOptions.add(nullCheckBox);
 
-		final Button add = new Button("+");
-		add.setTooltip(new Tooltip(Lang.getString("table.edit.add", "Add column")));
-		add.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				add.setVisible(false);
-				addRow();
-			}
-		});
-
-		final Button remove = new Button("x");
-		remove.setTooltip(new Tooltip(Lang.getString("table.edit.remove", "Remove column")));
-		remove.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if (grid.getRowCount() == 1) {
-					return;
-				}
-
-				int index = Integer.valueOf(field.getText()) - 1;
-				titles.remove(index);
-				datatypes.remove(index);
-				lengths.remove(index);
-				indices.remove(index);
-				defaultNullOptions.remove(index);
-				removeRow(index);
-				bottom.setContent(grid.getGrid());
-				dialogStage.sizeToScene();
-			}
-		});
-
-		addRow(field, new Label(Lang.getString("table.edit.title", "Title")), title, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype", "Datatype")), datatype,
+		addDynamicRow(new Label(Lang.getString("table.edit.title", "Title")), title, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype", "Datatype")), datatype,
 				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.length", "Length")), length, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nullCheckBox, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index", "Index")), index,
-				remove, add);
-		bottom.setContent(grid.getGrid());
-		dialogStage.sizeToScene();
+				new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nullCheckBox, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index", "Index")), index);
 	}
 
-	private void addRow(final Node... nodes) {
-		if (grid.getColumnCount() > 0 && nodes.length != grid.getColumnCount()) {
-			throw new IllegalArgumentException(grid.getColumnCount() + " != " + nodes.length);
-		}
-
-		grid.recreateGrid(new GridOperation() {
-			@Override
-			public void onPreRecreate(ObservableList<Node> oldItems) {
-			}
-
-			@Override
-			public void onPostRecreate() {
-				grid.getGrid().addRow(grid.getRowCount(), nodes);
-
-				// Indices der Reihen anpassen
-				for (int i = 0; i < grid.getChildren().size(); i++) {
-					if (i % grid.getColumnCount() == 0) {
-						((TextField) grid.getChildren().get(i)).setText(String.valueOf((i / grid.getColumnCount()) + 1));
-					}
-				}
-			}
-		}, nodes.length);
+	@Override
+	protected void onAddButtonPressed(Button addButton) {
+		super.onAddButtonPressed(addButton);
+		addRow();
 	}
 
-	private void removeRow(final int index) {
-		grid.recreateGrid(new GridOperation() {
-			@Override
-			public void onPreRecreate(ObservableList<Node> oldItems) {
-				oldItems.remove(index * grid.getColumnCount(), index * grid.getColumnCount() + grid.getColumnCount());
-			}
-
-			@Override
-			public void onPostRecreate() {
-				// Indices der Reihen anpassen
-				for (int i = 0; i < grid.getChildren().size(); i++) {
-					if (i % grid.getColumnCount() == 0) {
-						((TextField) grid.getChildren().get(i)).setText(String.valueOf((i / grid.getColumnCount()) + 1));
-					}
-				}
-
-				// Letzten "Add" Button sichtbar machen
-				grid.getChildren().get(grid.getChildren().size() - 1).setVisible(true);
-			}
-		});
+	@Override
+	protected void onRemoveButtonPressed(Button removeButton, int index) {
+		super.onRemoveButtonPressed(removeButton, index);
+		titles.remove(index);
+		datatypes.remove(index);
+		lengths.remove(index);
+		indices.remove(index);
+		defaultNullOptions.remove(index);
 	}
 
 	public TextField getTableName() {
