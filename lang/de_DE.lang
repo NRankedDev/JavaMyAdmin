@@ -62,8 +62,9 @@ table.remove=Tabelle löschen
 #
 # Table content
 #
-
 table.no_content=Keine Datensätze in dieser Tabelle
 column.edit=Spalten editieren...
 record.add=Datensatz hinzufügen
+record.add.description=Datensätze hinzufügen für Tabelle
+record.add.records=Datensätze
 record.remove=Datensatz löschen

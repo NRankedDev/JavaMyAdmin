@@ -17,7 +17,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public abstract class DialogEditTable extends DialogDynamicRows {
@@ -41,16 +40,12 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 	}
 
 	@Override
-	protected void init(BorderPane root) {
-		super.init(root);
+	protected void initGrid(GridPane grid) {
+		super.initGrid(grid);
+
 		top.addRow(0, new Label(Lang.getString("table.edit.table", "Tablename")), tableName);
 		top.addRow(1);
 		top.addRow(2, new Label(Lang.getString("table.edit.columns", "Columns") + ":"));
-	}
-
-	@Override
-	protected void initGrid(GridPane grid) {
-		super.initGrid(grid);
 
 		if (table != null) {
 			try {
