@@ -202,14 +202,9 @@ public class PaneTableContent extends TableView<TableRecord> {
 					}
 
 					new DialogEditTable(getCurrentShownTable()) {
-
 						@Override
 						protected void handle() {
-
 							// TODO SQL
-							System.err.println("EditColumn: TODO SQL");
-
-							refresh(getCurrentShownTable());
 						}
 					}.show();
 				}
@@ -235,8 +230,8 @@ public class PaneTableContent extends TableView<TableRecord> {
 								}
 							}
 
-							refresh(getCurrentShownTable());
-						}
+							Frame.getInstance().getTableValues().refresh(table);
+						};
 					}.show();
 				}
 			});
