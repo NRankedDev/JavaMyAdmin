@@ -7,6 +7,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 
 public class Database {
 
@@ -87,6 +89,11 @@ public class Database {
 	}
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
+	/* test */public void rmTable(String tablename) throws SQLException{
+		if(JOptionPane.showConfirmDialog(null, "Remove Table " + tablename ) != 1){
+			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
+		}
+	}
 	/* test */public void addTable(String tablename, ArrayList<String> titles, ArrayList<String>datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index) throws SQLException{
 		String cmd = "";
 		String checknull = "";
