@@ -4,8 +4,8 @@ import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.Frame;
+import javaMyAdmin.ui.dialogs.util.OptionDialog;
 import javaMyAdmin.ui.util.Lang;
-import javaMyAdmin.ui.util.OptionDialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;

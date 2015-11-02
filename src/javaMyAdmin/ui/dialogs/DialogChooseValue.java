@@ -3,7 +3,7 @@ package javaMyAdmin.ui.dialogs;
 import java.util.Arrays;
 import java.util.List;
 
-import javaMyAdmin.ui.util.OptionDialog;
+import javaMyAdmin.ui.dialogs.util.OptionDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
