@@ -1,6 +1,6 @@
 package javaMyAdmin.ui;
 
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

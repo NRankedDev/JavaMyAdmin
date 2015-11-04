@@ -2,7 +2,7 @@ package javaMyAdmin.ui;
 
 import java.util.Locale;
 
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;

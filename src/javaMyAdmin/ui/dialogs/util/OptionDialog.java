@@ -1,7 +1,7 @@
 package javaMyAdmin.ui.dialogs.util;
 
 import javaMyAdmin.ui.Frame;
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,49 +23,49 @@ import javafx.stage.Stage;
  * @author Nicolas
  */
 public abstract class OptionDialog {
-
+	
 	protected static final Stage dialogStage = new DialogStage();
-
+	
 	private static final class DialogStage extends Stage {
-
+		
 		public DialogStage() {
 			initModality(Modality.APPLICATION_MODAL);
 			setResizable(false);
 			getIcons().addAll(Frame.getIcons());
 		}
-
+		
 	}
-
+	
 	private final String okButtonText;
 	private final String cancelButtonText;
-
+	
 	protected Button okButton;
 	protected Button cancelButton;
-
+	
 	/**
 	 * 
 	 * @param title
 	 *            Der Fenstertitel
-	 * 
+	 * 			
 	 * @see #show()
 	 */
 	public OptionDialog(String title) {
 		this(title, Lang.getString("dialog.ok", "OK"));
 	}
-
+	
 	/**
 	 * 
 	 * @param title
 	 *            Der Fenstertitel
 	 * @param okButtonText
 	 *            Der Titel des 'OK'-Buttons, wenn anderer Titel benoetigt
-	 * 
+	 * 			
 	 * @see #show()
 	 */
 	public OptionDialog(String title, String okButtonText) {
 		this(title, okButtonText, Lang.getString("dialog.cancel", "Cancel"));
 	}
-
+	
 	/**
 	 * 
 	 * @param title
@@ -74,7 +74,7 @@ public abstract class OptionDialog {
 	 *            Der Titel des 'OK'-Buttons, wenn anderer Titel benoetigt
 	 * @param cancelButtonText
 	 *            Der Titel des 'Cancel'-Buttons, wenn anderer Titel benoetigt
-	 * 
+	 * 			
 	 * @see #show()
 	 */
 	public OptionDialog(String title, String okButtonText, String cancelButtonText) {
@@ -85,7 +85,7 @@ public abstract class OptionDialog {
 		}
 		dialogStage.setTitle(title);
 	}
-
+	
 	/**
 	 * Zeigt das Fenster an
 	 */
@@ -97,23 +97,25 @@ public abstract class OptionDialog {
 		dialogStage.showAndWait();
 		dialogStage.toFront();
 	}
-
+	
+	/**
+	 * Init des Fensters. <b>Sollte nie ueberschrieben werden</b>, erst wenn
+	 * Aenderungen am Fenster oder Layout benoetigt werden.
+	 * 
+	 * @param root
+	 */
 	protected void init(BorderPane root) {
-		/*
-		 * Initalisierung des Fensters. Wird erst ausgef�hrt, wenn das Fenster
-		 * gezeigt werden soll (von der Methode show())
-		 */
 		GridPane grid = new GridPane();
 		grid.setPadding(new Insets(10));
 		grid.setHgap(10);
 		grid.setVgap(10);
-
+		
 		initGrid(grid);
-
+		
 		HBox box = new HBox();
 		box.setPadding(new Insets(10, 10, 10, 0));
 		box.setAlignment(Pos.CENTER_RIGHT);
-
+		
 		okButton = new Button(okButtonText);
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -123,20 +125,20 @@ public abstract class OptionDialog {
 		});
 		cancelButton = new Button(cancelButtonText);
 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent event) {
 				onCancelButtonPressed(event);
 			}
 		});
 		box.getChildren().addAll(okButton, cancelButton);
-
+		
 		root.setTop(grid);
 		root.setCenter(new Separator());
 		root.setBottom(box);
 		HBox.setMargin(okButton, new Insets(0, 10, 0, 0));
 	}
-
+	
 	/**
 	 * Initialisierung des Contents des Dialogs
 	 * 
@@ -145,7 +147,7 @@ public abstract class OptionDialog {
 	 *            muessen
 	 */
 	protected abstract void initGrid(GridPane grid);
-
+	
 	/**
 	 * Wird ausgefuehrt, sobald der 'OK'-Button gedrueckt wurde. Es wird
 	 * <b>nicht</b> ausgefuehrt, wenn der 'Cancel'-Button gedrueckt wurde.
@@ -153,7 +155,7 @@ public abstract class OptionDialog {
 	 * ueberschrieben werden.
 	 */
 	protected abstract void handle();
-
+	
 	/**
 	 * Wird ausgefuehrt, sobald der 'OK'-Button gedrueckt wurde. Ruft
 	 * {@link #handle()} und {@link #hideDialog()} auf.
@@ -164,7 +166,7 @@ public abstract class OptionDialog {
 		handle();
 		hideDialog();
 	}
-
+	
 	/**
 	 * Wird ausgefuehrt, sobald der 'Cancel'-Button gedrueckt wurde. Ruft
 	 * {@link #hideDialog()} auf.
@@ -174,22 +176,22 @@ public abstract class OptionDialog {
 	protected void onCancelButtonPressed(ActionEvent event) {
 		dialogStage.hide();
 	}
-
+	
 	/**
 	 * 
 	 * @return <code>true</code> wenn der Dialog sichtbar ist
 	 */
-	public boolean isDialogShowing() {
+	public boolean isDialogVisible() {
 		return dialogStage.isShowing();
 	}
-
+	
 	/**
 	 * Macht den Dialog unsichtbar
 	 */
 	public void hideDialog() {
 		dialogStage.hide();
 	}
-
+	
 	/**
 	 * 
 	 * @return Dialog Stage
@@ -197,5 +199,5 @@ public abstract class OptionDialog {
 	public static Stage getDialogStage() {
 		return dialogStage;
 	}
-
+	
 }

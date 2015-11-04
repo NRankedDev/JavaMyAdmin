@@ -11,8 +11,8 @@ import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.dialogs.DialogLogin;
-import javaMyAdmin.ui.util.Config;
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Config;
+import javaMyAdmin.util.Lang;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

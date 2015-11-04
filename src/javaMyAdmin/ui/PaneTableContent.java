@@ -9,7 +9,7 @@ import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.PaneTableContent.TableRecord;
 import javaMyAdmin.ui.dialogs.DialogAddRecords;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
