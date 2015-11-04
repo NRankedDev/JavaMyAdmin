@@ -64,10 +64,13 @@ public abstract class DialogDynamicRows extends OptionDialog {
 		
 		bottom.setFocusTraversable(false);
 		bottom.setMaxHeight(500);
+		bottom.setMaxWidth(1250);
+		bottom.setFitToHeight(true);
 		
 		layout.setTop(top);
-		layout.setBottom(bottom);
-		root.setTop(layout);
+		layout.setCenter(bottom);
+		root.setTop(null);
+		root.setCenter(layout);
 	}
 	
 	@Override
@@ -125,8 +128,7 @@ public abstract class DialogDynamicRows extends OptionDialog {
 				for (int i = 0; i < grid.getChildren().size(); i++) {
 					if (i % grid.getColumnCount() == 0) {
 						// Indices der Reihen anpassen
-						((TextField) grid.getChildren().get(i))
-								.setText(String.valueOf((i / grid.getColumnCount()) + 1));
+						((TextField) grid.getChildren().get(i)).setText(String.valueOf((i / grid.getColumnCount()) + 1));
 					} else if (i % grid.getColumnCount() == grid.getColumnCount() - 1) {
 						if (i == grid.getChildren().size() - 1) {
 							// Letzten "Add" Button sichtbar machen
@@ -159,8 +161,7 @@ public abstract class DialogDynamicRows extends OptionDialog {
 				// Indices der Reihen anpassen
 				for (int i = 0; i < grid.getChildren().size(); i++) {
 					if (i % grid.getColumnCount() == 0) {
-						((TextField) grid.getChildren().get(i))
-								.setText(String.valueOf((i / grid.getColumnCount()) + 1));
+						((TextField) grid.getChildren().get(i)).setText(String.valueOf((i / grid.getColumnCount()) + 1));
 					}
 				}
 				

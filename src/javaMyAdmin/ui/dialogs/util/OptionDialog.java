@@ -30,7 +30,6 @@ public abstract class OptionDialog {
 		
 		public DialogStage() {
 			initModality(Modality.APPLICATION_MODAL);
-			setResizable(false);
 			getIcons().addAll(Frame.getIcons());
 		}
 		
@@ -92,8 +91,6 @@ public abstract class OptionDialog {
 	public void show() {
 		BorderPane root = new BorderPane();
 		init(root);
-		dialogStage.setScene(new Scene(root));
-		dialogStage.sizeToScene();
 		dialogStage.showAndWait();
 		dialogStage.toFront();
 	}
@@ -137,6 +134,10 @@ public abstract class OptionDialog {
 		root.setCenter(new Separator());
 		root.setBottom(box);
 		HBox.setMargin(okButton, new Insets(0, 10, 0, 0));
+		
+		dialogStage.setResizable(false);
+		dialogStage.setScene(new Scene(root));
+		dialogStage.sizeToScene();
 	}
 	
 	/**
