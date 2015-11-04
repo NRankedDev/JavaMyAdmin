@@ -28,16 +28,22 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
 
+/**
+ * Repraesentiert die Tabelle, in der alle Daten der SQL-Tabelle angezeigt
+ * werden
+ * 
+ * @author Nicolas
+ */
 public class PaneTableContent extends TableView<TableRecord> {
-
+	
 	private Table table;
-
+	
 	public PaneTableContent() {
 		setPlaceholder(new Label(Lang.getString("table.no_content", "No records in this table.")));
 		setContextMenu(new CustomContextMenu());
 		setEditable(true);
 	}
-
+	
 	/**
 	 * Laedt den Content einer Tabelle und zeigt ihn an
 	 * 
@@ -55,19 +61,19 @@ public class PaneTableContent extends TableView<TableRecord> {
 		} else {
 			getItems().clear();
 		}
-
+		
 		this.table = table;
 	}
-
+	
 	private void refresh(ArrayList<String> columnNames, ArrayList<Line> tableLines) {
 		// Clearing old data
 		getItems().clear();
 		getColumns().clear();
-
+		
 		// Generating columns
 		@SuppressWarnings("unchecked")
 		TableColumn<TableRecord, String>[] columns = new TableColumn[columnNames.size()];
-
+		
 		for (int i = 0; i < columns.length; i++) {
 			TableColumn<TableRecord, String> column = new TableColumn<TableRecord, String>(columnNames.get(i));
 			column.setCellValueFactory(new Callback<CellDataFeatures<TableRecord, String>, ObservableValue<String>>() {
@@ -77,42 +83,42 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 			column.setCellFactory(new Callback<TableColumn<TableRecord, String>, TableCell<TableRecord, String>>() {
-
+				
 				@Override
 				public TableCell<TableRecord, String> call(TableColumn<TableRecord, String> param) {
 					return new TableCell<TableRecord, String>() {
-
+						
 						private TextField textField;
-
+						
 						@Override
 						public void startEdit() {
 							super.startEdit();
-
+							
 							setGraphic(textField);
 							setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 							textField.selectAll();
 						}
-
+						
 						@Override
 						public void commitEdit(String newValue) {
 							super.commitEdit(newValue);
-
+							
 							// TODO SQL
 							System.out.println("EditRecord: TODO SQL");
 						}
-
+						
 						@Override
 						public void cancelEdit() {
 							super.cancelEdit();
-
+							
 							setText(getItem());
 							setContentDisplay(ContentDisplay.TEXT_ONLY);
 						}
-
+						
 						@Override
 						protected void updateItem(String item, boolean empty) {
 							super.updateItem(item, empty);
-
+							
 							if (textField == null) {
 								textField = new TextField();
 								textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -126,7 +132,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 									}
 								});
 							}
-
+							
 							if (empty) {
 								setText(null);
 								setGraphic(null);
@@ -134,7 +140,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 								textField.setText(item);
 								setGraphic(textField);
 								setText(item);
-
+								
 								if (isEditing()) {
 									setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 								} else {
@@ -145,52 +151,52 @@ public class PaneTableContent extends TableView<TableRecord> {
 					};
 				}
 			});
-
+			
 			columns[i] = column;
 		}
-
+		
 		getColumns().addAll(columns);
-
+		
 		// Loading data
 		ArrayList<TableRecord> values = new ArrayList<TableRecord>();
 		for (Line line : tableLines) {
 			ArrayList<String> data = line.getValues();
-
+			
 			TableRecord value = new TableRecord();
-
+			
 			for (int i = 0; i < data.size(); i++) {
 				value.getData().put(columnNames.get(i), new SimpleStringProperty(data.get(i)));
 			}
-
+			
 			values.add(value);
 		}
-
+		
 		getItems().addAll(values);
 	}
-
+	
 	public Table getCurrentShownTable() {
 		return table;
 	}
-
+	
 	/**
 	 * Wrapper Klasse, um aus einem String Daten fuer die Tabelle in JavaFX zu
 	 * erzeugen
 	 */
 	public final class TableRecord {
-
+		
 		private final HashMap<String, SimpleStringProperty> data = new HashMap<String, SimpleStringProperty>();
-
+		
 		public HashMap<String, SimpleStringProperty> getData() {
 			return data;
 		}
-
+		
 	}
-
+	
 	/**
 	 * ContextMenu der Tabelle
 	 */
 	private final class CustomContextMenu extends ContextMenu {
-
+		
 		public CustomContextMenu() {
 			MenuItem editColumn = new MenuItem(Lang.getString("column.edit", "Edit columns..."));
 			editColumn.setOnAction(new EventHandler<ActionEvent>() {
@@ -200,7 +206,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 					for (TableColumn<TableRecord, ?> column : getColumns()) {
 						columns.add(column.getText());
 					}
-
+					
 					new DialogEditTable(getCurrentShownTable()) {
 						@Override
 						protected void handle() {
@@ -209,7 +215,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 					}.show();
 				}
 			});
-
+			
 			MenuItem addRecord = new MenuItem(Lang.getString("record.add", "Add record"));
 			addRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -222,26 +228,25 @@ public class PaneTableContent extends TableView<TableRecord> {
 								for (int i = 0; i < record.length; i++) {
 									strings.add(record[i].getText());
 								}
-
+								
 								try {
 									table.addTupel(strings);
 								} catch (SQLException e) {
 									Frame.showErrorLog(e);
 								}
 							}
-
+							
 							Frame.getInstance().getTableValues().refresh(table);
 						};
 					}.show();
 				}
 			});
-
+			
 			MenuItem removeRecord = new MenuItem(Lang.getString("record.remove", "Remove record"));
 			removeRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					// TODO SQL
-					System.err.println("RemoveDialog: TODO SQL");
 				}
 			});
 			getItems().addAll(editColumn, new SeparatorMenuItem(), addRecord, removeRecord);
