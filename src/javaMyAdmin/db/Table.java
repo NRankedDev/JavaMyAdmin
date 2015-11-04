@@ -120,5 +120,8 @@ public class Table {
 	public ArrayList<Line> search(String suche, int column) throws SQLException {
 		return getLines(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "` WHERE `" + getColumnNames(column) + "` =" + suche));
 	}
-
+	public String getDatentyp(String column) throws SQLException{
+		int index = columnNames.indexOf(column);
+		return connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnTypeName(index+1);
+	}
 }
