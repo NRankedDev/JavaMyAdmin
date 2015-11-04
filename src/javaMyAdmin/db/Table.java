@@ -126,4 +126,8 @@ public class Table {
 	public String getLength(String column) throws SQLException{
 		return Integer.toString(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnDisplaySize(columnNames.indexOf(column)+1));
 	}
+	public boolean getNull(String column) throws SQLException{
+		return  connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().isNullable(columnNames.indexOf(column)+1) != 0;
+	}
+	
 }
