@@ -121,7 +121,9 @@ public class Table {
 		return getLines(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "` WHERE `" + getColumnNames(column) + "` =" + suche));
 	}
 	public String getDatentyp(String column) throws SQLException{
-		int index = columnNames.indexOf(column);
-		return connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnTypeName(index+1);
+		return connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnTypeName(columnNames.indexOf(column)+1);
+	}
+	public String getLength(String column) throws SQLException{
+		return Integer.toString(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnDisplaySize(columnNames.indexOf(column)+1));
 	}
 }
