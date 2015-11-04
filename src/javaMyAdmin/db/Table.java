@@ -1,10 +1,12 @@
 package javaMyAdmin.db;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 
 public class Table {
 	private ArrayList<String> columnNames = new ArrayList<String>();;
@@ -129,5 +131,8 @@ public class Table {
 	public boolean getNull(String column) throws SQLException{
 		return  connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().isNullable(columnNames.indexOf(column)+1) != 0;
 	}
-	
+	public String getIndex(String column) throws SQLException{
+		ResultSet rs;
+		return (rs = connect.createStatement().executeQuery("select `COLUMN_KEY` from information_schema.columns where table_name='"+getName() +"' and column_name like '"+column+"'")).next() ? rs.getString(1) : null;
+	}
 }
