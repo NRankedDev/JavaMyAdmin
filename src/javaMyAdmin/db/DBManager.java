@@ -40,6 +40,7 @@ public class DBManager extends Connector {
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 	// //Methoden
 	/**/public ArrayList<Database> loadDB() throws SQLException {
+		db.clear();
 		ResultSet rs = connect.getMetaData().getCatalogs();
 		while (rs.next()) {
 			db.add(new Database(rs.getString("TABLE_CAT")));
