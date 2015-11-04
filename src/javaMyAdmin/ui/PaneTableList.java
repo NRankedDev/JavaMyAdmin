@@ -17,6 +17,8 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
 /**
@@ -25,6 +27,9 @@ import javafx.util.Callback;
  * @author Nicolas
  */
 public class PaneTableList extends TreeView<String> {
+	
+	private final Image connectionIcon = new Image(PaneTableList.class.getResourceAsStream("/res/connection.png"));
+	private final Image databaseIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_16x16.png"));
 	
 	private final ContextMenu emptyContextMenu = new EmptyContextMenu();
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
@@ -63,9 +68,11 @@ public class PaneTableList extends TreeView<String> {
 						
 						if (empty) {
 							setText(null);
+							setGraphic(null);
 							setContextMenu(emptyContextMenu);
 						} else {
-							setText(item);
+							setText(getTreeItem().getValue());
+							setGraphic(getTreeItem().getGraphic());
 							
 							if (getTreeItem().getParent() == null) {
 								setContextMenu(emptyContextMenu);
@@ -93,10 +100,20 @@ public class PaneTableList extends TreeView<String> {
 		
 		try {
 			for (Database db : Frame.getDbManager().getDB()) {
-				TreeItem<String> name = new TreeItem<String>(db.getDbname());
+				if (db.getDbname().equals("information_schema")) {
+					continue;
+					// TODO remove DEBUG
+				}
 				
-				for (Table table : db.getTable()) {
-					name.getChildren().add(new TreeItem<String>(table.getName()));
+				TreeItem<String> name = new TreeItem<String>(db.getDbname());
+				name.setGraphic(new ImageView(databaseIcon));
+				
+				try {
+					for (Table table : db.getTable()) {
+						name.getChildren().add(new TreeItem<String>(table.getName()));
+					}
+				} catch (SQLException e) {
+					Frame.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
 				}
 				
 				root.getChildren().add(name);
@@ -105,6 +122,7 @@ public class PaneTableList extends TreeView<String> {
 			Frame.showErrorLog(e);
 		}
 		
+		root.setGraphic(new ImageView(connectionIcon));
 		root.setExpanded(true);
 		setRoot(root);
 	}
