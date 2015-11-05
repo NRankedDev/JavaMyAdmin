@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;

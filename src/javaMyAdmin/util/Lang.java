@@ -1,4 +1,4 @@
-package javaMyAdmin.ui.util;
+package javaMyAdmin.util;
 
 import java.io.File;
 import java.io.FileInputStream;
