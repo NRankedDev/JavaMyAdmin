@@ -2,3 +2,4 @@
 *.ini
 /bin/*
 hs_err_pid*
+/doc/

@@ -6,7 +6,7 @@ import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
 import javaMyAdmin.ui.dialogs.DialogStringInput;
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -17,18 +17,30 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
+/**
+ * Repraesentiert die aller Tabellen am linken Rand
+ * 
+ * @author Nicolas
+ */
 public class PaneTableList extends TreeView<String> {
-
+	
+	private static final Image connectionIcon = new Image(PaneTableList.class.getResourceAsStream("/res/connection.png"));
+	private static final Image databaseIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database.png"));
+	private static final Image dababaseAddIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_add.png"));
+	private static final Image dababaseRemoveIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_remove.png"));
+	
 	private final ContextMenu emptyContextMenu = new EmptyContextMenu();
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
 	private final ContextMenu tableItemContextMenu = new TableItemContextMenu();
-
+	
 	public PaneTableList() {
 		getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
-
+			
 			@Override
 			public TreeCell<String> call(TreeView<String> param) {
 				return new TreeCell<String>() {
@@ -39,7 +51,7 @@ public class PaneTableList extends TreeView<String> {
 							if (getTreeItem().isLeaf()) {
 								try {
 									Database db = Frame.getDbManager().getDB(getTreeItem().getParent().getValue());
-
+									
 									if (db != null) {
 										if (db.getDbname().equals(getTreeItem().getParent().getValue())) {
 											Frame.getInstance().getTableValues().refresh(db.getTable(getTreeItem().getValue()));
@@ -51,17 +63,19 @@ public class PaneTableList extends TreeView<String> {
 							}
 						}
 					}
-
+					
 					@Override
 					protected void updateItem(String item, boolean empty) {
 						super.updateItem(item, empty);
-
+						
 						if (empty) {
 							setText(null);
+							setGraphic(null);
 							setContextMenu(emptyContextMenu);
 						} else {
-							setText(item);
-
+							setText(getTreeItem().getValue());
+							setGraphic(getTreeItem().getGraphic());
+							
 							if (getTreeItem().getParent() == null) {
 								setContextMenu(emptyContextMenu);
 							} else if (getTreeItem().isLeaf()) {
@@ -74,43 +88,55 @@ public class PaneTableList extends TreeView<String> {
 				};
 			}
 		});
-
+		
 		setPrefSize(200, 0);
-
+		
 		refresh();
 	}
-
+	
 	/**
 	 * Zeigt alle Datenbanken und Tabellen neu an
 	 */
 	public void refresh() {
 		TreeItem<String> root = new TreeItem<String>(Lang.getString("connection", "Connection"));
-
+		
 		try {
 			for (Database db : Frame.getDbManager().getDB()) {
-				TreeItem<String> name = new TreeItem<String>(db.getDbname());
-
-				for (Table table : db.getTable()) {
-					name.getChildren().add(new TreeItem<String>(table.getName()));
+				if (db.getDbname().equals("information_schema")) {
+					continue;
+					// TODO remove DEBUG
 				}
-
+				
+				TreeItem<String> name = new TreeItem<String>(db.getDbname());
+				name.setGraphic(new ImageView(databaseIcon));
+				
+				try {
+					for (Table table : db.getTable()) {
+						name.getChildren().add(new TreeItem<String>(table.getName()));
+					}
+				} catch (SQLException e) {
+					Frame.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
+				}
+				
 				root.getChildren().add(name);
 			}
 		} catch (SQLException e) {
 			Frame.showErrorLog(e);
 		}
-
+		
+		root.setGraphic(new ImageView(connectionIcon));
 		root.setExpanded(true);
 		setRoot(root);
 	}
-
+	
 	/**
 	 * ContextMenu, wenn nichts selektiert ist
 	 */
 	private class EmptyContextMenu extends ContextMenu {
-
+		
 		public EmptyContextMenu() {
 			final MenuItem addDatabase = new MenuItem(Lang.getString("database.add", "Add database"));
+			addDatabase.setGraphic(new ImageView(dababaseAddIcon));
 			addDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -129,16 +155,17 @@ public class PaneTableList extends TreeView<String> {
 			});
 			getItems().addAll(addDatabase);
 		}
-
+		
 	}
-
+	
 	/**
 	 * ContextMenu, wenn eine Datenbank selektiert ist
 	 */
 	private class DatabaseItemContextMenu extends EmptyContextMenu {
-
+		
 		public DatabaseItemContextMenu() {
 			MenuItem removeDatabase = new MenuItem(Lang.getString("database.remove", "Remove database"));
+			removeDatabase.setGraphic(new ImageView(dababaseRemoveIcon));
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -150,7 +177,7 @@ public class PaneTableList extends TreeView<String> {
 					}
 				}
 			});
-
+			
 			MenuItem addTable = new MenuItem(Lang.getString("table.add", "Add table"));
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -163,7 +190,7 @@ public class PaneTableList extends TreeView<String> {
 							for (int i = 0; i < getItems().size(); i++) {
 								if (model.getSelectedIndex() == i) {
 									TreeItem<String> item = PaneTableList.this.getTreeItem(i);
-
+									
 									if (item.isLeaf()) {
 										db = item.getParent().getValue();
 									} else {
@@ -171,30 +198,30 @@ public class PaneTableList extends TreeView<String> {
 									}
 								}
 							}
-
+							
 							if (db != null) {
 								try {
 									Frame.getDbManager().getDB(db).addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
 								} catch (Exception e) {
 									Frame.showErrorLog(e);
 								}
-
+								
 								refresh();
 							}
 						}
 					}.show();
 				}
 			});
-
+			
 			getItems().addAll(removeDatabase, new SeparatorMenuItem(), addTable);
 		}
 	}
-
+	
 	/**
 	 * ContextMenu, wenn eine Tabelle selektiert ist
 	 */
 	private class TableItemContextMenu extends DatabaseItemContextMenu {
-
+		
 		public TableItemContextMenu() {
 			MenuItem removeTable = new MenuItem(Lang.getString("table.remove", "Remove table"));
 			removeTable.setOnAction(new EventHandler<ActionEvent>() {
@@ -211,7 +238,7 @@ public class PaneTableList extends TreeView<String> {
 			});
 			getItems().addAll(removeTable);
 		}
-
+		
 	}
-
+	
 }

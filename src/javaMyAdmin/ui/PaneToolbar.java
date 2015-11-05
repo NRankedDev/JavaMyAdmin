@@ -1,6 +1,6 @@
 package javaMyAdmin.ui;
 
-import javaMyAdmin.ui.util.Lang;
+import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,33 +10,32 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 
+/**
+ * Repaesentiert das Logo und das SQL-Command-Feld
+ * 
+ * @author Nicolas
+ * 		
+ */
 public class PaneToolbar extends BorderPane {
-
+	
 	private TextArea sqlArea;
 	private Button execute;
 	private Button clear;
-
+	
 	public PaneToolbar() {
-		ImageView img = new ImageView(PaneToolbar.class.getResource("/res/JavaMyAdmin.png").toExternalForm());
-		img.setFitWidth(250);
-		img.setFitHeight(125);
-
-		GridPane grid = new GridPane();
-		grid.setHgap(10);
-		grid.setVgap(10);
-		grid.setPadding(new Insets(10));
-
+		ImageView img = new ImageView(PaneToolbar.class.getResource("/res/logo.png").toExternalForm());
+		
+		BorderPane sql = new BorderPane();
+		sql.setPadding(new Insets(10));
+		
 		sqlArea = new TextArea();
 		sqlArea.setMaxHeight(150);
-
-		FlowPane flow = new FlowPane();
-		flow.setHgap(10);
-		flow.setVgap(10);
-		flow.setAlignment(Pos.CENTER_RIGHT);
-
+		
+		HBox box = new HBox();
+		box.setAlignment(Pos.CENTER_RIGHT);
+		
 		execute = new Button(Lang.getString("sql_commands.execute", "Execute"));
 		execute.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -55,22 +54,26 @@ public class PaneToolbar extends BorderPane {
 				sqlArea.setText("");
 			}
 		});
-
-		flow.getChildren().addAll(execute, clear);
-
-		grid.addRow(0, new Label(Lang.getString("sql_commands.label", "Execute SQL command(s)") + ":"));
-		grid.addRow(1, sqlArea);
-		grid.addRow(2, flow);
-
+		
+		box.getChildren().addAll(execute, clear);
+		HBox.setMargin(execute, new Insets(0, 10, 0, 0));
+		
+		sql.setTop(new Label(Lang.getString("sql_commands.label", "Execute SQL command(s)") + ":"));
+		sql.setCenter(sqlArea);
+		sql.setBottom(box);
+		BorderPane.setMargin(sqlArea, new Insets(10, 0, 10, 0));
+		
 		setTop(new PaneMenu());
 		setLeft(img);
-		setCenter(grid);
+		setCenter(sql);
+		
+		BorderPane.setMargin(img, new Insets(10));
 	}
-
+	
 	public TextArea getSqlArea() {
 		return sqlArea;
 	}
-
+	
 	/**
 	 * Zeigt im {@link #getSqlArea()} die SQL command line an und <b>fuehrt
 	 * diese aus</b>.
@@ -83,5 +86,5 @@ public class PaneToolbar extends BorderPane {
 		sqlArea.setText(sql);
 		execute.fire();
 	}
-
+	
 }
