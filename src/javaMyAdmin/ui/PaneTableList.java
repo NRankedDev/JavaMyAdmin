@@ -28,8 +28,10 @@ import javafx.util.Callback;
  */
 public class PaneTableList extends TreeView<String> {
 	
-	private final Image connectionIcon = new Image(PaneTableList.class.getResourceAsStream("/res/connection.png"));
-	private final Image databaseIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_16x16.png"));
+	private static final Image connectionIcon = new Image(PaneTableList.class.getResourceAsStream("/res/connection.png"));
+	private static final Image databaseIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database.png"));
+	private static final Image dababaseAddIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_add.png"));
+	private static final Image dababaseRemoveIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_remove.png"));
 	
 	private final ContextMenu emptyContextMenu = new EmptyContextMenu();
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
@@ -134,6 +136,7 @@ public class PaneTableList extends TreeView<String> {
 		
 		public EmptyContextMenu() {
 			final MenuItem addDatabase = new MenuItem(Lang.getString("database.add", "Add database"));
+			addDatabase.setGraphic(new ImageView(dababaseAddIcon));
 			addDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -162,6 +165,7 @@ public class PaneTableList extends TreeView<String> {
 		
 		public DatabaseItemContextMenu() {
 			MenuItem removeDatabase = new MenuItem(Lang.getString("database.remove", "Remove database"));
+			removeDatabase.setGraphic(new ImageView(dababaseRemoveIcon));
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {

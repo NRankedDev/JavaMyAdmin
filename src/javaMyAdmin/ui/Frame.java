@@ -145,7 +145,7 @@ public class Frame extends Application {
 	
 	public static Image[] getIcons() {
 		try {
-			return new Image[] { new Image(Frame.class.getResource("/res/database.png").toExternalForm()) };
+			return new Image[] { new Image(Frame.class.getResource("/res/icon.png").toExternalForm()) };
 		} catch (Exception e) {
 			showErrorLog(e);
 			return new Image[0];
