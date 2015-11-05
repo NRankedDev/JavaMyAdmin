@@ -6,13 +6,13 @@ import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
 import javaMyAdmin.ui.dialogs.DialogStringInput;
+import javaMyAdmin.util.FX;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -27,6 +27,10 @@ import javafx.util.Callback;
  * @author Nicolas
  */
 public class PaneTableList extends TreeView<String> {
+	
+	private static final int connectionLayer = 0;
+	private static final int databaseLayer = 1;
+	private static final int tableLayer = 2;
 	
 	private static final Image connectionIcon = new Image(PaneTableList.class.getResourceAsStream("/res/connection.png"));
 	private static final Image databaseIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database.png"));
@@ -48,7 +52,7 @@ public class PaneTableList extends TreeView<String> {
 					public void updateSelected(boolean selected) {
 						super.updateSelected(selected);
 						if (selected) {
-							if (getTreeItem().isLeaf()) {
+							if (FX.getLayer(getTreeItem()) == tableLayer) {
 								try {
 									Database db = Frame.getDbManager().getDB(getTreeItem().getParent().getValue());
 									
@@ -76,12 +80,12 @@ public class PaneTableList extends TreeView<String> {
 							setText(getTreeItem().getValue());
 							setGraphic(getTreeItem().getGraphic());
 							
-							if (getTreeItem().getParent() == null) {
+							if (empty || FX.isRoot(getTreeItem())) {
 								setContextMenu(emptyContextMenu);
-							} else if (getTreeItem().isLeaf()) {
-								setContextMenu(tableItemContextMenu);
-							} else {
+							} else if (FX.getLayer(getTreeItem()) == databaseLayer) {
 								setContextMenu(databaseItemContextMenu);
+							} else if (FX.getLayer(getTreeItem()) == tableLayer) {
+								setContextMenu(tableItemContextMenu);
 							}
 						}
 					}
@@ -185,29 +189,27 @@ public class PaneTableList extends TreeView<String> {
 					new DialogEditTable(null) {
 						@Override
 						protected void handle() {
-							SelectionModel<TreeItem<String>> model = getSelectionModel();
+							TreeItem<String> item = getSelectionModel().getSelectedItem();
 							String db = null;
-							for (int i = 0; i < getItems().size(); i++) {
-								if (model.getSelectedIndex() == i) {
-									TreeItem<String> item = PaneTableList.this.getTreeItem(i);
-									
-									if (item.isLeaf()) {
-										db = item.getParent().getValue();
-									} else {
-										db = item.getValue();
-									}
-								}
+							
+							if (FX.getLayer(item) == databaseLayer) {
+								db = item.getValue();
+							} else if (FX.getLayer(item) == tableLayer) {
+								db = item.getParent().getValue();
 							}
 							
-							if (db != null) {
-								try {
-									Frame.getDbManager().getDB(db).addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
-								} catch (Exception e) {
-									Frame.showErrorLog(e);
+							try {
+								Database database = Frame.getDbManager().getDB(db);
+								if (database != null) {
+									database.addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
+								} else {
+									throw new RuntimeException("Database `" + db + "` doesn't exists");
 								}
-								
-								refresh();
+							} catch (Exception e) {
+								Frame.showErrorLog(e);
 							}
+							
+							refresh();
 						}
 					}.show();
 				}
