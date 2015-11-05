@@ -13,8 +13,10 @@ public class Table {
 	private ArrayList<Line> lines = new ArrayList<Line>();
 	private String name;
 	private Connection connect;
+	private String dbname;
 
-	public Table(String name, ArrayList<String> columnNames, Connection connect) throws SQLException {
+	public Table(String name, ArrayList<String> columnNames, Connection connect, String dbname) throws SQLException {
+		this.dbname = dbname;
 		this.name = name;
 		this.connect = connect;
 		this.columnNames = columnNames;
@@ -87,11 +89,11 @@ public class Table {
 		return lines;
 	}
 	
-	/* test */public void setValue(int line, int column, int value) throws SQLException {
+	/* test */public void setValue(int line, int column, String value) throws SQLException {
 		if (lines.isEmpty()) {
 			loadLines(null);
 		}
-		connect.createStatement().executeUpdate("UPDATE `" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
+		connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
 	}
 	
 	public void addTupel(ArrayList<String> input) throws SQLException{

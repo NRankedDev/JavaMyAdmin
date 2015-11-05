@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-public class Database {
+public class Database{
 
 	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 	// //Variablen
@@ -45,7 +45,7 @@ public class Database {
 				columns.add(metaData.getColumnName(i));
 				i++;
 			}
-			table.add(new Table(name, columns, connect));
+			table.add(new Table(name, columns, connect, dbname));
 		}
 	}
 
