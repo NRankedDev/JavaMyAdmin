@@ -9,28 +9,19 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-public class Database{
+public class Database {
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	// //Variablen
-	/**/private ArrayList<Table> table = new ArrayList<Table>();
-	/**/private String dbname;
-	/**/private Connection connect;
+	private ArrayList<Table> table = new ArrayList<Table>();
+	private String dbname;
+	private Connection connect;
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	// //Constructor
-	/**/public Database(String dbname) throws SQLException {
-		/**/this.dbname = dbname;
-		/**/connect = DBManager.doConnection(dbname);
-		/**/}
-
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	// //Methoden
-	/**/public void loadTables() throws SQLException {
+	public Database(String dbname) throws SQLException {
+		this.dbname = dbname;
+		connect = DBManager.doConnection(dbname);
+	}
+	
+	//Methoden
+	public void loadTables() throws SQLException {
 		table.clear();
 		DatabaseMetaData md = connect.getMetaData();
 		ResultSet rs = md.getTables(null, null, "%", null);
@@ -49,12 +40,12 @@ public class Database{
 		}
 	}
 
-	/**/public ArrayList<Table> getTable() throws SQLException {
+	public ArrayList<Table> getTable() throws SQLException {
 		loadTables();
 		return table;
 	}
 
-	/**/public Table getTable(int tableNumber) throws SQLException {
+	public Table getTable(int tableNumber) throws SQLException {
 		if (table.isEmpty())
 			loadTables();
 		return table.get(tableNumber);
@@ -79,23 +70,22 @@ public class Database{
 		return t;
 	}
 
-	/**/public String getDbname() {
+	public String getDbname() {
 		return dbname;
 	}
 
-	/**/public void setDbname(String dbname) {
+	public void setDbname(String dbname) {
 		this.dbname = dbname;
 	}
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	/* test */public void rmTable(String tablename) throws SQLException {
+	public void rmTable(String tablename) throws SQLException {
 		if (JOptionPane.showConfirmDialog(null, "Remove Table " + tablename) != 1) {
 			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
 		}
 		loadTables();
 	}
 
-	/* test */public void addTable(String tablename, ArrayList<String> titles, ArrayList<String> datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index)
+	public void addTable(String tablename, ArrayList<String> titles, ArrayList<String> datatypes, ArrayList<String> length, ArrayList<Boolean> check, ArrayList<String> index)
 			throws SQLException {
 		String cmd = "";
 		String checknull = "";

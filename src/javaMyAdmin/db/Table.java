@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class Table {
+public class Table{
 	private ArrayList<String> columnNames = new ArrayList<String>();;
 	private ArrayList<Line> lines = new ArrayList<Line>();
 	private String name;

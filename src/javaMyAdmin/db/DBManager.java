@@ -8,17 +8,13 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class DBManager extends Connector {
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
+	
 	private Connection connect;
 	private static String url;
 	private static String password;
 	private static String user;
 	private ArrayList<Database> db = new ArrayList<Database>();
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 	public DBManager(String url, String user, String password) throws SQLException {
 		this.user = user;
 		this.password = password;
@@ -26,20 +22,15 @@ public class DBManager extends Connector {
 		connect = doConnection("");
 	}
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	/**/public static Connection doConnection(String dbname) throws SQLException {
+	public static Connection doConnection(String dbname) throws SQLException {
 		Connector c = new Connector();
 
 		return c.getConnection((url + "/" + dbname), user, password);
 	}
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
-	// //Methoden
-	/**/public ArrayList<Database> loadDB() throws SQLException {
+	//Methoden
+	public ArrayList<Database> loadDB() throws SQLException {
 		db.clear();
 		ResultSet rs = connect.getMetaData().getCatalogs();
 		while (rs.next()) {
@@ -48,13 +39,13 @@ public class DBManager extends Connector {
 		return db;
 	}
 
-	/**/public ArrayList<Database> getDB() throws SQLException {
+	public ArrayList<Database> getDB() throws SQLException {
 		if (db.isEmpty())
 			loadDB();
 		return db;
 	}
 
-	/**/public Database getDB(int DatabaseNumber) throws SQLException {
+	public Database getDB(int DatabaseNumber) throws SQLException {
 		if (db.isEmpty())
 			loadDB();
 		return db.get(DatabaseNumber);
@@ -90,5 +81,4 @@ public class DBManager extends Connector {
 			loadDB();
 		}
 	}
-	// <<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>
 }
