@@ -2,6 +2,7 @@ package javaMyAdmin.ui;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javaMyAdmin.db.Line;
@@ -52,6 +53,8 @@ public class PaneTableContent extends TableView<TableRecord> {
 	 * @see #refresh(ArrayList, ArrayList)
 	 */
 	public void refresh(Table table) {
+		this.table = table;
+		
 		if (table != null) {
 			try {
 				refresh(table.getColumnNames(), table.getLines());
@@ -61,8 +64,6 @@ public class PaneTableContent extends TableView<TableRecord> {
 		} else {
 			getItems().clear();
 		}
-		
-		this.table = table;
 	}
 	
 	private void refresh(ArrayList<String> columnNames, ArrayList<Line> tableLines) {
@@ -158,24 +159,40 @@ public class PaneTableContent extends TableView<TableRecord> {
 		getColumns().addAll(columns);
 		
 		// Loading data
-		ArrayList<TableRecord> values = new ArrayList<TableRecord>();
 		for (Line line : tableLines) {
-			ArrayList<String> data = line.getValues();
-			
-			TableRecord value = new TableRecord();
-			
-			for (int i = 0; i < data.size(); i++) {
-				value.getData().put(columnNames.get(i), new SimpleStringProperty(data.get(i)));
-			}
-			
-			values.add(value);
+			addRow(line.getValues());
 		}
-		
-		getItems().addAll(values);
 	}
 	
 	public Table getCurrentShownTable() {
 		return table;
+	}
+	
+	/**
+	 * Fuegt der Tabelle eine neue Row hinzu. <b>KEIN</b> Aufruf und kein Update
+	 * in SQL
+	 * 
+	 * @param data
+	 *            Die Daten. Laenge muss mit Column Anzahl uebereinstimmen.
+	 */
+	public void addRow(ArrayList<String> data) {
+		try {
+			ArrayList<String> columns = table.getColumnNames();
+			
+			if (columns.size() != data.size()) {
+				throw new RuntimeException("columns.size() != data.length");
+			}
+			
+			TableRecord record = new TableRecord();
+			
+			for (int i = 0; i < data.size(); i++) {
+				record.data.put(columns.get(i), new SimpleStringProperty(data.get(i)));
+			}
+			
+			getItems().add(record);
+		} catch (SQLException e) {
+			Frame.showErrorLog(e);
+		}
 	}
 	
 	/**
@@ -231,12 +248,11 @@ public class PaneTableContent extends TableView<TableRecord> {
 								
 								try {
 									table.addTupel(strings);
+									PaneTableContent.this.addRow(strings);
 								} catch (SQLException e) {
 									Frame.showErrorLog(e);
 								}
 							}
-							
-							Frame.getInstance().getTableValues().refresh(table);
 						};
 					}.show();
 				}
@@ -246,7 +262,21 @@ public class PaneTableContent extends TableView<TableRecord> {
 			removeRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					// TODO SQL
+					TableRecord r = getSelectionModel().getSelectedItem();
+					ArrayList<String> values = new ArrayList<String>();
+					
+					for (SimpleStringProperty ssp : r.getData().values()) {
+						values.add(ssp.get());
+					}
+					
+					Collections.reverse(values);
+					
+					try {
+						getCurrentShownTable().rmTupel(values);
+						PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
+					} catch (SQLException e) {
+						Frame.showErrorLog(e);
+					}
 				}
 			});
 			getItems().addAll(editColumn, new SeparatorMenuItem(), addRecord, removeRecord);
