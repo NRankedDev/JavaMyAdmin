@@ -1,5 +1,5 @@
 *.class
 *.ini
-/bin/*
+/bin/
 hs_err_pid*
 /doc/
