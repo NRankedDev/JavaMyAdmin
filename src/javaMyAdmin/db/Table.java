@@ -13,8 +13,10 @@ public class Table {
 	private ArrayList<Line> lines = new ArrayList<Line>();
 	private String name;
 	private Connection connect;
+	private String dbname;
 
-	public Table(String name, ArrayList<String> columnNames, Connection connect) throws SQLException {
+	public Table(String name, ArrayList<String> columnNames, Connection connect, String dbname) throws SQLException {
+		this.dbname = dbname;
 		this.name = name;
 		this.connect = connect;
 		this.columnNames = columnNames;
@@ -35,6 +37,55 @@ public class Table {
 	public void clear() {
 		columnNames.clear();
 		lines.clear();
+	}
+
+	public ArrayList<String> getColumnNames() throws SQLException {
+		return columnNames;
+	}
+
+	public String getColumnNames(int i) throws SQLException {
+		return columnNames.get(i);
+	}
+
+	public ArrayList<Line> getLines() throws SQLException {
+		loadLines(null);
+		return lines;
+	}
+
+	public Line getLines(int i) throws SQLException {
+		if (lines.isEmpty()) {
+			loadLines(null);
+		}
+		return lines.get(i);
+	}
+	
+	public String getDatentyp(String column) throws SQLException{
+		return getColumnInfo(column, 1);
+	}
+	
+	public String getLength(String column) throws SQLException{
+		return getColumnInfo(column, 2);
+	}
+	
+	public boolean getNull(String column) throws SQLException{
+		return getColumnInfo(column, 3).equals(true) ? true : false;
+	}
+	
+	public String getIndex(String column) throws SQLException{
+		return getColumnInfo(column, 4);
+		
+	}
+
+	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
+		loadLines(rs);
+		return lines;
+	}
+	
+	public void setValue(int line, int column, String value) throws SQLException {
+		if (lines.isEmpty()) {
+			loadLines(null);
+		}
+		connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
 	}
 
 	public void loadLines(ResultSet rs) throws SQLException {
@@ -60,38 +111,6 @@ public class Table {
 			}
 			AddLine(line);
 		}
-	}
-
-	public ArrayList<String> getColumnNames() throws SQLException {
-		return columnNames;
-	}
-
-	public String getColumnNames(int i) throws SQLException {
-		return columnNames.get(i);
-	}
-
-	public ArrayList<Line> getLines() throws SQLException {
-		loadLines(null);
-		return lines;
-	}
-
-	public Line getLines(int i) throws SQLException {
-		if (lines.isEmpty()) {
-			loadLines(null);
-		}
-		return lines.get(i);
-	}
-
-	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
-		loadLines(rs);
-		return lines;
-	}
-	
-	/* test */public void setValue(int line, int column, int value) throws SQLException {
-		if (lines.isEmpty()) {
-			loadLines(null);
-		}
-		connect.createStatement().executeUpdate("UPDATE `" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
 	}
 	
 	public void addTupel(ArrayList<String> input) throws SQLException{
@@ -119,20 +138,34 @@ public class Table {
 		}
 		connect.createStatement().executeUpdate(cmd);
 	}
+	
 	public ArrayList<Line> search(String suche, int column) throws SQLException {
 		return getLines(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "` WHERE `" + getColumnNames(column) + "` =" + suche));
 	}
-	public String getDatentyp(String column) throws SQLException{
-		return connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnTypeName(columnNames.indexOf(column)+1);
-	}
-	public String getLength(String column) throws SQLException{
-		return Integer.toString(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().getColumnDisplaySize(columnNames.indexOf(column)+1));
-	}
-	public boolean getNull(String column) throws SQLException{
-		return  connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`").getMetaData().isNullable(columnNames.indexOf(column)+1) != 0;
-	}
-	public String getIndex(String column) throws SQLException{
+	
+	public String getColumnInfo(String column, int i) throws SQLException{
+		String value;
 		ResultSet rs;
-		return (rs = connect.createStatement().executeQuery("select `COLUMN_KEY` from information_schema.columns where table_name='"+getName() +"' and column_name like '"+column+"'")).next() ? rs.getString(1) : null;
+		
+		switch(i){
+		case 1:
+			value = "DATA_TYP";
+			break;
+		case 2:
+			value = "CHARAKTER_MAXIMUM_LENGTH";
+			break;
+		case 3:
+			value = "IS_NULLABLE";
+			break;
+		case 4:
+			value = "COLUMN_KEY";
+			break;
+		default:
+			value = null;
+			break;
+		}
+	
+		return (rs=connect.createStatement().executeQuery("select `"+value+"` from information_schema.columns where table_name='"+name+"' and column_name like '"+column+"'")).next() ? rs.getString(1) : null;
 	}
+
 }
