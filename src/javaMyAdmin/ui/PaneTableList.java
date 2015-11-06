@@ -10,6 +10,9 @@ import javaMyAdmin.util.FX;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -19,6 +22,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -64,7 +68,7 @@ public class PaneTableList extends TreeView<String> {
 									e.printStackTrace();
 								}
 								Frame.getInstance().getToolbar().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
-							} else if(FX.getLayer(getTreeItem()) == databaseLayer) {
+							} else if (FX.getLayer(getTreeItem()) == databaseLayer) {
 								Frame.getInstance().getToolbar().setDatabaseSQL(getTreeItem().getValue());
 							} else {
 								Frame.getInstance().getToolbar().setServerSQL();
@@ -150,12 +154,14 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					new DialogStringInput(addDatabase.getText(), Lang.getString("database.add.name", "Name")) {
 						@Override
-						protected void handle() {
+						protected boolean handle() {
 							try {
 								Frame.getDbManager().addDB(input.getText());
 								refresh();
+								return true;
 							} catch (SQLException e) {
 								Frame.showErrorLog(e);
+								return false;
 							}
 						}
 					}.show();
@@ -178,8 +184,15 @@ public class PaneTableList extends TreeView<String> {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
-						Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
-						refresh();
+						Alert a = new Alert(AlertType.CONFIRMATION);
+						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
+						a.setContentText(String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("database", "database"),
+								getSelectionModel().getSelectedItem().getValue()));
+						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Frame.getIcons());
+						if (a.showAndWait().get() == ButtonType.OK) {
+							Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
+							refresh();
+						}
 					} catch (SQLException e) {
 						Frame.showErrorLog(e);
 					}
@@ -192,7 +205,7 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					new DialogEditTable(null) {
 						@Override
-						protected void handle() {
+						protected boolean handle() {
 							TreeItem<String> item = getSelectionModel().getSelectedItem();
 							String db = null;
 							
@@ -211,9 +224,11 @@ public class PaneTableList extends TreeView<String> {
 								}
 							} catch (Exception e) {
 								Frame.showErrorLog(e);
+								return false;
 							}
 							
 							refresh();
+							return true;
 						}
 					}.show();
 				}
@@ -235,8 +250,15 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					try {
 						TreeItem<String> item = getSelectionModel().getSelectedItem();
-						Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
-						refresh();
+						Alert a = new Alert(AlertType.CONFIRMATION);
+						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
+						a.setContentText(
+								String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("table", "table"), item.getValue()));
+						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Frame.getIcons());
+						if (a.showAndWait().get() == ButtonType.OK) {
+							Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
+							refresh();
+						}
 					} catch (SQLException e) {
 						Frame.showErrorLog(e);
 					}

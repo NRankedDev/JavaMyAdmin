@@ -22,17 +22,17 @@ import javafx.scene.layout.GridPane;
  * @author Nicolas
  */
 public class DialogLogin extends OptionDialog {
-
+	
 	private TextField url;
 	private TextField username;
 	private PasswordField password;
 	private CheckBox remember;
-
+	
 	public DialogLogin() {
 		super(Lang.getString("dialog.connect.title", "Connect to server"), Lang.getString("dialog.connect", "Connect"));
 		show();
 	}
-
+	
 	@Override
 	protected void initGrid(GridPane grid) {
 		url = new TextField(Config.getInstance().getProperty("url", ""));
@@ -46,11 +46,12 @@ public class DialogLogin extends OptionDialog {
 		grid.addRow(2, new Label(Lang.getString("dialog.connect.password", "Password")), password);
 		grid.addRow(3, new Label(Lang.getString("dialog.connect.remember", "Remember login")), remember);
 	}
-
+	
 	@Override
-	protected void handle() {
+	protected boolean handle() {
+		return true;
 	}
-
+	
 	@Override
 	protected void onOkButtonPressed(ActionEvent event) {
 		url.setDisable(true);
@@ -59,7 +60,7 @@ public class DialogLogin extends OptionDialog {
 		remember.setDisable(true);
 		okButton.setDisable(true);
 		dialogStage.setTitle(Lang.getString("dialog.connect.connecting", "Connecting..."));
-
+		
 		new Thread() {
 			@Override
 			public void run() {
@@ -98,7 +99,7 @@ public class DialogLogin extends OptionDialog {
 			}
 		}.start();
 	}
-
+	
 	@Override
 	protected void onCancelButtonPressed(ActionEvent event) {
 		super.onCancelButtonPressed(event);
