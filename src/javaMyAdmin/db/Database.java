@@ -118,4 +118,9 @@ public class Database {
 		}
 		loadTables();
 	}
+	
+	public Table executeSQL(String cmd){
+		
+		return null;
+	}
 }
