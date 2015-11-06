@@ -1,5 +1,9 @@
 package javaMyAdmin.util;
 
+<<<<<<< HEAD
+import java.util.Properties;
+
+=======
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -8,6 +12,7 @@ import java.util.Properties;
 
 import javaMyAdmin.ui.Frame;
 
+>>>>>>> origin/master
 /**
  * Erweiterung der Klasse {@link Properties}
  * 
@@ -19,6 +24,9 @@ import javaMyAdmin.ui.Frame;
  */
 public class Config extends Properties {
 
+<<<<<<< HEAD
+	private static final long serialVersionUID = 1L;
+=======
 	private static final File configFile = new File("config.ini");
 	private static final long serialVersionUID = 1L;
 	private static final Config instance = new Config();
@@ -46,6 +54,7 @@ public class Config extends Properties {
 			Frame.showErrorLog(e);
 		}
 	}
+>>>>>>> origin/master
 
 	public void set(String key, Object value) {
 		setProperty(key, value.toString());
