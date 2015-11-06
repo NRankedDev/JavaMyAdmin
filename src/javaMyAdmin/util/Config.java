@@ -19,9 +19,9 @@ import javaMyAdmin.ui.Frame;
  */
 public class Config extends Properties {
 
-	private static final Config instance = new Config();
 	private static final File configFile = new File("config.ini");
 	private static final long serialVersionUID = 1L;
+	private static final Config instance = new Config();
 	
 	public static Config getInstance() {
 		return instance;
