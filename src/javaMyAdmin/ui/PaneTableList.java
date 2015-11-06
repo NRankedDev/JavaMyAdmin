@@ -28,7 +28,6 @@ import javafx.util.Callback;
  */
 public class PaneTableList extends TreeView<String> {
 	
-	private static final int connectionLayer = 0;
 	private static final int databaseLayer = 1;
 	private static final int tableLayer = 2;
 	
@@ -64,6 +63,11 @@ public class PaneTableList extends TreeView<String> {
 								} catch (SQLException e) {
 									e.printStackTrace();
 								}
+								Frame.getInstance().getToolbar().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
+							} else if(FX.getLayer(getTreeItem()) == databaseLayer) {
+								Frame.getInstance().getToolbar().setDatabaseSQL(getTreeItem().getValue());
+							} else {
+								Frame.getInstance().getToolbar().setServerSQL();
 							}
 						}
 					}

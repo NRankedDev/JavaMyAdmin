@@ -13,13 +13,17 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- * Repaesentiert das Logo und das SQL-Command-Feld
+ * Repraesentiert das Logo und das SQL-Command-Feld
  * 
  * @author Nicolas
  * 		
  */
 public class PaneToolbar extends BorderPane {
 	
+	private static final String sqlKey = "sql_commands.label";
+	private static final String sqlDefault = "Execute SQL command(s) in %s";
+	
+	private BorderPane sql;
 	private TextArea sqlArea;
 	private Button execute;
 	private Button clear;
@@ -27,7 +31,7 @@ public class PaneToolbar extends BorderPane {
 	public PaneToolbar() {
 		ImageView img = new ImageView(PaneToolbar.class.getResource("/res/logo.png").toExternalForm());
 		
-		BorderPane sql = new BorderPane();
+		sql = new BorderPane();
 		sql.setPadding(new Insets(10));
 		
 		sqlArea = new TextArea();
@@ -58,7 +62,6 @@ public class PaneToolbar extends BorderPane {
 		box.getChildren().addAll(execute, clear);
 		HBox.setMargin(execute, new Insets(0, 10, 0, 0));
 		
-		sql.setTop(new Label(Lang.getString("sql_commands.label", "Execute SQL command(s)") + ":"));
 		sql.setCenter(sqlArea);
 		sql.setBottom(box);
 		BorderPane.setMargin(sqlArea, new Insets(10, 0, 10, 0));
@@ -68,23 +71,23 @@ public class PaneToolbar extends BorderPane {
 		setCenter(sql);
 		
 		BorderPane.setMargin(img, new Insets(10));
+		setServerSQL();
 	}
 	
 	public TextArea getSqlArea() {
 		return sqlArea;
 	}
 	
-	/**
-	 * Zeigt im {@link #getSqlArea()} die SQL command line an und <b>fuehrt
-	 * diese aus</b>.
-	 * 
-	 * @param sql
-	 *            SQL command line
-	 */
-	public void executeSql(String sql) {
-		clear.fire();
-		sqlArea.setText(sql);
-		execute.fire();
+	public void setServerSQL() {
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "127.0.0.1") + ":"));
+	}
+	
+	public void setDatabaseSQL(String db) {
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "'") + ":"));
+	}
+	
+	public void setTableSQL(String db, String table) {
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "." + table + "'") + ":"));
 	}
 	
 }

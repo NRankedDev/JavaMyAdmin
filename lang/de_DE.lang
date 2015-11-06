@@ -35,7 +35,7 @@ menu.settings.language.content=Die Einstellungen werden übernommen.
 #
 # Toolbar
 #
-sql_commands.label=SQL-Befehl(e) ausführen
+sql_commands.label=SQL-Befehl(e) ausführen in %s
 sql_commands.execute=Ausführen
 sql_commands.clear=Leeren
 
