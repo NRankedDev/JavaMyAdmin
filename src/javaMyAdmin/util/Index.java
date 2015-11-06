@@ -1,48 +1,42 @@
 package javaMyAdmin.util;
 
 public enum Index {
-
-	NONE("---"),
-	PRIMARY,
-	UNIQUE,
-	INDEX,
-	FULLTEXT;
-
-	private final String name;
-
-	private Index() {
-		this(null);
+	
+	NONE("---"), PRIMARY("PRIMARY", "PRI"), UNIQUE("UNIQUE"), INDEX("INDEX"), FULLTEXT("FULLTEXT");
+	
+	private final String[] names;
+	
+	private Index(String... names) {
+		this.names = names;
 	}
-
-	private Index(String name) {
-		this.name = name == null ? name() : name;
+	
+	public String[] getNames() {
+		return names;
 	}
-
-	public String getName() {
-		return name;
-	}
-
+	
 	@Override
 	public String toString() {
-		return name;
+		return name();
 	}
-
+	
 	public static String[] nameValues() {
 		String[] values = new String[values().length];
 		for (int i = 0; i < values.length; i++) {
-			values[i] = values()[i].getName();
+			values[i] = values()[i].name();
 		}
 		return values;
 	}
-
+	
 	public static Index valueOfName(String name) {
 		for (Index index : values()) {
-			if (index.getName().equals(name)) {
-				return index;
+			for (String s : index.names) {
+				if (s.equalsIgnoreCase(name)) {
+					return index;
+				}
 			}
 		}
-
-		return null;
+		
+		return Index.NONE;
 	}
-
+	
 }
