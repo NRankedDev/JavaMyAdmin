@@ -103,9 +103,12 @@ public class PaneTableContent extends TableView<TableRecord> {
 						@Override
 						public void commitEdit(String newValue) {
 							super.commitEdit(newValue);
-							
-							// TODO SQL
-							System.out.println("EditRecord: TODO SQL");
+							try {
+								getCurrentShownTable().setValue(getTableRow().getIndex(), 
+										getColumns().indexOf(getTableColumn()), newValue);
+							} catch (SQLException e) {
+								Frame.showErrorLog(e);
+							}
 						}
 						
 						@Override
