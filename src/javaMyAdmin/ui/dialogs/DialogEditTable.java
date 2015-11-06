@@ -25,11 +25,15 @@ import javafx.scene.layout.GridPane;
 
 public abstract class DialogEditTable extends DialogDynamicRows {
 	
+<<<<<<< HEAD
+	private final Table table;
+=======
 	private static final int MODE_ADD = 0;
 	private static final int MODE_EDIT = 1;
 	
 	private final Table table;
 	private final int mode;
+>>>>>>> origin/master
 	private TextField tableName = new TextField();
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
 	private ArrayList<ComboBox<String>> datatypes = new ArrayList<ComboBox<String>>();
@@ -45,11 +49,14 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		super(table == null ? Lang.getString("table.add", "Add table") : Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
+<<<<<<< HEAD
+=======
 		if (table != null) {
 			this.mode = MODE_EDIT;
 		} else {
 			this.mode = MODE_ADD;
 		}
+>>>>>>> origin/master
 	}
 	
 	@Override
@@ -60,7 +67,11 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		top.addRow(1);
 		top.addRow(2, new Label(Lang.getString("table.edit.columns", "Columns") + ":"));
 		
+<<<<<<< HEAD
+		if (table != null) {
+=======
 		if (mode == MODE_EDIT) {
+>>>>>>> origin/master
 			try {
 				for (String columnName : table.getColumnNames()) {
 					addRow(columnName, Datatype.valueOfName(table.getDatentyp(columnName)), table.getLength(columnName), Index.valueOfName(table.getIndex(columnName)), table.getNull(columnName));
@@ -82,16 +93,32 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 	}
 	
 	public void addRow(String defaultTitle, Datatype defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
+<<<<<<< HEAD
+		final TextField title = new TextField(defaultTitle);
+		
+=======
 		// Title
 		final TextField title = new TextField(defaultTitle == null ? "" : defaultTitle);
 		
 		// Datatype
+>>>>>>> origin/master
 		final ComboBox<String> datatype = new ComboBox<String>();
 		for (Datatype.Kind kind : Datatype.Kind.values()) {
 			for (Datatype type : Datatype.values(kind)) {
 				datatype.getItems().add(type.getName());
 			}
 		}
+<<<<<<< HEAD
+		datatype.getSelectionModel().select(defaultDatatype.getName());
+		
+		final TextField length = new TextField(defaultLength);
+		
+		final ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList(Index.nameValues()));
+		index.getSelectionModel().select(defaultIndex.name());
+		
+		final CheckBox nullCheckBox = new CheckBox();
+		nullCheckBox.setSelected(defaultNull);
+=======
 		if (mode == MODE_EDIT) {
 			datatype.getSelectionModel().select(defaultDatatype.getName());
 			datatype.setDisable(true);
@@ -120,6 +147,7 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		if (mode == MODE_EDIT) {
 			nullCheckBox.setDisable(true);
 		}
+>>>>>>> origin/master
 		
 		titles.add(title);
 		datatypes.add(datatype);
