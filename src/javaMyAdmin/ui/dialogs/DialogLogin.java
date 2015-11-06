@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.OptionDialog;
+import javaMyAdmin.util.Config;
 import javaMyAdmin.util.Lang;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -34,10 +35,10 @@ public class DialogLogin extends OptionDialog {
 
 	@Override
 	protected void initGrid(GridPane grid) {
-		url = new TextField(Frame.CONFIG.getProperty("url", ""));
-		username = new TextField(Frame.CONFIG.getProperty("username", ""));
+		url = new TextField(Config.getInstance().getProperty("url", ""));
+		username = new TextField(Config.getInstance().getProperty("username", ""));
 		password = new PasswordField();
-		password.setText(Frame.CONFIG.getProperty("password", ""));
+		password.setText(Config.getInstance().getProperty("password", ""));
 		remember = new CheckBox();
 		remember.setSelected(!url.getText().isEmpty());
 		grid.addRow(0, new Label(Lang.getString("dialog.connect.url", "URL")), url);
@@ -65,13 +66,13 @@ public class DialogLogin extends OptionDialog {
 				try {
 					Frame.setDbManager(new DBManager(url.getText(), username.getText(), password.getText()));
 					if (remember.isSelected()) {
-						Frame.CONFIG.set("url", url.getText());
-						Frame.CONFIG.set("username", username.getText());
-						Frame.CONFIG.set("password", password.getText());
+						Config.getInstance().set("url", url.getText());
+						Config.getInstance().set("username", username.getText());
+						Config.getInstance().set("password", password.getText());
 					} else {
-						Frame.CONFIG.remove("url");
-						Frame.CONFIG.remove("username");
-						Frame.CONFIG.remove("password");
+						Config.getInstance().remove("url");
+						Config.getInstance().remove("username");
+						Config.getInstance().remove("password");
 					}
 					Platform.runLater(new Runnable() {
 						@Override

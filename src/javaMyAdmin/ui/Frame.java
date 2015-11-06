@@ -1,9 +1,5 @@
 package javaMyAdmin.ui;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -32,9 +28,7 @@ import javafx.stage.Stage;
  * @author Nicolas
  */
 public class Frame extends Application {
-	
-	public static final Config CONFIG = new Config();
-	private static final File configFile = new File("config.ini");
+
 	private static DBManager dbManager;
 	private static Frame instance;
 	
@@ -83,13 +77,6 @@ public class Frame extends Application {
 				}
 			});
 			
-			/* Config laden */
-			try {
-				CONFIG.load(new FileReader(configFile));
-			} catch (IOException e) {
-				showErrorLog(new IOException("Couldn't load config", e));
-			}
-			
 			/* Login Dialog starten und auf Usereingaben warten */
 			new DialogLogin();
 			
@@ -106,7 +93,7 @@ public class Frame extends Application {
 			
 			stage.setTitle(Lang.getString("frame.title", "javaMyAdmin"));
 			
-			/* Fenstergr��e bestimmen und Frame Content zuweisen */
+			/* Fenstergroesse bestimmen und Frame Content zuweisen */
 			stage.setScene(new Scene(pane, 800, 600));
 			
 			/* Icons setzen */
@@ -121,13 +108,7 @@ public class Frame extends Application {
 	
 	@Override
 	public void stop() throws Exception {
-		/* Config speichern */
-		if (!configFile.exists()) {
-			configFile.createNewFile();
-		}
-		
-		CONFIG.store(new FileWriter(configFile), "");
-		
+		Config.getInstance().save();
 		System.exit(0);
 	}
 	
