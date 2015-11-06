@@ -27,16 +27,7 @@ public class Database {
 		ResultSet rs = md.getTables(null, null, "%", null);
 		while (rs.next()) {
 			String name = rs.getString(3);
-			ResultSet rs2 = connect.createStatement().executeQuery("SELECT * FROM `" + name + "`");
-			ArrayList<String> columns = new ArrayList<String>();
-			ResultSetMetaData metaData = rs2.getMetaData(); // fehler hier irwo
-			int i = 1;
-			int count = metaData.getColumnCount();
-			while (i < count + 1) {
-				columns.add(metaData.getColumnName(i));
-				i++;
-			}
-			table.add(new Table(name, columns, connect, dbname));
+			table.add(new Table(name, new ArrayList<String>(), connect, dbname));
 		}
 	}
 
@@ -117,5 +108,10 @@ public class Database {
 			}
 		}
 		loadTables();
+	}
+	
+	public Table executeSQL(String cmd){
+		
+		return null;
 	}
 }

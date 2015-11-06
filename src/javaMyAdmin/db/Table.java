@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 
 public class Table {
-	private ArrayList<String> columnNames = new ArrayList<String>();;
+	private ArrayList<String> columnNames = new ArrayList<String>();
 	private ArrayList<Line> lines = new ArrayList<Line>();
 	private String name;
 	private Connection connect;
@@ -59,6 +59,11 @@ public class Table {
 		return lines.get(i);
 	}
 	
+	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
+		loadLines(rs);
+		return lines;
+	}
+	
 	public String getDatentyp(String column) throws SQLException{
 		return getColumnInfo(column, 1);
 	}
@@ -76,30 +81,28 @@ public class Table {
 		
 	}
 
-	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
-		loadLines(rs);
-		return lines;
-	}
-	
 	public void setValue(int line, int column, String value) throws SQLException {
 		if (lines.isEmpty()) {
 			loadLines(null);
 		}
 		connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
 	}
-
+	public int loadColumns(ResultSet rs) throws SQLException{
+		ResultSetMetaData metaData = rs.getMetaData();
+		int i = 1;
+		int count = metaData.getColumnCount();
+		while (i < count + 1) {
+			AddColumn(metaData.getColumnName(i));
+			i++;
+		}
+		return count;
+	}
 	public void loadLines(ResultSet rs) throws SQLException {
 		clear();
 		if (rs == null) {
 			rs = connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`");
 		}
-		ResultSetMetaData metaData = rs.getMetaData();
-		int i = 1;
-		int count = metaData.getColumnCount();
-		while (i < count + 1) {
-			AddColumn(metaData.getColumnName(i)); // fehler hier irwo
-			i++;
-		}
+		int count = loadColumns(rs);
 		while (rs.next()) {
 			Line line = new Line();
 			for (int a = 1; a < count + 1; a++) {
@@ -149,7 +152,7 @@ public class Table {
 		
 		switch(i){
 		case 1:
-			value = "DATA_TYP";
+			value = "DATA_TYPE";
 			break;
 		case 2:
 			value = "CHARAKTER_MAXIMUM_LENGTH";
@@ -166,6 +169,14 @@ public class Table {
 		}
 	
 		return (rs=connect.createStatement().executeQuery("select `"+value+"` from information_schema.columns where table_name='"+name+"' and column_name like '"+column+"'")).next() ? rs.getString(1) : null;
+	}
+	
+	public Table executeSQL(String cmd) throws SQLException{
+		connect.createStatement().executeQuery("USE `"+dbname+"`");
+		ResultSet rs = connect.createStatement().executeQuery(cmd);
+		Table t = new Table(getName(), new ArrayList<String>(), connect, dbname);
+		t.loadLines(rs);
+		return t;
 	}
 
 }
