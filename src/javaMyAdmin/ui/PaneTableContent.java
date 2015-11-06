@@ -103,9 +103,17 @@ public class PaneTableContent extends TableView<TableRecord> {
 						@Override
 						public void commitEdit(String newValue) {
 							super.commitEdit(newValue);
+<<<<<<< HEAD
 							
 							// TODO SQL
 							System.out.println("EditRecord: TODO SQL");
+=======
+							try {
+								getCurrentShownTable().setValue(getTableRow().getIndex(), getColumns().indexOf(getTableColumn()), newValue);
+							} catch (SQLException e) {
+								Frame.showErrorLog(e);
+							}
+>>>>>>> origin/master
 						}
 						
 						@Override
@@ -226,7 +234,12 @@ public class PaneTableContent extends TableView<TableRecord> {
 					
 					new DialogEditTable(getCurrentShownTable()) {
 						@Override
+<<<<<<< HEAD
 						protected void handle() {
+=======
+						protected boolean handle() {
+							return true;
+>>>>>>> origin/master
 							// TODO SQL
 						}
 					}.show();
@@ -239,7 +252,11 @@ public class PaneTableContent extends TableView<TableRecord> {
 				public void handle(ActionEvent event) {
 					new DialogAddRecords(getCurrentShownTable()) {
 						@Override
+<<<<<<< HEAD
 						protected void handle() {
+=======
+						protected boolean handle() {
+>>>>>>> origin/master
 							for (TextField[] record : records) {
 								ArrayList<String> strings = new ArrayList<String>();
 								for (int i = 0; i < record.length; i++) {
@@ -251,8 +268,16 @@ public class PaneTableContent extends TableView<TableRecord> {
 									PaneTableContent.this.addRow(strings);
 								} catch (SQLException e) {
 									Frame.showErrorLog(e);
+<<<<<<< HEAD
 								}
 							}
+=======
+									return false;
+								}
+							}
+							
+							return true;
+>>>>>>> origin/master
 						};
 					}.show();
 				}

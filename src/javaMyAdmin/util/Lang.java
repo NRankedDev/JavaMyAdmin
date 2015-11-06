@@ -7,6 +7,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 import javaMyAdmin.ui.Frame;
 
 /**
@@ -29,9 +33,15 @@ public class Lang {
 
 		Locale locale = null;
 
+<<<<<<< HEAD
 		if (Frame.CONFIG != null && Frame.CONFIG.containsKey("lang")) {
 			try {
 				String lang = Frame.CONFIG.getProperty("lang");
+=======
+		if (Config.getInstance() != null && Config.getInstance().containsKey("lang")) {
+			try {
+				String lang = Config.getInstance().getProperty("lang");
+>>>>>>> origin/master
 				if (lang.equals("debug")) {
 					locale = new Locale(lang);
 				} else {
