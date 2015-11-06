@@ -81,4 +81,8 @@ public class DBManager extends Connector {
 			loadDB();
 		}
 	}
+	public Table executeSQL(String cmd){
+		
+		return null;
+	}
 }
