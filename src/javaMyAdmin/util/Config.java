@@ -1,6 +1,12 @@
 package javaMyAdmin.util;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Properties;
+
+import javaMyAdmin.ui.Frame;
 
 /**
  * Erweiterung der Klasse {@link Properties}
@@ -13,7 +19,33 @@ import java.util.Properties;
  */
 public class Config extends Properties {
 
+	private static final File configFile = new File("config.ini");
 	private static final long serialVersionUID = 1L;
+	private static final Config instance = new Config();
+	
+	public static Config getInstance() {
+		return instance;
+	}
+	
+	public Config() {
+		try {
+			load(new FileReader(configFile));
+		} catch (IOException e) {
+			Frame.showErrorLog(new IOException("Couldn't load config", e));
+		}
+	}
+	
+	public void save() {
+		try {
+			if (!configFile.exists()) {
+				configFile.createNewFile();
+			}
+		
+			store(new FileWriter(configFile), "");
+		} catch(IOException e) {
+			Frame.showErrorLog(e);
+		}
+	}
 
 	public void set(String key, Object value) {
 		setProperty(key, value.toString());

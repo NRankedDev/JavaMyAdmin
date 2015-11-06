@@ -21,6 +21,8 @@ dialog.connect.remember=Login merken
 dialog.connect.connecting=Verbinden...
 dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
+dialog.remove.header=Möchtest du die Aktion wirklich durchführen?
+dialog.remove.content=Wenn du die %s `%s` wirklich löschst, werden alle Daten verloren gehen.
 
 #
 # Menu
@@ -35,7 +37,7 @@ menu.settings.language.content=Die Einstellungen werden übernommen.
 #
 # Toolbar
 #
-sql_commands.label=SQL-Befehl(e) ausführen
+sql_commands.label=SQL-Befehl(e) ausführen in %s
 sql_commands.execute=Ausführen
 sql_commands.clear=Leeren
 
@@ -43,9 +45,11 @@ sql_commands.clear=Leeren
 # Table list
 #
 connection=Verbindung
+database=Datenbank
 database.add=Datenbank hinzufügen
 database.add.name=Name
 database.remove=Datenbank löschen
+table=Tabelle
 table.add=Tabelle hinzufügen
 table.edit=Tabelle bearbeiten
 table.edit.table=Tabellenname

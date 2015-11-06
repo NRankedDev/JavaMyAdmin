@@ -25,7 +25,11 @@ import javafx.scene.layout.GridPane;
 
 public abstract class DialogEditTable extends DialogDynamicRows {
 	
+	private static final int MODE_ADD = 0;
+	private static final int MODE_EDIT = 1;
+	
 	private final Table table;
+	private final int mode;
 	private TextField tableName = new TextField();
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
 	private ArrayList<ComboBox<String>> datatypes = new ArrayList<ComboBox<String>>();
@@ -41,6 +45,11 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		super(table == null ? Lang.getString("table.add", "Add table") : Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
+		if (table != null) {
+			this.mode = MODE_EDIT;
+		} else {
+			this.mode = MODE_ADD;
+		}
 	}
 	
 	@Override
@@ -51,7 +60,7 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		top.addRow(1);
 		top.addRow(2, new Label(Lang.getString("table.edit.columns", "Columns") + ":"));
 		
-		if (table != null) {
+		if (mode == MODE_EDIT) {
 			try {
 				for (String columnName : table.getColumnNames()) {
 					addRow(columnName, Datatype.valueOfName(table.getDatentyp(columnName)), table.getLength(columnName), Index.valueOfName(table.getIndex(columnName)), table.getNull(columnName));
@@ -73,23 +82,44 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 	}
 	
 	public void addRow(String defaultTitle, Datatype defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
-		final TextField title = new TextField(defaultTitle);
+		// Title
+		final TextField title = new TextField(defaultTitle == null ? "" : defaultTitle);
 		
+		// Datatype
 		final ComboBox<String> datatype = new ComboBox<String>();
 		for (Datatype.Kind kind : Datatype.Kind.values()) {
 			for (Datatype type : Datatype.values(kind)) {
 				datatype.getItems().add(type.getName());
 			}
 		}
-		datatype.getSelectionModel().select(defaultDatatype.getName());
+		if (mode == MODE_EDIT) {
+			datatype.getSelectionModel().select(defaultDatatype.getName());
+			datatype.setDisable(true);
+		} else {
+			datatype.getSelectionModel().selectFirst();
+		}
 		
-		final TextField length = new TextField(defaultLength);
+		// Length
+		final TextField length = new TextField(defaultLength == null ? "" : defaultLength);
+		if (mode == MODE_EDIT) {
+			length.setDisable(true);
+		}
 		
+		// Index
 		final ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList(Index.nameValues()));
-		index.getSelectionModel().select(defaultIndex.name());
+		if (mode == MODE_EDIT) {
+			index.getSelectionModel().select(defaultIndex.name());
+			index.setDisable(true);
+		} else {
+			index.getSelectionModel().selectFirst();
+		}
 		
+		// NullBox
 		final CheckBox nullCheckBox = new CheckBox();
 		nullCheckBox.setSelected(defaultNull);
+		if (mode == MODE_EDIT) {
+			nullCheckBox.setDisable(true);
+		}
 		
 		titles.add(title);
 		datatypes.add(datatype);
