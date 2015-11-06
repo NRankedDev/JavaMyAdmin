@@ -59,6 +59,11 @@ public class Table {
 		return lines.get(i);
 	}
 	
+	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
+		loadLines(rs);
+		return lines;
+	}
+	
 	public String getDatentyp(String column) throws SQLException{
 		return getColumnInfo(column, 1);
 	}
@@ -76,11 +81,6 @@ public class Table {
 		
 	}
 
-	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
-		loadLines(rs);
-		return lines;
-	}
-	
 	public void setValue(int line, int column, String value) throws SQLException {
 		if (lines.isEmpty()) {
 			loadLines(null);
