@@ -172,7 +172,7 @@ public class Table {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		Table t = new Table(getName(), new ArrayList<String>(), connect, dbname);
+		Table t = new Table(null, new ArrayList<String>(), connect, null);
 		try{
 			connect.createStatement().executeUpdate(cmd);
 			t = null;
@@ -182,5 +182,4 @@ public class Table {
 		}
 		return t;
 	}
-
 }

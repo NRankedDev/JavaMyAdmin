@@ -81,8 +81,14 @@ public class DBManager extends Connector {
 			loadDB();
 		}
 	}
-	public Table executeSQL(String cmd){
-		
-		return null;
+	public Table executeSQL(String cmd) throws SQLException{
+		Table t = new Table(null, new ArrayList<String>(), connect, null);
+		try{
+			connect.createStatement().executeUpdate(cmd);
+			t = null;
+		}catch(Exception e){
+			t.loadLines(connect.createStatement().executeQuery(cmd));
+		}
+		return t;
 	}
 }

@@ -110,8 +110,15 @@ public class Database {
 		loadTables();
 	}
 	
-	public Table executeSQL(String cmd){
-		
-		return null;
+	public Table executeSQL(String cmd) throws SQLException{
+		Table t = new Table(null, new ArrayList<String>(), connect, null);
+		try{
+			connect.createStatement().executeUpdate(cmd);
+			t = null;
+		}catch(Exception e){
+			connect.createStatement().executeQuery("USE `"+dbname+"`");
+			t.loadLines(connect.createStatement().executeQuery(cmd));
+		}
+		return t;
 	}
 }
