@@ -172,11 +172,14 @@ public class Table {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		connect.createStatement().executeQuery("USE `"+dbname+"`");
-		ResultSet rs = connect.createStatement().executeQuery(cmd);
-		Table t = new Table(getName(), new ArrayList<String>(), connect, dbname);
-		t.loadLines(rs);
+		Table t = new Table(null, new ArrayList<String>(), connect, null);
+		try{
+			connect.createStatement().executeUpdate(cmd);
+			t = null;
+		}catch(Exception e){
+			connect.createStatement().executeQuery("USE `"+dbname+"`");
+			t.loadLines(connect.createStatement().executeQuery(cmd));
+		}
 		return t;
 	}
-
 }
