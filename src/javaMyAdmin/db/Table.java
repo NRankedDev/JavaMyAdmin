@@ -14,6 +14,7 @@ public class Table {
 	private String name;
 	private Connection connect;
 	private String dbname;
+	private boolean abstratable;
 
 	public Table(String name, ArrayList<String> columnNames, Connection connect, String dbname) throws SQLException {
 		this.dbname = dbname;
@@ -48,15 +49,19 @@ public class Table {
 	}
 
 	public ArrayList<Line> getLines() throws SQLException {
-		loadLines(null);
+		if(abstratable == false) loadLines(null);
 		return lines;
 	}
-
+	
 	public Line getLines(int i) throws SQLException {
 		if (lines.isEmpty()) {
 			loadLines(null);
 		}
 		return lines.get(i);
+	}
+	
+	public void setAbstract(boolean ab){
+		abstratable = ab;
 	}
 	
 	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
@@ -173,6 +178,7 @@ public class Table {
 	
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);
+		t.setAbstract(true);
 		try{
 			connect.createStatement().executeUpdate(cmd);
 			t = null;
