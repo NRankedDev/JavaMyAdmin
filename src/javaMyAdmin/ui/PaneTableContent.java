@@ -59,7 +59,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 			try {
 				refresh(table.getColumnNames(), table.getLines());
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Frame.showErrorLog(e);
 			}
 		} else {
 			getItems().clear();
@@ -103,17 +103,11 @@ public class PaneTableContent extends TableView<TableRecord> {
 						@Override
 						public void commitEdit(String newValue) {
 							super.commitEdit(newValue);
-<<<<<<< HEAD
-							
-							// TODO SQL
-							System.out.println("EditRecord: TODO SQL");
-=======
 							try {
 								getCurrentShownTable().setValue(getTableRow().getIndex(), getColumns().indexOf(getTableColumn()), newValue);
 							} catch (SQLException e) {
 								Frame.showErrorLog(e);
 							}
->>>>>>> origin/master
 						}
 						
 						@Override
@@ -172,114 +166,69 @@ public class PaneTableContent extends TableView<TableRecord> {
 		}
 	}
 	
+	public void addRow(ArrayList<String> values) {
+		TableRecord record = new TableRecord();
+		ArrayList<String> columns;
+		try {
+			columns = table.getColumnNames();
+			
+			if (columns.size() != values.size()) {
+				throw new SQLException("columns.size() != values.size() [" + columns.size() + " != " + values.size() + "]");
+			}
+		} catch (SQLException e) {
+			Frame.showErrorLog(e);
+			return;
+		}
+		
+		for (int i = 0; i < columns.size(); i++) {
+			record.data.put(columns.get(i), new SimpleStringProperty(values.get(i)));
+		}
+		
+		getItems().add(record);
+	}
+	
 	public Table getCurrentShownTable() {
 		return table;
 	}
 	
-	/**
-	 * Fuegt der Tabelle eine neue Row hinzu. <b>KEIN</b> Aufruf und kein Update
-	 * in SQL
-	 * 
-	 * @param data
-	 *            Die Daten. Laenge muss mit Column Anzahl uebereinstimmen.
-	 */
-	public void addRow(ArrayList<String> data) {
-		try {
-			ArrayList<String> columns = table.getColumnNames();
-			
-			if (columns.size() != data.size()) {
-				throw new RuntimeException("columns.size() != data.length");
-			}
-			
-			TableRecord record = new TableRecord();
-			
-			for (int i = 0; i < data.size(); i++) {
-				record.data.put(columns.get(i), new SimpleStringProperty(data.get(i)));
-			}
-			
-			getItems().add(record);
-		} catch (SQLException e) {
-			Frame.showErrorLog(e);
-		}
-	}
-	
-	/**
-	 * Wrapper Klasse, um aus einem String Daten fuer die Tabelle in JavaFX zu
-	 * erzeugen
-	 */
-	public final class TableRecord {
-		
+	public class TableRecord {
 		private final HashMap<String, SimpleStringProperty> data = new HashMap<String, SimpleStringProperty>();
 		
 		public HashMap<String, SimpleStringProperty> getData() {
 			return data;
 		}
-		
 	}
 	
-	/**
-	 * ContextMenu der Tabelle
-	 */
-	private final class CustomContextMenu extends ContextMenu {
+	public class CustomContextMenu extends ContextMenu {
 		
 		public CustomContextMenu() {
-			MenuItem editColumn = new MenuItem(Lang.getString("column.edit", "Edit columns..."));
-			editColumn.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					ArrayList<String> columns = new ArrayList<String>();
-					for (TableColumn<TableRecord, ?> column : getColumns()) {
-						columns.add(column.getText());
-					}
-					
-					new DialogEditTable(getCurrentShownTable()) {
-						@Override
-<<<<<<< HEAD
-						protected void handle() {
-=======
-						protected boolean handle() {
-							return true;
->>>>>>> origin/master
-							// TODO SQL
-						}
-					}.show();
-				}
-			});
-			
 			MenuItem addRecord = new MenuItem(Lang.getString("record.add", "Add record"));
 			addRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogAddRecords(getCurrentShownTable()) {
-						@Override
-<<<<<<< HEAD
-						protected void handle() {
-=======
-						protected boolean handle() {
->>>>>>> origin/master
-							for (TextField[] record : records) {
-								ArrayList<String> strings = new ArrayList<String>();
-								for (int i = 0; i < record.length; i++) {
-									strings.add(record[i].getText());
+					if (getCurrentShownTable() != null) {
+						new DialogAddRecords(getCurrentShownTable()) {
+							@Override
+							protected boolean handle() {
+								for (TextField[] record : records) {
+									ArrayList<String> strings = new ArrayList<String>();
+									for (int i = 0; i < record.length; i++) {
+										strings.add(record[i].getText());
+									}
+									
+									try {
+										table.addTupel(strings);
+										PaneTableContent.this.addRow(strings);
+									} catch (SQLException e) {
+										Frame.showErrorLog(e);
+										return false;
+									}
 								}
 								
-								try {
-									table.addTupel(strings);
-									PaneTableContent.this.addRow(strings);
-								} catch (SQLException e) {
-									Frame.showErrorLog(e);
-<<<<<<< HEAD
-								}
-							}
-=======
-									return false;
-								}
-							}
-							
-							return true;
->>>>>>> origin/master
-						};
-					}.show();
+								return true;
+							};
+						}.show();
+					}
 				}
 			});
 			
@@ -287,24 +236,47 @@ public class PaneTableContent extends TableView<TableRecord> {
 			removeRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					TableRecord r = getSelectionModel().getSelectedItem();
-					ArrayList<String> values = new ArrayList<String>();
-					
-					for (SimpleStringProperty ssp : r.getData().values()) {
-						values.add(ssp.get());
-					}
-					
-					Collections.reverse(values);
-					
-					try {
-						getCurrentShownTable().rmTupel(values);
-						PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
-					} catch (SQLException e) {
-						Frame.showErrorLog(e);
+					if (getCurrentShownTable() != null) {
+						TableRecord r = getSelectionModel().getSelectedItem();
+						ArrayList<String> values = new ArrayList<String>();
+						
+						for (SimpleStringProperty ssp : r.getData().values()) {
+							values.add(ssp.get());
+						}
+						
+						Collections.reverse(values);
+						
+						try {
+							getCurrentShownTable().rmTupel(values);
+							PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
+						} catch (SQLException e) {
+							Frame.showErrorLog(e);
+						}
 					}
 				}
 			});
-			getItems().addAll(editColumn, new SeparatorMenuItem(), addRecord, removeRecord);
+			
+			MenuItem editColumn = new MenuItem(Lang.getString("column.edit", "Edit columns..."));
+			editColumn.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (getCurrentShownTable() != null) {
+						ArrayList<String> columns = new ArrayList<String>();
+						for (TableColumn<TableRecord, ?> column : getColumns()) {
+							columns.add(column.getText());
+						}
+						
+						new DialogEditTable(getCurrentShownTable()) {
+							@Override
+							protected boolean handle() {
+								return true;
+							}
+						}.show();
+					}
+				}
+			});
+			
+			getItems().addAll(addRecord, removeRecord, new SeparatorMenuItem(), editColumn);
 		}
 	}
 }

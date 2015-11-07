@@ -7,41 +7,30 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
-import javaMyAdmin.ui.Frame;
 
 /**
  * Klasse, die beim Start alle unterstuetzen Sprachen laedt. Wird fuer das
  * uebersetzen von Strings genutzt.
  * 
  * @see #getString(String, String)
- * 
+ * 		
  * @author Nicolas
  */
 public class Lang {
-
+	
 	private static final File langDirectory = new File("lang");
 	private static final ArrayList<Locale> locales = new ArrayList<Locale>();
 	private static final Properties strings = new Properties();
 	private static Locale locale;
-
+	
 	static {
 		loadLanguages();
-
+		
 		Locale locale = null;
-
-<<<<<<< HEAD
-		if (Frame.CONFIG != null && Frame.CONFIG.containsKey("lang")) {
-			try {
-				String lang = Frame.CONFIG.getProperty("lang");
-=======
+		
 		if (Config.getInstance() != null && Config.getInstance().containsKey("lang")) {
 			try {
 				String lang = Config.getInstance().getProperty("lang");
->>>>>>> origin/master
 				if (lang.equals("debug")) {
 					locale = new Locale(lang);
 				} else {
@@ -52,7 +41,7 @@ public class Lang {
 				e.printStackTrace();
 			}
 		}
-
+		
 		if (locale == null) {
 			if (availableLanguages().contains(Locale.getDefault())) {
 				locale = Locale.getDefault();
@@ -60,13 +49,13 @@ public class Lang {
 				locale = Locale.US;
 			}
 		}
-
+		
 		changeLocale(locale);
 	}
-
+	
 	private static void loadLanguages() {
 		String[] files = new String[0];
-
+		
 		if (langDirectory.exists() && langDirectory.isDirectory()) {
 			files = langDirectory.list(new FilenameFilter() {
 				@Override
@@ -76,15 +65,15 @@ public class Lang {
 				}
 			});
 		}
-
+		
 		locales.add(new Locale("debug"));
 		locales.add(Locale.US);
-
+		
 		for (String lang : files) {
 			locales.add(new Locale(lang.split("_")[0], lang.split("_")[1].split("\\.")[0]));
 		}
 	}
-
+	
 	/**
 	 * @return Alle Sprachen ({@link Locale}), die vom Programm unterstuetzt
 	 *         werden
@@ -92,7 +81,7 @@ public class Lang {
 	public static ArrayList<Locale> availableLanguages() {
 		return locales;
 	}
-
+	
 	/**
 	 * Aendert die aktuell genutzte Sprache
 	 * 
@@ -108,20 +97,20 @@ public class Lang {
 					locale = Locale.US;
 				}
 			}
-
+			
 			System.out.println("Locale changed to:" + locale.toString());
 		}
-
+		
 		Lang.locale = locale;
 	}
-
+	
 	/**
 	 * @return Aktuell verwendete Sprache
 	 */
 	public static Locale getLocale() {
 		return locale;
 	}
-
+	
 	/**
 	 * Uebersetzt einen String. Der angegebene Key fuehrt zu einem uebersetzten
 	 * String.
@@ -141,9 +130,9 @@ public class Lang {
 			return defaultValue;
 		} else {
 			String value = strings.getProperty(key, defaultValue);
-
+			
 			return value.trim().isEmpty() ? key : value;
 		}
 	}
-
+	
 }

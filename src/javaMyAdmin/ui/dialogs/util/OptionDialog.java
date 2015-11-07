@@ -154,16 +154,11 @@ public abstract class OptionDialog {
 	 * <b>nicht</b> ausgefuehrt, wenn der 'Cancel'-Button gedrueckt wurde.
 	 * Hierzu kann die Methode {@link #onCancelButtonPressed(ActionEvent)}
 	 * ueberschrieben werden.
-<<<<<<< HEAD
-	 */
-	protected abstract void handle();
-=======
 	 * 
 	 * @return <code>true</code>, wenn der Dialog geschlossen werden soll,
 	 *         andernfalls <code>false</code>
 	 */
 	protected abstract boolean handle();
->>>>>>> origin/master
 	
 	/**
 	 * Wird ausgefuehrt, sobald der 'OK'-Button gedrueckt wurde. Ruft
@@ -172,14 +167,9 @@ public abstract class OptionDialog {
 	 * @param event
 	 */
 	protected void onOkButtonPressed(ActionEvent event) {
-<<<<<<< HEAD
-		handle();
-		hideDialog();
-=======
 		if (handle()) {
 			hideDialog();
 		}
->>>>>>> origin/master
 	}
 	
 	/**
