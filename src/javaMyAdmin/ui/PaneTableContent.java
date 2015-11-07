@@ -59,7 +59,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 			try {
 				refresh(table.getColumnNames(), table.getLines());
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Frame.showErrorLog(e);
 			}
 		} else {
 			getItems().clear();
@@ -183,6 +183,8 @@ public class PaneTableContent extends TableView<TableRecord> {
 		for (int i = 0; i < columns.size(); i++) {
 			record.data.put(columns.get(i), new SimpleStringProperty(values.get(i)));
 		}
+		
+		getItems().add(record);
 	}
 	
 	public Table getCurrentShownTable() {
@@ -204,27 +206,29 @@ public class PaneTableContent extends TableView<TableRecord> {
 			addRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogAddRecords(getCurrentShownTable()) {
-						@Override
-						protected boolean handle() {
-							for (TextField[] record : records) {
-								ArrayList<String> strings = new ArrayList<String>();
-								for (int i = 0; i < record.length; i++) {
-									strings.add(record[i].getText());
+					if (getCurrentShownTable() != null) {
+						new DialogAddRecords(getCurrentShownTable()) {
+							@Override
+							protected boolean handle() {
+								for (TextField[] record : records) {
+									ArrayList<String> strings = new ArrayList<String>();
+									for (int i = 0; i < record.length; i++) {
+										strings.add(record[i].getText());
+									}
+									
+									try {
+										table.addTupel(strings);
+										PaneTableContent.this.addRow(strings);
+									} catch (SQLException e) {
+										Frame.showErrorLog(e);
+										return false;
+									}
 								}
 								
-								try {
-									table.addTupel(strings);
-									PaneTableContent.this.addRow(strings);
-								} catch (SQLException e) {
-									Frame.showErrorLog(e);
-									return false;
-								}
-							}
-							
-							return true;
-						};
-					}.show();
+								return true;
+							};
+						}.show();
+					}
 				}
 			});
 			
@@ -232,20 +236,22 @@ public class PaneTableContent extends TableView<TableRecord> {
 			removeRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					TableRecord r = getSelectionModel().getSelectedItem();
-					ArrayList<String> values = new ArrayList<String>();
-					
-					for (SimpleStringProperty ssp : r.getData().values()) {
-						values.add(ssp.get());
-					}
-					
-					Collections.reverse(values);
-					
-					try {
-						getCurrentShownTable().rmTupel(values);
-						PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
-					} catch (SQLException e) {
-						Frame.showErrorLog(e);
+					if (getCurrentShownTable() != null) {
+						TableRecord r = getSelectionModel().getSelectedItem();
+						ArrayList<String> values = new ArrayList<String>();
+						
+						for (SimpleStringProperty ssp : r.getData().values()) {
+							values.add(ssp.get());
+						}
+						
+						Collections.reverse(values);
+						
+						try {
+							getCurrentShownTable().rmTupel(values);
+							PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
+						} catch (SQLException e) {
+							Frame.showErrorLog(e);
+						}
 					}
 				}
 			});
@@ -254,17 +260,19 @@ public class PaneTableContent extends TableView<TableRecord> {
 			editColumn.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					ArrayList<String> columns = new ArrayList<String>();
-					for (TableColumn<TableRecord, ?> column : getColumns()) {
-						columns.add(column.getText());
-					}
-					
-					new DialogEditTable(getCurrentShownTable()) {
-						@Override
-						protected boolean handle() {
-							return true;
+					if (getCurrentShownTable() != null) {
+						ArrayList<String> columns = new ArrayList<String>();
+						for (TableColumn<TableRecord, ?> column : getColumns()) {
+							columns.add(column.getText());
 						}
-					}.show();
+						
+						new DialogEditTable(getCurrentShownTable()) {
+							@Override
+							protected boolean handle() {
+								return true;
+							}
+						}.show();
+					}
 				}
 			});
 			

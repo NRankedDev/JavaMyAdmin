@@ -1,5 +1,8 @@
 package javaMyAdmin.ui;
 
+import java.sql.SQLException;
+
+import javaMyAdmin.db.Table;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,8 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- * <<<<<<< HEAD Repaesentiert das Logo und das SQL-Command-Feld =======
- * Repraesentiert das Logo und das SQL-Command-Feld >>>>>>> origin/master
+ * Repraesentiert das Logo und das SQL-Command-Feld
  * 
  * @author Nicolas
  * 		
@@ -28,6 +30,9 @@ public class PaneToolbar extends BorderPane {
 	private TextArea sqlArea;
 	private Button execute;
 	private Button clear;
+	
+	private String database;
+	private String table;
 	
 	public PaneToolbar() {
 		ImageView img = new ImageView(PaneToolbar.class.getResource("/res/logo.png").toExternalForm());
@@ -45,10 +50,26 @@ public class PaneToolbar extends BorderPane {
 		execute.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				String[] commands = sqlArea.getText().split(";");
-				for (String string : commands) {
-					string = string.replace("\t", " ").replace("\n", "");
-					System.err.println("[PaneToolbar][TODO] SQL: " + string);
+				try {
+					String sql = sqlArea.getText();
+					Table table;
+					
+					if (database == null && PaneToolbar.this.table == null) {
+						table = Frame.getDbManager().executeSQL(sql);
+					} else if (database != null && PaneToolbar.this.table == null) {
+						table = Frame.getDbManager().getDB(database).executeSQL(sql);
+					} else if (database != null && PaneToolbar.this.table != null) {
+						table = Frame.getDbManager().getDB(database).getTable(PaneToolbar.this.table).executeSQL(sql);
+					} else {
+						throw new RuntimeException("database == null; table != null");
+					}
+					
+					if (table != null) {
+						Frame.getInstance().getTableList().getSelectionModel().clearSelection();
+						Frame.getInstance().getTableValues().refresh(table);
+					}
+				} catch (SQLException e) {
+					Frame.showErrorLog(e);
 				}
 			}
 		});
@@ -81,14 +102,20 @@ public class PaneToolbar extends BorderPane {
 	
 	public void setServerSQL() {
 		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "127.0.0.1") + ":"));
+		database = null;
+		table = null;
 	}
 	
 	public void setDatabaseSQL(String db) {
 		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "'") + ":"));
+		database = db;
+		table = null;
 	}
 	
 	public void setTableSQL(String db, String table) {
 		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "." + table + "'") + ":"));
+		this.database = db;
+		this.table = table;
 	}
 	
 }
