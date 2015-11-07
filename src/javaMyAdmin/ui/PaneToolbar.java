@@ -31,8 +31,8 @@ public class PaneToolbar extends BorderPane {
 	private Button execute;
 	private Button clear;
 	
-	private String database;
-	private String table;
+	private String databaseEnvironment;
+	private String tableEnvironment;
 	
 	public PaneToolbar() {
 		ImageView img = new ImageView(PaneToolbar.class.getResource("/res/logo.png").toExternalForm());
@@ -54,12 +54,12 @@ public class PaneToolbar extends BorderPane {
 					String sql = sqlArea.getText();
 					Table table;
 					
-					if (database == null && PaneToolbar.this.table == null) {
+					if (databaseEnvironment == null && tableEnvironment == null) {
 						table = Frame.getDbManager().executeSQL(sql);
-					} else if (database != null && PaneToolbar.this.table == null) {
-						table = Frame.getDbManager().getDB(database).executeSQL(sql);
-					} else if (database != null && PaneToolbar.this.table != null) {
-						table = Frame.getDbManager().getDB(database).getTable(PaneToolbar.this.table).executeSQL(sql);
+					} else if (databaseEnvironment != null && tableEnvironment == null) {
+						table = Frame.getDbManager().getDB(databaseEnvironment).executeSQL(sql);
+					} else if (databaseEnvironment != null && tableEnvironment != null) {
+						table = Frame.getDbManager().getDB(databaseEnvironment).getTable(tableEnvironment).executeSQL(sql);
 					} else {
 						throw new RuntimeException("database == null; table != null");
 					}
@@ -102,20 +102,20 @@ public class PaneToolbar extends BorderPane {
 	
 	public void setServerSQL() {
 		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "127.0.0.1") + ":"));
-		database = null;
-		table = null;
+		databaseEnvironment = null;
+		tableEnvironment = null;
 	}
 	
 	public void setDatabaseSQL(String db) {
 		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "'") + ":"));
-		database = db;
-		table = null;
+		databaseEnvironment = db;
+		tableEnvironment = null;
 	}
 	
 	public void setTableSQL(String db, String table) {
 		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "." + table + "'") + ":"));
-		this.database = db;
-		this.table = table;
+		this.databaseEnvironment = db;
+		this.tableEnvironment = table;
 	}
 	
 }
