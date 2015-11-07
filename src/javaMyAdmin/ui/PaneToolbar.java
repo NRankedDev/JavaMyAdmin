@@ -3,6 +3,7 @@ package javaMyAdmin.ui;
 import java.sql.SQLException;
 
 import javaMyAdmin.db.Table;
+import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -65,11 +66,11 @@ public class PaneToolbar extends BorderPane {
 					}
 					
 					if (table != null) {
-						Frame.getInstance().getTableList().getSelectionModel().clearSelection();
-						Frame.getInstance().getTableValues().refresh(table);
+						Frame.getInstance().getTableListPane().getSelectionModel().clearSelection();
+						Frame.getInstance().getTableContentPane().refresh(table);
 					}
 				} catch (SQLException e) {
-					Frame.showErrorLog(e);
+					FXUtil.showErrorLog(e);
 				}
 			}
 		});

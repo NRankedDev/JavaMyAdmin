@@ -6,6 +6,7 @@ import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.OptionDialog;
 import javaMyAdmin.util.Config;
+import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Lang;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -90,7 +91,7 @@ public class DialogLogin extends OptionDialog {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							Frame.showErrorLog(e);
+							FXUtil.showErrorLog(e);
 							Platform.exit();
 							System.exit(0);
 						}

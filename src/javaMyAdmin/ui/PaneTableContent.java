@@ -10,6 +10,8 @@ import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.PaneTableContent.TableRecord;
 import javaMyAdmin.ui.dialogs.DialogAddRecords;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
+import javaMyAdmin.util.FXUtil;
+import javaMyAdmin.util.Images;
 import javaMyAdmin.util.Lang;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -25,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
@@ -59,7 +62,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 			try {
 				refresh(table.getColumnNames(), table.getLines());
 			} catch (SQLException e) {
-				Frame.showErrorLog(e);
+				FXUtil.showErrorLog(e);
 			}
 		} else {
 			getItems().clear();
@@ -106,7 +109,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 							try {
 								getCurrentShownTable().setValue(getTableRow().getIndex(), getColumns().indexOf(getTableColumn()), newValue);
 							} catch (SQLException e) {
-								Frame.showErrorLog(e);
+								FXUtil.showErrorLog(e);
 							}
 						}
 						
@@ -176,7 +179,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				throw new SQLException("columns.size() != values.size() [" + columns.size() + " != " + values.size() + "]");
 			}
 		} catch (SQLException e) {
-			Frame.showErrorLog(e);
+			FXUtil.showErrorLog(e);
 			return;
 		}
 		
@@ -220,7 +223,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 										table.addTupel(strings);
 										PaneTableContent.this.addRow(strings);
 									} catch (SQLException e) {
-										Frame.showErrorLog(e);
+										FXUtil.showErrorLog(e);
 										return false;
 									}
 								}
@@ -250,13 +253,14 @@ public class PaneTableContent extends TableView<TableRecord> {
 							getCurrentShownTable().rmTupel(values);
 							PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
 						} catch (SQLException e) {
-							Frame.showErrorLog(e);
+							FXUtil.showErrorLog(e);
 						}
 					}
 				}
 			});
 			
 			MenuItem editColumn = new MenuItem(Lang.getString("column.edit", "Edit columns..."));
+			editColumn.setGraphic(new ImageView(Images.TABLE_EDIT));
 			editColumn.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {

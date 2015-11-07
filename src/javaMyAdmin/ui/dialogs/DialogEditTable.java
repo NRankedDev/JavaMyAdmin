@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
 import javaMyAdmin.util.Datatype;
+import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Index;
 import javaMyAdmin.util.Lang;
 import javafx.collections.FXCollections;
@@ -70,7 +70,7 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 					return;
 				}
 			} catch (SQLException e) {
-				Frame.showErrorLog(e);
+				FXUtil.showErrorLog(e);
 			}
 		}
 		
