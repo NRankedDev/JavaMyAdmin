@@ -10,12 +10,9 @@ import javaMyAdmin.util.FX;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-<<<<<<< HEAD
-=======
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
->>>>>>> origin/master
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -25,10 +22,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-<<<<<<< HEAD
-=======
 import javafx.stage.Stage;
->>>>>>> origin/master
 import javafx.util.Callback;
 
 /**
@@ -38,10 +32,6 @@ import javafx.util.Callback;
  */
 public class PaneTableList extends TreeView<String> {
 	
-<<<<<<< HEAD
-	private static final int connectionLayer = 0;
-=======
->>>>>>> origin/master
 	private static final int databaseLayer = 1;
 	private static final int tableLayer = 2;
 	
@@ -77,14 +67,11 @@ public class PaneTableList extends TreeView<String> {
 								} catch (SQLException e) {
 									e.printStackTrace();
 								}
-<<<<<<< HEAD
-=======
 								Frame.getInstance().getToolbar().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
 							} else if (FX.getLayer(getTreeItem()) == databaseLayer) {
 								Frame.getInstance().getToolbar().setDatabaseSQL(getTreeItem().getValue());
 							} else {
 								Frame.getInstance().getToolbar().setServerSQL();
->>>>>>> origin/master
 							}
 						}
 					}
@@ -167,14 +154,6 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					new DialogStringInput(addDatabase.getText(), Lang.getString("database.add.name", "Name")) {
 						@Override
-<<<<<<< HEAD
-						protected void handle() {
-							try {
-								Frame.getDbManager().addDB(input.getText());
-								refresh();
-							} catch (SQLException e) {
-								Frame.showErrorLog(e);
-=======
 						protected boolean handle() {
 							try {
 								Frame.getDbManager().addDB(input.getText());
@@ -183,7 +162,6 @@ public class PaneTableList extends TreeView<String> {
 							} catch (SQLException e) {
 								Frame.showErrorLog(e);
 								return false;
->>>>>>> origin/master
 							}
 						}
 					}.show();
@@ -206,10 +184,6 @@ public class PaneTableList extends TreeView<String> {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
-<<<<<<< HEAD
-						Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
-						refresh();
-=======
 						Alert a = new Alert(AlertType.CONFIRMATION);
 						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
 						a.setContentText(String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("database", "database"),
@@ -219,7 +193,6 @@ public class PaneTableList extends TreeView<String> {
 							Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
 							refresh();
 						}
->>>>>>> origin/master
 					} catch (SQLException e) {
 						Frame.showErrorLog(e);
 					}
@@ -232,11 +205,7 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					new DialogEditTable(null) {
 						@Override
-<<<<<<< HEAD
-						protected void handle() {
-=======
 						protected boolean handle() {
->>>>>>> origin/master
 							TreeItem<String> item = getSelectionModel().getSelectedItem();
 							String db = null;
 							
@@ -255,17 +224,11 @@ public class PaneTableList extends TreeView<String> {
 								}
 							} catch (Exception e) {
 								Frame.showErrorLog(e);
-<<<<<<< HEAD
-							}
-							
-							refresh();
-=======
 								return false;
 							}
 							
 							refresh();
 							return true;
->>>>>>> origin/master
 						}
 					}.show();
 				}
@@ -287,10 +250,6 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					try {
 						TreeItem<String> item = getSelectionModel().getSelectedItem();
-<<<<<<< HEAD
-						Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
-						refresh();
-=======
 						Alert a = new Alert(AlertType.CONFIRMATION);
 						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
 						a.setContentText(
@@ -300,7 +259,6 @@ public class PaneTableList extends TreeView<String> {
 							Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
 							refresh();
 						}
->>>>>>> origin/master
 					} catch (SQLException e) {
 						Frame.showErrorLog(e);
 					}

@@ -1,9 +1,5 @@
 package javaMyAdmin.util;
 
-<<<<<<< HEAD
-import java.util.Properties;
-
-=======
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -12,7 +8,6 @@ import java.util.Properties;
 
 import javaMyAdmin.ui.Frame;
 
->>>>>>> origin/master
 /**
  * Erweiterung der Klasse {@link Properties}
  * 
@@ -23,10 +18,7 @@ import javaMyAdmin.ui.Frame;
  * @author Nicolas
  */
 public class Config extends Properties {
-
-<<<<<<< HEAD
-	private static final long serialVersionUID = 1L;
-=======
+	
 	private static final File configFile = new File("config.ini");
 	private static final long serialVersionUID = 1L;
 	private static final Config instance = new Config();
@@ -37,7 +29,9 @@ public class Config extends Properties {
 	
 	public Config() {
 		try {
-			load(new FileReader(configFile));
+			if (configFile.exists()) {
+				load(new FileReader(configFile));
+			}
 		} catch (IOException e) {
 			Frame.showErrorLog(new IOException("Couldn't load config", e));
 		}
@@ -48,22 +42,21 @@ public class Config extends Properties {
 			if (!configFile.exists()) {
 				configFile.createNewFile();
 			}
-		
+			
 			store(new FileWriter(configFile), "");
-		} catch(IOException e) {
+		} catch (IOException e) {
 			Frame.showErrorLog(e);
 		}
 	}
->>>>>>> origin/master
-
+	
 	public void set(String key, Object value) {
 		setProperty(key, value.toString());
 	}
-
+	
 	public boolean getBoolean(String key) {
 		return Boolean.parseBoolean(getProperty(key));
 	}
-
+	
 	public int getInt(String key) {
 		try {
 			return Integer.parseInt(key);
@@ -71,7 +64,7 @@ public class Config extends Properties {
 			return 0;
 		}
 	}
-
+	
 	public double getDouble(String key) {
 		try {
 			return Double.parseDouble(key);
@@ -79,5 +72,5 @@ public class Config extends Properties {
 			return 0.0;
 		}
 	}
-
+	
 }
