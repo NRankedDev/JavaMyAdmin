@@ -2,6 +2,11 @@ package javaMyAdmin.util;
 
 import javafx.scene.image.Image;
 
+/**
+ * Sammlung alle Images
+ * 
+ * @author Hannes
+ */
 public class Images {
 	
 	/* Database */
@@ -20,10 +25,23 @@ public class Images {
 	public static final Image[] ICONS = new Image[] { /* 16x16 */ DATABASE, /* 32x32 */ getResource("icon") };
 	public static final Image CONNECTION = getResource("connection");
 	
+	/**
+	 * Lädt eine Resourcedatei als Image
+	 * 
+	 * @param resFileName
+	 * @return
+	 */
 	public static final Image getResource(String resFileName) {
 		return getResource(resFileName, "png");
 	}
 	
+	/**
+	 * Lädt eine Resourcedatei als Image
+	 * 
+	 * @param resFileName
+	 * @param fileFormat
+	 * @return
+	 */
 	public static final Image getResource(String resFileName, String fileFormat) {
 		try {
 			return new Image(Images.class.getResourceAsStream("/res/" + resFileName + "." + fileFormat.toLowerCase()));

@@ -1,5 +1,10 @@
 package javaMyAdmin.util;
 
+/**
+ * Sammlung aller Indices
+ * 
+ * @author Nicolas
+ */
 public enum Index {
 	
 	NONE("---"), PRIMARY("PRIMARY", "PRI"), UNIQUE("UNIQUE"), INDEX("INDEX"), FULLTEXT("FULLTEXT");

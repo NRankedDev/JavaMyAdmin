@@ -3,6 +3,14 @@ package javaMyAdmin.util;
 import java.sql.Date;
 import java.util.ArrayList;
 
+/**
+ * Sammlung aller SQL Datentypen
+ * 
+ * @author Nicolas
+ * 		
+ * @param <T>
+ *            Der Java Type
+ */
 public class Datatype<T> {
 	
 	private static final ArrayList<Datatype<?>> datatypes = new ArrayList<Datatype<?>>();
