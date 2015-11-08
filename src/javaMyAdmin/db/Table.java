@@ -90,7 +90,7 @@ public class Table {
 		if (lines.isEmpty()) {
 			loadLines(null);
 		}
-		connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = " + getLines(line).getValues(0));
+		connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = '" + getLines(line).getValues(0) + "'");
 	}
 	public int loadColumns(ResultSet rs) throws SQLException{
 		ResultSetMetaData metaData = rs.getMetaData();
@@ -160,7 +160,7 @@ public class Table {
 			value = "DATA_TYPE";
 			break;
 		case 2:
-			value = "CHARAKTER_MAXIMUM_LENGTH";
+			value = "CHARACTER_MAXIMUM_LENGTH";
 			break;
 		case 3:
 			value = "IS_NULLABLE";
