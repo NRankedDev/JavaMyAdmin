@@ -2,6 +2,7 @@ package javaMyAdmin.ui;
 
 import java.sql.SQLException;
 
+import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
@@ -52,7 +53,7 @@ public class PaneTableList extends TreeView<String> {
 						if (selected) {
 							if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
 								try {
-									Database db = Frame.getDbManager().getDB(getTreeItem().getParent().getValue());
+									Database db = DBManager.getInstance().getDB(getTreeItem().getParent().getValue());
 									
 									if (db != null) {
 										if (db.getDbname().equals(getTreeItem().getParent().getValue())) {
@@ -111,7 +112,7 @@ public class PaneTableList extends TreeView<String> {
 		setRoot(root);
 		
 		try {
-			for (Database db : Frame.getDbManager().getDB()) {
+			for (Database db : DBManager.getInstance().getDB()) {
 				if (db.getDbname().equals("information_schema")) {
 					continue;
 					// TODO remove DEBUG
@@ -135,7 +136,7 @@ public class PaneTableList extends TreeView<String> {
 				return;
 			}
 			
-			Database db = Frame.getDbManager().getDB(database);
+			Database db = DBManager.getInstance().getDB(database);
 			TreeItem<String> dbItem = null;
 			
 			for (TreeItem<String> item : root.getChildren()) {
@@ -182,7 +183,7 @@ public class PaneTableList extends TreeView<String> {
 						@Override
 						protected boolean handle() {
 							try {
-								Frame.getDbManager().addDB(input.getText());
+								DBManager.getInstance().addDB(input.getText());
 								refresh();
 								return true;
 							} catch (SQLException e) {
@@ -216,7 +217,7 @@ public class PaneTableList extends TreeView<String> {
 								getSelectionModel().getSelectedItem().getValue()));
 						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						if (a.showAndWait().get() == ButtonType.OK) {
-							Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
+							DBManager.getInstance().rmDB(getSelectionModel().getSelectedItem().getValue());
 							refresh();
 						}
 					} catch (SQLException e) {
@@ -243,7 +244,7 @@ public class PaneTableList extends TreeView<String> {
 							}
 							
 							try {
-								Database database = Frame.getDbManager().getDB(db);
+								Database database = DBManager.getInstance().getDB(db);
 								if (database != null) {
 									database.addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
 								} else {
@@ -284,7 +285,7 @@ public class PaneTableList extends TreeView<String> {
 								String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("table", "table"), item.getValue()));
 						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						if (a.showAndWait().get() == ButtonType.OK) {
-							Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
+							DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
 							refresh();
 						}
 					} catch (SQLException e) {

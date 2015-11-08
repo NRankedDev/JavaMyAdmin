@@ -22,7 +22,6 @@ import javafx.stage.Stage;
  */
 public class Frame extends Application {
 	
-	private static DBManager dbManager;
 	private static Frame instance;
 	
 	private PaneToolbar toolbar;
@@ -40,24 +39,6 @@ public class Frame extends Application {
 	 */
 	public static Frame getInstance() {
 		return instance;
-	}
-	
-	/**
-	 * Anbindung an die Datenbank
-	 * 
-	 * @return
-	 */
-	public static DBManager getDbManager() {
-		return dbManager;
-	}
-	
-	/**
-	 * Setzt die Anbindung an die Datenbank
-	 * 
-	 * @param dbManager
-	 */
-	public static void setDbManager(DBManager dbManager) {
-		Frame.dbManager = dbManager;
 	}
 	
 	@Override
@@ -101,6 +82,7 @@ public class Frame extends Application {
 	
 	@Override
 	public void stop() throws Exception {
+		DBManager.getInstance().close();
 		Config.getInstance().save();
 		System.exit(0);
 	}
