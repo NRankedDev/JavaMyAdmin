@@ -51,6 +51,7 @@ connection=Verbindung
 database=Datenbank
 database.add=Datenbank hinzufügen
 database.add.name=Name
+database.rename=Datenbank umbennen
 database.remove=Datenbank löschen
 table=Tabelle
 table.add=Tabelle hinzufügen
@@ -72,7 +73,6 @@ table.remove=Tabelle löschen
 # Table content
 #
 table.no_content=Keine Datensätze in dieser Tabelle
-column.edit=Spalten editieren...
 record.add=Datensatz hinzufügen
 record.add.description=Datensätze hinzufügen für Tabelle
 record.add.records=Datensätze

@@ -23,22 +23,13 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-/**
- * Dialog, der beim Erstellen <u>und</u> Aendern einer Tabelle angezeigt wird.
- * Konstruktoren:
- * <ul>
- * <li>{@link #DialogEditTable()}, beim Erstellen einer Tabelle</li>
- * <li>{@link #DialogEditTable(Table)}, beim Editieren einer Tabelle</li>
- * </ul>
- * 
- * @author Nicolas
- */
 public abstract class DialogEditTable extends DialogDynamicRows {
 	
 	private static final int MODE_ADD = 0;
 	private static final int MODE_EDIT = 1;
 	
 	private final Table table;
+	private final int mode;
 	private TextField tableName = new TextField();
 	private ArrayList<TextField> titles = new ArrayList<TextField>();
 	private ArrayList<ComboBox<String>> datatypes = new ArrayList<ComboBox<String>>();
@@ -54,6 +45,11 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		super(table == null ? Lang.getString("table.add", "Add table") : Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
+		if (table != null) {
+			this.mode = MODE_EDIT;
+		} else {
+			this.mode = MODE_ADD;
+		}
 	}
 	
 	@Override
@@ -64,11 +60,10 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		top.addRow(1);
 		top.addRow(2, new Label(Lang.getString("table.edit.columns", "Columns") + ":"));
 		
-		if (table != null) {
+		if (mode == MODE_EDIT) {
 			try {
 				for (String columnName : table.getColumnNames()) {
-					addRow(columnName, Datatype.valueOfName(table.getDatentyp(columnName)), table.getLength(columnName), Index.valueOfName(table.getIndex(columnName)), table.getNull(columnName),
-							MODE_EDIT);
+					addRow(columnName, Datatype.valueOfName(table.getDatentyp(columnName)), table.getLength(columnName), Index.valueOfName(table.getIndex(columnName)), table.getNull(columnName));
 				}
 				
 				if (this.grid.getRowCount() > 0) {
@@ -83,17 +78,20 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 	}
 	
 	public void addRow() {
-		addRow("", Datatype.VARCHAR, "", Index.NONE, false, MODE_ADD);
+		addRow("", Datatype.VARCHAR, "", Index.NONE, false);
 	}
 	
-	public void addRow(String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull, int mode) {
+	public void addRow(String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
 		// Title
 		final TextField title = new TextField(defaultTitle == null ? "" : defaultTitle);
 		
 		// Datatype
 		final ComboBox<String> datatype = new ComboBox<String>();
-		datatype.getItems().addAll(Datatype.nameValues());
-		
+		for (Datatype.Kind kind : Datatype.Kind.values()) {
+			for (Datatype<?> type : Datatype.values(kind)) {
+				datatype.getItems().add(type.getName());
+			}
+		}
 		if (mode == MODE_EDIT) {
 			datatype.getSelectionModel().select(defaultDatatype.getName());
 			datatype.setDisable(true);

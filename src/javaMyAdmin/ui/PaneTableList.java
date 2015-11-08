@@ -208,6 +208,27 @@ public class PaneTableList extends TreeView<String> {
 	private class DatabaseItemContextMenu extends EmptyContextMenu {
 		
 		public DatabaseItemContextMenu() {
+			MenuItem renameDatasase = new MenuItem(Lang.getString("database.rename", "Rename database"));
+			renameDatasase.setGraphic(new ImageView(Images.DATABASE_EDIT));
+			renameDatasase.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					new DialogStringInput(Lang.getString("database.rename", "Rename database"), Lang.getString("database.add.name", "Name")) {
+						@Override
+						protected boolean handle() {
+							try {
+								DBManager.getInstance().getDB(getSelectionModel().getSelectedItem().getValue()).renameDatabase(input.getText());
+								return true;
+							} catch (SQLException e) {
+								FXUtil.showErrorLog(e);
+							}
+							
+							return false;
+						}
+					}.show();
+				}
+			});
+			
 			MenuItem removeDatabase = new MenuItem(Lang.getString("database.remove", "Remove database"));
 			removeDatabase.setGraphic(new ImageView(Images.DATABASE_REMOVE));
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
@@ -278,7 +299,7 @@ public class PaneTableList extends TreeView<String> {
 				}
 			});
 			
-			getItems().addAll(removeDatabase, new SeparatorMenuItem(), addTable);
+			getItems().addAll(renameDatasase, removeDatabase, new SeparatorMenuItem(), addTable);
 		}
 	}
 	
@@ -288,6 +309,31 @@ public class PaneTableList extends TreeView<String> {
 	private class TableItemContextMenu extends DatabaseItemContextMenu {
 		
 		public TableItemContextMenu() {
+			MenuItem editTable = new MenuItem(Lang.getString("table.edit", "Edit table") + "...");
+			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
+			editTable.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					TreeItem<String> item = getSelectionModel().getSelectedItem();
+					Table table = null;
+					
+					try {
+						table = DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
+					} catch (NullPointerException | SQLException e) {
+						FXUtil.showErrorLog(e);
+					}
+					
+					if (table != null) {
+						new DialogEditTable(table) {
+							@Override
+							protected boolean handle() {
+								return true;
+							}
+						}.show();
+					}
+				}
+			});
+			
 			MenuItem removeTable = new MenuItem(Lang.getString("table.remove", "Remove table"));
 			removeTable.setGraphic(new ImageView(Images.TABLE_REMOVE));
 			removeTable.setOnAction(new EventHandler<ActionEvent>() {
@@ -319,7 +365,7 @@ public class PaneTableList extends TreeView<String> {
 					}
 				}
 			});
-			getItems().addAll(removeTable);
+			getItems().addAll(editTable, removeTable);
 		}
 		
 	}

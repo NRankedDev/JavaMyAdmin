@@ -8,6 +8,7 @@ public class Images {
 	public static final Image DATABASE = getResource("database");
 	public static final Image DATABASE_ADD = getResource("database_add");
 	public static final Image DATABASE_REMOVE = getResource("database_remove");
+	public static final Image DATABASE_EDIT = getResource("database_edit");
 	
 	/* Table */
 	public static final Image TABLE = getResource("table");

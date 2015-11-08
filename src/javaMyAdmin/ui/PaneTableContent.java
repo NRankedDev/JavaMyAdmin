@@ -273,17 +273,12 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 			
-			MenuItem editColumn = new MenuItem(Lang.getString("column.edit", "Edit columns..."));
-			editColumn.setGraphic(new ImageView(Images.TABLE_EDIT));
-			editColumn.setOnAction(new EventHandler<ActionEvent>() {
+			MenuItem editTable = new MenuItem(Lang.getString("table.edit", "Edit table") + "...");
+			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
+			editTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					if (getCurrentShownTable() != null) {
-						ArrayList<String> columns = new ArrayList<String>();
-						for (TableColumn<TableRecord, ?> column : getColumns()) {
-							columns.add(column.getText());
-						}
-						
 						new DialogEditTable(getCurrentShownTable()) {
 							@Override
 							protected boolean handle() {
@@ -294,7 +289,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 			
-			getItems().addAll(addRecord, removeRecord, new SeparatorMenuItem(), editColumn);
+			getItems().addAll(addRecord, removeRecord, new SeparatorMenuItem(), editTable);
 		}
 	}
 }
