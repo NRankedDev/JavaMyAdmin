@@ -54,7 +54,14 @@ public class Table {
 		String var2 = index != null ? ", ADD "+index+" (`"+columnName+"`)" : "";
 		connect.createStatement().executeUpdate("ALTER TABLE `"+name+"` ADD `"+columnName+"` "+datatype+"("+length+") "+var+var2);
 	}
-
+	
+	public void removeColumn(String columnName) throws SQLException{
+		connect.createStatement().executeUpdate("ALTER TABLE `"+name+"` DROP `"+columnName+"`");
+	}
+	
+	public void renameColumn(String oldColumnName, String newColumnName) throws SQLException{
+		connect.createStatement().executeUpdate("ALTER TABLE `"+name+"` CHANGE `"+oldColumnName+"` `"+newColumnName+"` "+getDatentyp(oldColumnName)+"("+getLength(oldColumnName)+")");
+	}
 	public ArrayList<String> getColumnNames() throws SQLException {
 		return columnNames;
 	}
@@ -186,7 +193,7 @@ public class Table {
 			break;
 		}
 	
-		return (rs=connect.createStatement().executeQuery("select `"+value+"` from information_schema.columns where table_name='"+name+"' and column_name like '"+column+"'")).next() ? rs.getString(1) : null;
+		return (rs=connect.createStatement().executeQuery("select `"+value+"` from information_schema.columns where table_name='"+name+"' and column_name = '"+column+"'")).next() ? rs.getString(1) : null;
 	}
 	
 	public boolean getAbstract(){
@@ -195,7 +202,6 @@ public class Table {
 	
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = Functions.executeFinal(cmd, connect, dbname);
-		loadLines(null);
 		return t;
 	}
 }
