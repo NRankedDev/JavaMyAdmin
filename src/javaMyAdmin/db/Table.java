@@ -179,15 +179,6 @@ public class Table {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		Table t = new Table(null, new ArrayList<String>(), connect, null);
-		t.isAbstract(true);
-		connect.createStatement().executeQuery("USE `"+dbname+"`");
-		if(connect.createStatement().execute(cmd)){
-			t.loadLines(connect.createStatement().executeQuery(cmd));
-		}else{
-			connect.createStatement().executeUpdate(cmd);
-			t = null;
-		}
-		return t;
+		return Functions.executeFinal(cmd, connect, dbname);
 	}
 }

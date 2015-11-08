@@ -13,10 +13,10 @@ public class DBManager extends Connector {
 	private static String url;
 	private static String password;
 	private static String user;
-	private static DBManager instance;
+	private static DBManager instance = new DBManager();
 	private ArrayList<Database> db = new ArrayList<Database>();
 
-	public DBManager() throws SQLException {
+	public DBManager(){
 		instance = this;
 	}
 	
@@ -83,6 +83,9 @@ public class DBManager extends Connector {
 		return d;
 	}
 	
+	public String getUrl(){
+		return url;
+	}
 	public void addDB(String dbname) throws SQLException{
 		connect.createStatement().executeUpdate("CREATE DATABASE " + dbname);
 		loadDB();
@@ -94,14 +97,6 @@ public class DBManager extends Connector {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		Table t = new Table(null, new ArrayList<String>(), connect, null);
-		t.isAbstract(true);
-		if(connect.createStatement().execute(cmd)){
-			t.loadLines(connect.createStatement().executeQuery(cmd));
-		}else{
-			connect.createStatement().executeUpdate(cmd);
-			t = null;
-		}
-		return t;
+		return Functions.executeFinal(cmd, connect, null);
 	}
 }

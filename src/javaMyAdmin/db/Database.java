@@ -109,15 +109,16 @@ public class Database {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		Table t = new Table(null, new ArrayList<String>(), connect, null);
-		t.isAbstract(true);
-		if(connect.createStatement().execute(cmd)){
-			t.loadLines(connect.createStatement().executeQuery(cmd));
-		}else{
-			connect.createStatement().executeUpdate(cmd);
-			loadTables();
-			t = null;
-		}
-		return t;
+//		Table t = new Table(null, new ArrayList<String>(), connect, null);
+//		t.isAbstract(true);
+//		if(connect.createStatement().execute(cmd)){
+//			t.loadLines(connect.createStatement().executeQuery(cmd));
+//		}else{
+//			connect.createStatement().executeUpdate(cmd);
+//			loadTables();
+//			t = null;
+//		}
+		
+		return Functions.executeFinal(cmd, connect, dbname);
 	}
 }
