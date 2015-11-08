@@ -111,12 +111,12 @@ public class Database {
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);
 		t.isAbstract(true);
-		try{
-			connect.createStatement().executeUpdate(cmd);
-			t = null;
-		}catch(Exception e){
-			connect.createStatement().executeQuery("USE `"+dbname+"`");
+		if(connect.createStatement().execute(cmd)){
 			t.loadLines(connect.createStatement().executeQuery(cmd));
+		}else{
+			connect.createStatement().executeUpdate(cmd);
+			loadTables();
+			t = null;
 		}
 		return t;
 	}
