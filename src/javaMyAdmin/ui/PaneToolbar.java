@@ -57,10 +57,13 @@ public class PaneToolbar extends BorderPane {
 					
 					if (databaseEnvironment == null && tableEnvironment == null) {
 						table = Frame.getDbManager().executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh();
 					} else if (databaseEnvironment != null && tableEnvironment == null) {
 						table = Frame.getDbManager().getDB(databaseEnvironment).executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh(databaseEnvironment);
 					} else if (databaseEnvironment != null && tableEnvironment != null) {
 						table = Frame.getDbManager().getDB(databaseEnvironment).getTable(tableEnvironment).executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh(databaseEnvironment);
 					} else {
 						throw new RuntimeException("database == null; table != null");
 					}

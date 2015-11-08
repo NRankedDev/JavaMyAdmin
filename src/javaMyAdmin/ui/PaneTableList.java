@@ -106,6 +106,9 @@ public class PaneTableList extends TreeView<String> {
 	 */
 	public void refresh() {
 		TreeItem<String> root = new TreeItem<String>(Lang.getString("connection", "Connection"));
+		root.setGraphic(new ImageView(Images.CONNECTION));
+		root.setExpanded(true);
+		setRoot(root);
 		
 		try {
 			for (Database db : Frame.getDbManager().getDB()) {
@@ -114,28 +117,54 @@ public class PaneTableList extends TreeView<String> {
 					// TODO remove DEBUG
 				}
 				
-				TreeItem<String> name = new TreeItem<String>(db.getDbname());
-				name.setGraphic(new ImageView(Images.DATABASE));
-				
-				try {
-					for (Table table : db.getTable()) {
-						TreeItem<String> item = new TreeItem<String>(table.getName());
-						item.setGraphic(new ImageView(Images.TABLE));
-						name.getChildren().add(item);
-					}
-				} catch (SQLException e) {
-					FXUtil.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
-				}
-				
-				root.getChildren().add(name);
+				refresh(db.getDbname());
 			}
 		} catch (SQLException e) {
 			FXUtil.showErrorLog(e);
 		}
-		
-		root.setGraphic(new ImageView(Images.CONNECTION));
-		root.setExpanded(true);
-		setRoot(root);
+	}
+	
+	/**
+	 * Zeigt <b>eine</b> Datenbank und ihre Tabellen neu an
+	 */
+	public void refresh(String database) {
+		try {
+			TreeItem<String> root = getRoot();
+			if (root == null) {
+				refresh();
+				return;
+			}
+			
+			Database db = Frame.getDbManager().getDB(database);
+			TreeItem<String> dbItem = null;
+			
+			for (TreeItem<String> item : root.getChildren()) {
+				if (item.getValue().equalsIgnoreCase(db.getDbname())) {
+					dbItem = item;
+					break;
+				}
+			}
+			
+			if (dbItem == null) {
+				dbItem = new TreeItem<String>(db.getDbname());
+				dbItem.setGraphic(new ImageView(Images.DATABASE));
+				root.getChildren().add(dbItem);
+			}
+			
+			try {
+				dbItem.getChildren().clear();
+				
+				for (Table table : db.getTable()) {
+					TreeItem<String> item = new TreeItem<String>(table.getName());
+					item.setGraphic(new ImageView(Images.TABLE));
+					dbItem.getChildren().add(item);
+				}
+			} catch (SQLException e) {
+				FXUtil.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
+			}
+		} catch (SQLException e) {
+			FXUtil.showErrorLog(e);
+		}
 	}
 	
 	/**
