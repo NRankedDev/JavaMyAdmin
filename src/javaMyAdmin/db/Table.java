@@ -30,7 +30,12 @@ public class Table {
 	public String getName() {
 		return name;
 	}
-
+	
+	public void renameTable(String newName) throws SQLException {
+		dbname = newName;
+		connect.createStatement().executeQuery("RENAME TABLE '"+dbname+"' TO '"+newName+"'");
+	}
+	
 	public void AddColumn(String name) {
 		columnNames.add(name);
 	}
