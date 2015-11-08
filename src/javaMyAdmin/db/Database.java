@@ -65,8 +65,9 @@ public class Database {
 		return dbname;
 	}
 
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
+	public void renameDatabase(String newName) throws SQLException {
+		dbname = newName;
+		connect.createStatement().executeUpdate("RENAME TABLE "+dbname+" TO "+newName);
 	}
 
 	public void rmTable(String tablename) throws SQLException {

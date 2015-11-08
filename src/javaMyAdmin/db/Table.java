@@ -33,7 +33,7 @@ public class Table {
 	
 	public void renameTable(String newName) throws SQLException {
 		dbname = newName;
-		connect.createStatement().executeQuery("RENAME TABLE '"+dbname+"' TO '"+newName+"'");
+		connect.createStatement().executeUpdate("RENAME TABLE "+name+" TO "+newName);
 	}
 	
 	public void AddColumn(String name) {
