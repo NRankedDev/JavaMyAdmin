@@ -21,8 +21,11 @@ dialog.connect.remember=Login merken
 dialog.connect.connecting=Verbinden...
 dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
-dialog.remove.header=Möchtest du die Aktion wirklich durchführen?
-dialog.remove.content=Wenn du die %s `%s` wirklich löschst, werden alle Daten verloren gehen.
+dialog.remove.title=Möchtest du die Aktion wirklich durchführen?
+dialog.remove.header=Wenn du die %s `%s` löschst, werden alle Daten verloren gehen.
+dialog.remove.content=Gib den Namen der %s ein, um fortzufahren:
+dialog.remove.cancel.header=Aktion wurde abgebrochen.
+dialog.remove.cancel.content=Der eingegebene Name stimmt nicht mit dem Namen der %s überein.
 
 #
 # Menu
