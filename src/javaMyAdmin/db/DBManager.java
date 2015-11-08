@@ -79,14 +79,16 @@ public class DBManager extends Connector {
 		connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
 		loadDB();
 	}
+	
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);
 		t.isAbstract(true);
-		try{
-			connect.createStatement().executeUpdate(cmd);
-			t = null;
-		}catch(Exception e){
+		if(connect.createStatement().execute(cmd)){
 			t.loadLines(connect.createStatement().executeQuery(cmd));
+		}else{
+			connect.createStatement().executeUpdate(cmd);
+			loadDB();
+			t = null;
 		}
 		return t;
 	}
