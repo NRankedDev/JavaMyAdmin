@@ -2,6 +2,7 @@ package javaMyAdmin.ui;
 
 import java.sql.SQLException;
 
+import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Lang;
@@ -56,11 +57,14 @@ public class PaneToolbar extends BorderPane {
 					Table table;
 					
 					if (databaseEnvironment == null && tableEnvironment == null) {
-						table = Frame.getDbManager().executeSQL(sql);
+						table = DBManager.getInstance().executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh();
 					} else if (databaseEnvironment != null && tableEnvironment == null) {
-						table = Frame.getDbManager().getDB(databaseEnvironment).executeSQL(sql);
+						table = DBManager.getInstance().getDB(databaseEnvironment).executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh(databaseEnvironment);
 					} else if (databaseEnvironment != null && tableEnvironment != null) {
-						table = Frame.getDbManager().getDB(databaseEnvironment).getTable(tableEnvironment).executeSQL(sql);
+						table = DBManager.getInstance().getDB(databaseEnvironment).getTable(tableEnvironment).executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh(databaseEnvironment);
 					} else {
 						throw new RuntimeException("database == null; table != null");
 					}

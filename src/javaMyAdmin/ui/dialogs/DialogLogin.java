@@ -3,7 +3,6 @@ package javaMyAdmin.ui.dialogs;
 import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
-import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.OptionDialog;
 import javaMyAdmin.util.Config;
 import javaMyAdmin.util.FXUtil;
@@ -66,7 +65,7 @@ public class DialogLogin extends OptionDialog {
 			@Override
 			public void run() {
 				try {
-					Frame.setDbManager(new DBManager(url.getText(), username.getText(), password.getText()));
+					DBManager.getInstance().connect(url.getText(), username.getText(), password.getText());
 					if (remember.isSelected()) {
 						Config.getInstance().set("url", url.getText());
 						Config.getInstance().set("username", username.getText());
@@ -80,7 +79,7 @@ public class DialogLogin extends OptionDialog {
 						@Override
 						public void run() {
 							try {
-								Frame.getDbManager().getDB();
+								DBManager.getInstance().getDB();
 							} catch (SQLException e) {
 								throw new RuntimeException(e);
 							}
