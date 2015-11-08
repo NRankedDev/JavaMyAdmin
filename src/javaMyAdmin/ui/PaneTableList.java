@@ -116,10 +116,10 @@ public class PaneTableList extends TreeView<String> {
 		
 		try {
 			for (Database db : DBManager.getInstance().getDB()) {
-				if (db.getDbname().equals("information_schema")) {
-					continue;
-					// TODO remove DEBUG
-				}
+				// if (db.getDbname().equals("information_schema")) {
+				// continue;
+				// TODO remove DEBUG
+				// }
 				
 				refresh(db.getDbname());
 			}
