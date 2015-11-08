@@ -4,7 +4,7 @@
 frame.title=javaMyAdmin
 error=Fehler
 error.header=Ein Fehler ist aufgetreten.
-error.sql=Verbindung zur einer Datenbank fehlgeschlagen.
+error.sql.header=Ein SQL-Fehler ist aufgetreten.
 error.unknown=Ein unbekannter Fehler ist aufgetreten.
 
 #

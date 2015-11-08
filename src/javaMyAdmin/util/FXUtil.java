@@ -60,10 +60,15 @@ public class FXUtil {
 	 */
 	public static void showErrorLog(Throwable t) {
 		t.printStackTrace();
+		
 		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(Lang.getString("error", "Error: " + t.getLocalizedMessage()));
 		alert.setHeaderText(Lang.getString("error.header", "Ein Fehler ist aufgetreten."));
-		alert.setContentText(t.getClass().equals(SQLException.class) ? Lang.getString("error.sql", "Couldn't connect to a database") : Lang.getString("error.unknown", ""));
+		if (!(t instanceof SQLException)) {
+			alert.setContentText(Lang.getString("error.unknown", "An unkown error occured."));
+		} else {
+			SQLException e = (SQLException) t;
+			alert.setContentText(e.getErrorCode() + ": " + e.getLocalizedMessage());
+		}
 		
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
