@@ -66,8 +66,10 @@ public class PaneTableList extends TreeView<String> {
 								Frame.getInstance().getToolbarPane().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
 							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
 								Frame.getInstance().getToolbarPane().setDatabaseSQL(getTreeItem().getValue());
+								Frame.getInstance().getTableContentPane().refresh(null);
 							} else {
 								Frame.getInstance().getToolbarPane().setServerSQL();
+								Frame.getInstance().getTableContentPane().refresh(null);
 							}
 						}
 					}
