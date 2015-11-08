@@ -10,6 +10,8 @@ import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.PaneTableContent.TableRecord;
 import javaMyAdmin.ui.dialogs.DialogAddRecords;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
+import javaMyAdmin.util.FXUtil;
+import javaMyAdmin.util.Images;
 import javaMyAdmin.util.Lang;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -25,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Callback;
@@ -55,22 +58,36 @@ public class PaneTableContent extends TableView<TableRecord> {
 	public void refresh(Table table) {
 		this.table = table;
 		
-		if (table != null) {
-			try {
-				refresh(table.getColumnNames(), table.getLines());
-			} catch (SQLException e) {
-				Frame.showErrorLog(e);
-			}
-		} else {
-			getItems().clear();
-		}
-	}
-	
-	private void refresh(ArrayList<String> columnNames, ArrayList<Line> tableLines) {
 		// Clearing old data
 		getItems().clear();
 		getColumns().clear();
 		
+		Frame.getInstance().getStatusBar().setTableInfo(table);
+		
+		if (table != null) {
+			if (table.getAbstract()) {
+				for (MenuItem item : getContextMenu().getItems()) {
+					item.setDisable(true);
+				}
+				
+				setEditable(false);
+			} else {
+				for (MenuItem item : getContextMenu().getItems()) {
+					item.setDisable(false);
+				}
+				
+				setEditable(true);
+			}
+			
+			try {
+				refresh(table.getColumnNames(), table.getLines());
+			} catch (SQLException e) {
+				FXUtil.showErrorLog(e);
+			}
+		}
+	}
+	
+	private void refresh(ArrayList<String> columnNames, ArrayList<Line> tableLines) {
 		// Generating columns
 		@SuppressWarnings("unchecked")
 		TableColumn<TableRecord, String>[] columns = new TableColumn[columnNames.size()];
@@ -106,7 +123,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 							try {
 								getCurrentShownTable().setValue(getTableRow().getIndex(), getColumns().indexOf(getTableColumn()), newValue);
 							} catch (SQLException e) {
-								Frame.showErrorLog(e);
+								FXUtil.showErrorLog(e);
 							}
 						}
 						
@@ -176,7 +193,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				throw new SQLException("columns.size() != values.size() [" + columns.size() + " != " + values.size() + "]");
 			}
 		} catch (SQLException e) {
-			Frame.showErrorLog(e);
+			FXUtil.showErrorLog(e);
 			return;
 		}
 		
@@ -220,7 +237,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 										table.addTupel(strings);
 										PaneTableContent.this.addRow(strings);
 									} catch (SQLException e) {
-										Frame.showErrorLog(e);
+										FXUtil.showErrorLog(e);
 										return false;
 									}
 								}
@@ -250,22 +267,18 @@ public class PaneTableContent extends TableView<TableRecord> {
 							getCurrentShownTable().rmTupel(values);
 							PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
 						} catch (SQLException e) {
-							Frame.showErrorLog(e);
+							FXUtil.showErrorLog(e);
 						}
 					}
 				}
 			});
 			
-			MenuItem editColumn = new MenuItem(Lang.getString("column.edit", "Edit columns..."));
-			editColumn.setOnAction(new EventHandler<ActionEvent>() {
+			MenuItem editTable = new MenuItem(Lang.getString("table.edit", "Edit table") + "...");
+			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
+			editTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					if (getCurrentShownTable() != null) {
-						ArrayList<String> columns = new ArrayList<String>();
-						for (TableColumn<TableRecord, ?> column : getColumns()) {
-							columns.add(column.getText());
-						}
-						
 						new DialogEditTable(getCurrentShownTable()) {
 							@Override
 							protected boolean handle() {
@@ -276,7 +289,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 			
-			getItems().addAll(addRecord, removeRecord, new SeparatorMenuItem(), editColumn);
+			getItems().addAll(addRecord, removeRecord, new SeparatorMenuItem(), editTable);
 		}
 	}
 }

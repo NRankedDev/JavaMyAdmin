@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
 import javaMyAdmin.util.Datatype;
+import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Index;
 import javaMyAdmin.util.Lang;
 import javafx.collections.FXCollections;
@@ -70,7 +70,7 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 					return;
 				}
 			} catch (SQLException e) {
-				Frame.showErrorLog(e);
+				FXUtil.showErrorLog(e);
 			}
 		}
 		
@@ -81,14 +81,14 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 		addRow("", Datatype.VARCHAR, "", Index.NONE, false);
 	}
 	
-	public void addRow(String defaultTitle, Datatype defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
+	public void addRow(String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
 		// Title
 		final TextField title = new TextField(defaultTitle == null ? "" : defaultTitle);
 		
 		// Datatype
 		final ComboBox<String> datatype = new ComboBox<String>();
 		for (Datatype.Kind kind : Datatype.Kind.values()) {
-			for (Datatype type : Datatype.values(kind)) {
+			for (Datatype<?> type : Datatype.values(kind)) {
 				datatype.getItems().add(type.getName());
 			}
 		}

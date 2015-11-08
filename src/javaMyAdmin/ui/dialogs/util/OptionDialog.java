@@ -1,6 +1,6 @@
 package javaMyAdmin.ui.dialogs.util;
 
-import javaMyAdmin.ui.Frame;
+import javaMyAdmin.util.Images;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -30,7 +30,7 @@ public abstract class OptionDialog {
 		
 		public DialogStage() {
 			initModality(Modality.APPLICATION_MODAL);
-			getIcons().addAll(Frame.getIcons());
+			getIcons().addAll(Images.ICONS);
 		}
 		
 	}

@@ -13,8 +13,10 @@ public class Debug {
 	}
 	public static void run() throws SQLException{
 		System.out.println("run Debug!");
-		DBManager DBM = new DBManager("127.0.0.1", "root", "");
-		
+		DBManager DBM = new DBManager();
+		DBM.connect("127.0.0.1", "root", "");
+		DBM.getDB("cdcol").getTable("t1").renameColumn("test99", "test");
+		DBM.getDB("cdcol").getTable("t1").removeColumn("test2");
 		System.out.println("end Debug!");
 	}
 }

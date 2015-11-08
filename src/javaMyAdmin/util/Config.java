@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import javaMyAdmin.ui.Frame;
-
 /**
  * Erweiterung der Klasse {@link Properties}
  * 
@@ -33,7 +31,7 @@ public class Config extends Properties {
 				load(new FileReader(configFile));
 			}
 		} catch (IOException e) {
-			Frame.showErrorLog(new IOException("Couldn't load config", e));
+			FXUtil.showErrorLog(new IOException("Couldn't load config", e));
 		}
 	}
 	
@@ -45,7 +43,7 @@ public class Config extends Properties {
 			
 			store(new FileWriter(configFile), "");
 		} catch (IOException e) {
-			Frame.showErrorLog(e);
+			FXUtil.showErrorLog(e);
 		}
 	}
 	

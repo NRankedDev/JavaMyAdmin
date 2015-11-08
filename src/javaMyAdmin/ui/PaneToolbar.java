@@ -2,7 +2,9 @@ package javaMyAdmin.ui;
 
 import java.sql.SQLException;
 
+import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Table;
+import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -55,21 +57,24 @@ public class PaneToolbar extends BorderPane {
 					Table table;
 					
 					if (databaseEnvironment == null && tableEnvironment == null) {
-						table = Frame.getDbManager().executeSQL(sql);
+						table = DBManager.getInstance().executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh();
 					} else if (databaseEnvironment != null && tableEnvironment == null) {
-						table = Frame.getDbManager().getDB(databaseEnvironment).executeSQL(sql);
+						table = DBManager.getInstance().getDB(databaseEnvironment).executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh(databaseEnvironment);
 					} else if (databaseEnvironment != null && tableEnvironment != null) {
-						table = Frame.getDbManager().getDB(databaseEnvironment).getTable(tableEnvironment).executeSQL(sql);
+						table = DBManager.getInstance().getDB(databaseEnvironment).getTable(tableEnvironment).executeSQL(sql);
+						Frame.getInstance().getTableListPane().refresh(databaseEnvironment);
 					} else {
 						throw new RuntimeException("database == null; table != null");
 					}
 					
 					if (table != null) {
-						Frame.getInstance().getTableList().getSelectionModel().clearSelection();
-						Frame.getInstance().getTableValues().refresh(table);
+						Frame.getInstance().getTableListPane().getSelectionModel().clearSelection();
+						Frame.getInstance().getTableContentPane().refresh(table);
 					}
 				} catch (SQLException e) {
-					Frame.showErrorLog(e);
+					FXUtil.showErrorLog(e);
 				}
 			}
 		});
@@ -101,19 +106,19 @@ public class PaneToolbar extends BorderPane {
 	}
 	
 	public void setServerSQL() {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "127.0.0.1") + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), DBManager.getInstance().getUrl()) + ":"));
 		databaseEnvironment = null;
 		tableEnvironment = null;
 	}
 	
 	public void setDatabaseSQL(String db) {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "'") + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), db) + ":"));
 		databaseEnvironment = db;
 		tableEnvironment = null;
 	}
 	
 	public void setTableSQL(String db, String table) {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "." + table + "'") + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), db + "." + table) + ":"));
 		this.databaseEnvironment = db;
 		this.tableEnvironment = table;
 	}

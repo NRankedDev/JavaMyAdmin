@@ -4,7 +4,7 @@
 frame.title=javaMyAdmin
 error=Fehler
 error.header=Ein Fehler ist aufgetreten.
-error.sql=Verbindung zur einer Datenbank fehlgeschlagen.
+error.sql.header=Ein SQL-Fehler ist aufgetreten.
 error.unknown=Ein unbekannter Fehler ist aufgetreten.
 
 #
@@ -21,11 +21,11 @@ dialog.connect.remember=Login merken
 dialog.connect.connecting=Verbinden...
 dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
-<<<<<<< HEAD
-=======
-dialog.remove.header=Möchtest du die Aktion wirklich durchführen?
-dialog.remove.content=Wenn du die %s `%s` wirklich löschst, werden alle Daten verloren gehen.
->>>>>>> origin/master
+dialog.remove.title=Möchtest du die Aktion wirklich durchführen?
+dialog.remove.header=Wenn du die %s `%s` löschst, werden alle Daten verloren gehen.
+dialog.remove.content=Gib den Namen der %s ein, um fortzufahren:
+dialog.remove.cancel.header=Aktion wurde abgebrochen.
+dialog.remove.cancel.content=Der eingegebene Name stimmt nicht mit dem Namen der %s überein.
 
 #
 # Menu
@@ -40,11 +40,7 @@ menu.settings.language.content=Die Einstellungen werden übernommen.
 #
 # Toolbar
 #
-<<<<<<< HEAD
-sql_commands.label=SQL-Befehl(e) ausführen
-=======
-sql_commands.label=SQL-Befehl(e) ausführen in %s
->>>>>>> origin/master
+sql_commands.label=SQL-Befehl(e) ausführen in '%s'
 sql_commands.execute=Ausführen
 sql_commands.clear=Leeren
 
@@ -52,17 +48,12 @@ sql_commands.clear=Leeren
 # Table list
 #
 connection=Verbindung
-<<<<<<< HEAD
-database.add=Datenbank hinzufügen
-database.add.name=Name
-database.remove=Datenbank löschen
-=======
 database=Datenbank
 database.add=Datenbank hinzufügen
 database.add.name=Name
+database.rename=Datenbank umbennen
 database.remove=Datenbank löschen
 table=Tabelle
->>>>>>> origin/master
 table.add=Tabelle hinzufügen
 table.edit=Tabelle bearbeiten
 table.edit.table=Tabellenname
@@ -82,8 +73,15 @@ table.remove=Tabelle löschen
 # Table content
 #
 table.no_content=Keine Datensätze in dieser Tabelle
-column.edit=Spalten editieren...
 record.add=Datensatz hinzufügen
 record.add.description=Datensätze hinzufügen für Tabelle
 record.add.records=Datensätze
 record.remove=Datensatz löschen
+
+#
+# Status
+#
+status.connected=Verbunden zum Server '%s'.
+status.table.none=Keine Tabelle selektiert.
+status.table.selected=Tabelle '%s' selektiert.
+status.table.read_only=(Read Only)

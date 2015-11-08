@@ -13,15 +13,28 @@ public class DBManager extends Connector {
 	private static String url;
 	private static String password;
 	private static String user;
+	private static DBManager instance = new DBManager();
 	private ArrayList<Database> db = new ArrayList<Database>();
 
-	public DBManager(String url, String user, String password) throws SQLException {
+	public DBManager(){
+		instance = this;
+	}
+	
+	public void connect(String url, String user, String password) throws SQLException{
+		this.url = Debug.check(url);
 		this.user = user;
 		this.password = password;
-		this.url = Debug.check(url);
 		connect = doConnection("");
 	}
-
+	
+    public static DBManager getInstance() {
+        return instance;
+    }
+    
+    public void close() throws SQLException {
+    	 closeConnection(connect);
+    }
+    
 	public static Connection doConnection(String dbname) throws SQLException {
 		Connector c = new Connector();
 
@@ -70,25 +83,22 @@ public class DBManager extends Connector {
 		return d;
 	}
 	
+	public String getUrl(){
+		return url;
+	}
 	public void addDB(String dbname) throws SQLException{
 		connect.createStatement().executeUpdate("CREATE DATABASE " + dbname);
 		loadDB();
 	}
 	
 	public void rmDB(String dbname) throws SQLException {
-		if(JOptionPane.showConfirmDialog(null, "Remove Database: '" + dbname + "' ?") != 1){
-			connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
-			loadDB();
-		}
+		connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
+		loadDB();
 	}
+	
 	public Table executeSQL(String cmd) throws SQLException{
-		Table t = new Table(null, new ArrayList<String>(), connect, null);
-		try{
-			connect.createStatement().executeUpdate(cmd);
-			t = null;
-		}catch(Exception e){
-			t.loadLines(connect.createStatement().executeQuery(cmd));
-		}
+		Table t = Functions.executeFinal(cmd, connect, null); 
+		loadDB();
 		return t;
 	}
 }

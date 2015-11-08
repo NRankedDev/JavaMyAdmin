@@ -65,14 +65,13 @@ public class Database {
 		return dbname;
 	}
 
-	public void setDbname(String dbname) {
-		this.dbname = dbname;
+	public void renameDatabase(String newName) throws SQLException {
+		dbname = newName;
+		connect.createStatement().executeUpdate("RENAME TABLE "+dbname+" TO "+newName);
 	}
 
 	public void rmTable(String tablename) throws SQLException {
-		if (JOptionPane.showConfirmDialog(null, "Remove Table " + tablename) != 1) {
-			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
-		}
+		connect.createStatement().executeUpdate("DROP TABLE " + tablename);
 		loadTables();
 	}
 
@@ -111,14 +110,17 @@ public class Database {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		Table t = new Table(null, new ArrayList<String>(), connect, null);
-		try{
-			connect.createStatement().executeUpdate(cmd);
-			t = null;
-		}catch(Exception e){
-			connect.createStatement().executeQuery("USE `"+dbname+"`");
-			t.loadLines(connect.createStatement().executeQuery(cmd));
-		}
+//		Table t = new Table(null, new ArrayList<String>(), connect, null);
+//		t.isAbstract(true);
+//		if(connect.createStatement().execute(cmd)){
+//			t.loadLines(connect.createStatement().executeQuery(cmd));
+//		}else{
+//			connect.createStatement().executeUpdate(cmd);
+//			loadTables();
+//			t = null;
+//		}
+		Table t = Functions.executeFinal(cmd, connect, dbname);
+		loadTables();
 		return t;
 	}
 }

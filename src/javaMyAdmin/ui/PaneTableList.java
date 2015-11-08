@@ -1,26 +1,28 @@
 package javaMyAdmin.ui;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
+import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
 import javaMyAdmin.ui.dialogs.DialogStringInput;
-import javaMyAdmin.util.FX;
+import javaMyAdmin.util.FXUtil;
+import javaMyAdmin.util.Images;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -34,11 +36,6 @@ public class PaneTableList extends TreeView<String> {
 	
 	private static final int databaseLayer = 1;
 	private static final int tableLayer = 2;
-	
-	private static final Image connectionIcon = new Image(PaneTableList.class.getResourceAsStream("/res/connection.png"));
-	private static final Image databaseIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database.png"));
-	private static final Image dababaseAddIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_add.png"));
-	private static final Image dababaseRemoveIcon = new Image(PaneTableList.class.getResourceAsStream("/res/database_remove.png"));
 	
 	private final ContextMenu emptyContextMenu = new EmptyContextMenu();
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
@@ -55,23 +52,25 @@ public class PaneTableList extends TreeView<String> {
 					public void updateSelected(boolean selected) {
 						super.updateSelected(selected);
 						if (selected) {
-							if (FX.getLayer(getTreeItem()) == tableLayer) {
+							if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
 								try {
-									Database db = Frame.getDbManager().getDB(getTreeItem().getParent().getValue());
+									Database db = DBManager.getInstance().getDB(getTreeItem().getParent().getValue());
 									
 									if (db != null) {
 										if (db.getDbname().equals(getTreeItem().getParent().getValue())) {
-											Frame.getInstance().getTableValues().refresh(db.getTable(getTreeItem().getValue()));
+											Frame.getInstance().getTableContentPane().refresh(db.getTable(getTreeItem().getValue()));
 										}
 									}
 								} catch (SQLException e) {
-									e.printStackTrace();
+									FXUtil.showErrorLog(e);
 								}
-								Frame.getInstance().getToolbar().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
-							} else if (FX.getLayer(getTreeItem()) == databaseLayer) {
-								Frame.getInstance().getToolbar().setDatabaseSQL(getTreeItem().getValue());
+								Frame.getInstance().getToolbarPane().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
+							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
+								Frame.getInstance().getToolbarPane().setDatabaseSQL(getTreeItem().getValue());
+								Frame.getInstance().getTableContentPane().refresh(null);
 							} else {
-								Frame.getInstance().getToolbar().setServerSQL();
+								Frame.getInstance().getToolbarPane().setServerSQL();
+								Frame.getInstance().getTableContentPane().refresh(null);
 							}
 						}
 					}
@@ -88,11 +87,11 @@ public class PaneTableList extends TreeView<String> {
 							setText(getTreeItem().getValue());
 							setGraphic(getTreeItem().getGraphic());
 							
-							if (empty || FX.isRoot(getTreeItem())) {
+							if (empty || FXUtil.isRoot(getTreeItem())) {
 								setContextMenu(emptyContextMenu);
-							} else if (FX.getLayer(getTreeItem()) == databaseLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
 								setContextMenu(databaseItemContextMenu);
-							} else if (FX.getLayer(getTreeItem()) == tableLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
 								setContextMenu(tableItemContextMenu);
 							}
 						}
@@ -111,34 +110,65 @@ public class PaneTableList extends TreeView<String> {
 	 */
 	public void refresh() {
 		TreeItem<String> root = new TreeItem<String>(Lang.getString("connection", "Connection"));
-		
-		try {
-			for (Database db : Frame.getDbManager().getDB()) {
-				if (db.getDbname().equals("information_schema")) {
-					continue;
-					// TODO remove DEBUG
-				}
-				
-				TreeItem<String> name = new TreeItem<String>(db.getDbname());
-				name.setGraphic(new ImageView(databaseIcon));
-				
-				try {
-					for (Table table : db.getTable()) {
-						name.getChildren().add(new TreeItem<String>(table.getName()));
-					}
-				} catch (SQLException e) {
-					Frame.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
-				}
-				
-				root.getChildren().add(name);
-			}
-		} catch (SQLException e) {
-			Frame.showErrorLog(e);
-		}
-		
-		root.setGraphic(new ImageView(connectionIcon));
+		root.setGraphic(new ImageView(Images.CONNECTION));
 		root.setExpanded(true);
 		setRoot(root);
+		
+		try {
+			for (Database db : DBManager.getInstance().getDB()) {
+				// if (db.getDbname().equals("information_schema")) {
+				// continue;
+				// TODO remove DEBUG
+				// }
+				
+				refresh(db.getDbname());
+			}
+		} catch (SQLException e) {
+			FXUtil.showErrorLog(e);
+		}
+	}
+	
+	/**
+	 * Zeigt <b>eine</b> Datenbank und ihre Tabellen neu an
+	 */
+	public void refresh(String database) {
+		try {
+			TreeItem<String> root = getRoot();
+			if (root == null) {
+				refresh();
+				return;
+			}
+			
+			Database db = DBManager.getInstance().getDB(database);
+			TreeItem<String> dbItem = null;
+			
+			for (TreeItem<String> item : root.getChildren()) {
+				if (item.getValue().equalsIgnoreCase(db.getDbname())) {
+					dbItem = item;
+					break;
+				}
+			}
+			
+			if (dbItem == null) {
+				dbItem = new TreeItem<String>(db.getDbname());
+				dbItem.setGraphic(new ImageView(Images.DATABASE));
+				root.getChildren().add(dbItem);
+			}
+			
+			try {
+				dbItem.getChildren().clear();
+				
+				for (Table table : db.getTable()) {
+					TreeItem<String> item = new TreeItem<String>(table.getName());
+					item.setGraphic(new ImageView(Images.TABLE));
+					dbItem.getChildren().add(item);
+				}
+			} catch (SQLException e) {
+				FXUtil.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
+			}
+		} catch (SQLException e) {
+			FXUtil.showErrorLog(e);
+		}
 	}
 	
 	/**
@@ -148,7 +178,7 @@ public class PaneTableList extends TreeView<String> {
 		
 		public EmptyContextMenu() {
 			final MenuItem addDatabase = new MenuItem(Lang.getString("database.add", "Add database"));
-			addDatabase.setGraphic(new ImageView(dababaseAddIcon));
+			addDatabase.setGraphic(new ImageView(Images.DATABASE_ADD));
 			addDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -156,11 +186,11 @@ public class PaneTableList extends TreeView<String> {
 						@Override
 						protected boolean handle() {
 							try {
-								Frame.getDbManager().addDB(input.getText());
+								DBManager.getInstance().addDB(input.getText());
 								refresh();
 								return true;
 							} catch (SQLException e) {
-								Frame.showErrorLog(e);
+								FXUtil.showErrorLog(e);
 								return false;
 							}
 						}
@@ -178,28 +208,62 @@ public class PaneTableList extends TreeView<String> {
 	private class DatabaseItemContextMenu extends EmptyContextMenu {
 		
 		public DatabaseItemContextMenu() {
+			MenuItem renameDatasase = new MenuItem(Lang.getString("database.rename", "Rename database"));
+			renameDatasase.setGraphic(new ImageView(Images.DATABASE_EDIT));
+			renameDatasase.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					new DialogStringInput(Lang.getString("database.rename", "Rename database"), Lang.getString("database.add.name", "Name")) {
+						@Override
+						protected boolean handle() {
+							try {
+								DBManager.getInstance().getDB(getSelectionModel().getSelectedItem().getValue()).renameDatabase(input.getText());
+								return true;
+							} catch (SQLException e) {
+								FXUtil.showErrorLog(e);
+							}
+							
+							return false;
+						}
+					}.show();
+				}
+			});
+			
 			MenuItem removeDatabase = new MenuItem(Lang.getString("database.remove", "Remove database"));
-			removeDatabase.setGraphic(new ImageView(dababaseRemoveIcon));
+			removeDatabase.setGraphic(new ImageView(Images.DATABASE_REMOVE));
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
-						Alert a = new Alert(AlertType.CONFIRMATION);
-						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
-						a.setContentText(String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("database", "database"),
-								getSelectionModel().getSelectedItem().getValue()));
-						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Frame.getIcons());
-						if (a.showAndWait().get() == ButtonType.OK) {
-							Frame.getDbManager().rmDB(getSelectionModel().getSelectedItem().getValue());
-							refresh();
+						String db = Lang.getString("database", "database");
+						TextInputDialog dialog = new TextInputDialog();
+						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
+						dialog.setHeaderText(
+								String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel().getSelectedItem().getValue()));
+						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), db));
+						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+						
+						Optional<String> result = dialog.showAndWait();
+						if (result.isPresent()) {
+							if (result.get().equals(getSelectionModel().getSelectedItem().getValue())) {
+								DBManager.getInstance().rmDB(getSelectionModel().getSelectedItem().getValue());
+								refresh();
+							} else {
+								Alert a = new Alert(AlertType.INFORMATION);
+								a.setHeaderText(Lang.getString("dialog.remove.cancel.header", "Operation was terminated."));
+								a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content", "The entered name doesn't equal the name of the %s."), db));
+								((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+								a.show();
+							}
 						}
 					} catch (SQLException e) {
-						Frame.showErrorLog(e);
+						FXUtil.showErrorLog(e);
 					}
 				}
 			});
 			
 			MenuItem addTable = new MenuItem(Lang.getString("table.add", "Add table"));
+			addTable.setGraphic(new ImageView(Images.TABLE_ADD));
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -209,32 +273,33 @@ public class PaneTableList extends TreeView<String> {
 							TreeItem<String> item = getSelectionModel().getSelectedItem();
 							String db = null;
 							
-							if (FX.getLayer(item) == databaseLayer) {
+							if (FXUtil.getLayer(item) == databaseLayer) {
 								db = item.getValue();
-							} else if (FX.getLayer(item) == tableLayer) {
+							} else if (FXUtil.getLayer(item) == tableLayer) {
 								db = item.getParent().getValue();
 							}
 							
 							try {
-								Database database = Frame.getDbManager().getDB(db);
+								Database database = DBManager.getInstance().getDB(db);
 								if (database != null) {
 									database.addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
 								} else {
 									throw new RuntimeException("Database `" + db + "` doesn't exists");
 								}
+								
+								refresh(database.getDbname());
 							} catch (Exception e) {
-								Frame.showErrorLog(e);
+								FXUtil.showErrorLog(e);
 								return false;
 							}
 							
-							refresh();
 							return true;
 						}
 					}.show();
 				}
 			});
 			
-			getItems().addAll(removeDatabase, new SeparatorMenuItem(), addTable);
+			getItems().addAll(renameDatasase, removeDatabase, new SeparatorMenuItem(), addTable);
 		}
 	}
 	
@@ -244,27 +309,63 @@ public class PaneTableList extends TreeView<String> {
 	private class TableItemContextMenu extends DatabaseItemContextMenu {
 		
 		public TableItemContextMenu() {
+			MenuItem editTable = new MenuItem(Lang.getString("table.edit", "Edit table") + "...");
+			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
+			editTable.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					TreeItem<String> item = getSelectionModel().getSelectedItem();
+					Table table = null;
+					
+					try {
+						table = DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
+					} catch (NullPointerException | SQLException e) {
+						FXUtil.showErrorLog(e);
+					}
+					
+					if (table != null) {
+						new DialogEditTable(table) {
+							@Override
+							protected boolean handle() {
+								return true;
+							}
+						}.show();
+					}
+				}
+			});
+			
 			MenuItem removeTable = new MenuItem(Lang.getString("table.remove", "Remove table"));
+			removeTable.setGraphic(new ImageView(Images.TABLE_REMOVE));
 			removeTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
 						TreeItem<String> item = getSelectionModel().getSelectedItem();
-						Alert a = new Alert(AlertType.CONFIRMATION);
-						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
-						a.setContentText(
-								String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("table", "table"), item.getValue()));
-						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Frame.getIcons());
-						if (a.showAndWait().get() == ButtonType.OK) {
-							Frame.getDbManager().getDB(item.getParent().getValue()).rmTable(item.getValue());
-							refresh();
+						String table = Lang.getString("table", "table");
+						
+						TextInputDialog dialog = new TextInputDialog();
+						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
+						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), table, item.getValue()));
+						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), table));
+						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+						
+						Optional<String> result = dialog.showAndWait();
+						if (result.get().equals(getSelectionModel().getSelectedItem().getValue())) {
+							DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
+							refresh(item.getParent().getValue());
+						} else {
+							Alert a = new Alert(AlertType.INFORMATION);
+							a.setHeaderText(Lang.getString("dialog.remove.cancel.header", "Operation was terminated."));
+							a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content", "The entered name doesn't equal the name of the %s."), table));
+							((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+							a.show();
 						}
 					} catch (SQLException e) {
-						Frame.showErrorLog(e);
+						FXUtil.showErrorLog(e);
 					}
 				}
 			});
-			getItems().addAll(removeTable);
+			getItems().addAll(editTable, removeTable);
 		}
 		
 	}
