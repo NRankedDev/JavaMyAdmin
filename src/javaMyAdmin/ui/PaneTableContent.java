@@ -63,6 +63,16 @@ public class PaneTableContent extends TableView<TableRecord> {
 		getColumns().clear();
 		
 		if (table != null) {
+			if (table.getAbstract()) {
+				for (MenuItem item : getContextMenu().getItems()) {
+					item.setDisable(true);
+				}
+			} else {
+				for (MenuItem item : getContextMenu().getItems()) {
+					item.setDisable(false);
+				}
+			}
+			
 			try {
 				refresh(table.getColumnNames(), table.getLines());
 			} catch (SQLException e) {
