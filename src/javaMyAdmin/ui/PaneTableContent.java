@@ -58,22 +58,20 @@ public class PaneTableContent extends TableView<TableRecord> {
 	public void refresh(Table table) {
 		this.table = table;
 		
+		// Clearing old data
+		getItems().clear();
+		getColumns().clear();
+		
 		if (table != null) {
 			try {
 				refresh(table.getColumnNames(), table.getLines());
 			} catch (SQLException e) {
 				FXUtil.showErrorLog(e);
 			}
-		} else {
-			getItems().clear();
 		}
 	}
 	
 	private void refresh(ArrayList<String> columnNames, ArrayList<Line> tableLines) {
-		// Clearing old data
-		getItems().clear();
-		getColumns().clear();
-		
 		// Generating columns
 		@SuppressWarnings("unchecked")
 		TableColumn<TableRecord, String>[] columns = new TableColumn[columnNames.size()];
