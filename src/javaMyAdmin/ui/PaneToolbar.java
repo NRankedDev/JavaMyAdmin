@@ -106,19 +106,19 @@ public class PaneToolbar extends BorderPane {
 	}
 	
 	public void setServerSQL() {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "127.0.0.1") + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), DBManager.getInstance().getUrl()) + ":"));
 		databaseEnvironment = null;
 		tableEnvironment = null;
 	}
 	
 	public void setDatabaseSQL(String db) {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "'") + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), db) + ":"));
 		databaseEnvironment = db;
 		tableEnvironment = null;
 	}
 	
 	public void setTableSQL(String db, String table) {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), "'" + db + "." + table + "'") + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), db + "." + table) + ":"));
 		this.databaseEnvironment = db;
 		this.tableEnvironment = table;
 	}

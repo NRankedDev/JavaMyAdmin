@@ -1,6 +1,7 @@
 package javaMyAdmin.ui;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
@@ -14,11 +15,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -61,7 +62,7 @@ public class PaneTableList extends TreeView<String> {
 										}
 									}
 								} catch (SQLException e) {
-									e.printStackTrace();
+									FXUtil.showErrorLog(e);
 								}
 								Frame.getInstance().getToolbarPane().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
 							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
@@ -213,14 +214,26 @@ public class PaneTableList extends TreeView<String> {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
-						Alert a = new Alert(AlertType.CONFIRMATION);
-						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
-						a.setContentText(String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("database", "database"),
-								getSelectionModel().getSelectedItem().getValue()));
-						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
-						if (a.showAndWait().get() == ButtonType.OK) {
-							DBManager.getInstance().rmDB(getSelectionModel().getSelectedItem().getValue());
-							refresh();
+						String db = Lang.getString("database", "database");
+						TextInputDialog dialog = new TextInputDialog();
+						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
+						dialog.setHeaderText(
+								String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel().getSelectedItem().getValue()));
+						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), db));
+						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+						
+						Optional<String> result = dialog.showAndWait();
+						if (result.isPresent()) {
+							if (result.get().equals(getSelectionModel().getSelectedItem().getValue())) {
+								DBManager.getInstance().rmDB(getSelectionModel().getSelectedItem().getValue());
+								refresh();
+							} else {
+								Alert a = new Alert(AlertType.INFORMATION);
+								a.setHeaderText(Lang.getString("dialog.remove.cancel.header", "Operation was terminated."));
+								a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content", "The entered name doesn't equal the name of the %s."), db));
+								((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+								a.show();
+							}
 						}
 					} catch (SQLException e) {
 						FXUtil.showErrorLog(e);
@@ -252,12 +265,13 @@ public class PaneTableList extends TreeView<String> {
 								} else {
 									throw new RuntimeException("Database `" + db + "` doesn't exists");
 								}
+								
+								refresh(database.getDbname());
 							} catch (Exception e) {
 								FXUtil.showErrorLog(e);
 								return false;
 							}
 							
-							refresh();
 							return true;
 						}
 					}.show();
@@ -281,14 +295,24 @@ public class PaneTableList extends TreeView<String> {
 				public void handle(ActionEvent event) {
 					try {
 						TreeItem<String> item = getSelectionModel().getSelectedItem();
-						Alert a = new Alert(AlertType.CONFIRMATION);
-						a.setHeaderText(Lang.getString("dialog.remove.header", "Do you really want to proceed?"));
-						a.setContentText(
-								String.format(Lang.getString("dialog.remove.content", "If you delete the %s `%s`, all data will be lost."), Lang.getString("table", "table"), item.getValue()));
-						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
-						if (a.showAndWait().get() == ButtonType.OK) {
+						String table = Lang.getString("table", "table");
+						
+						TextInputDialog dialog = new TextInputDialog();
+						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
+						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), table, item.getValue()));
+						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), table));
+						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+						
+						Optional<String> result = dialog.showAndWait();
+						if (result.get().equals(getSelectionModel().getSelectedItem().getValue())) {
 							DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
-							refresh();
+							refresh(item.getParent().getValue());
+						} else {
+							Alert a = new Alert(AlertType.INFORMATION);
+							a.setHeaderText(Lang.getString("dialog.remove.cancel.header", "Operation was terminated."));
+							a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content", "The entered name doesn't equal the name of the %s."), table));
+							((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
+							a.show();
 						}
 					} catch (SQLException e) {
 						FXUtil.showErrorLog(e);
