@@ -22,6 +22,10 @@ public class Table {
 		this.connect = connect;
 		this.columnNames = columnNames;
 	}
+	
+	public void isAbstract(boolean ab){
+		abstratable = ab;
+	}
 
 	public String getName() {
 		return name;
@@ -49,7 +53,7 @@ public class Table {
 	}
 
 	public ArrayList<Line> getLines() throws SQLException {
-		if(abstratable == false) loadLines(null);
+		if(!abstratable) loadLines(null);
 		return lines;
 	}
 	
@@ -58,10 +62,6 @@ public class Table {
 			loadLines(null);
 		}
 		return lines.get(i);
-	}
-	
-	public void isAbstract(boolean ab){
-		abstratable = ab;
 	}
 	
 	public ArrayList<Line> getLines(ResultSet rs) throws SQLException {
@@ -87,11 +87,14 @@ public class Table {
 	}
 
 	public void setValue(int line, int column, String value) throws SQLException {
-		if (lines.isEmpty()) {
-			loadLines(null);
+		if(!abstratable){
+			if (lines.isEmpty()) {
+				loadLines(null);
+			}
+			connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = '" + getLines(line).getValues(0) + "'");
 		}
-		connect.createStatement().executeUpdate("UPDATE `"+dbname+"`.`" + getName() + "` SET `" + getColumnNames(column) + "` = '" + value + "' WHERE `" + getColumnNames(0) + "` = '" + getLines(line).getValues(0) + "'");
 	}
+	
 	public int loadColumns(ResultSet rs) throws SQLException{
 		ResultSetMetaData metaData = rs.getMetaData();
 		int i = 1;
@@ -154,7 +157,6 @@ public class Table {
 	public String getColumnInfo(String column, int i) throws SQLException{
 		String value;
 		ResultSet rs;
-		
 		switch(i){
 		case 1:
 			value = "DATA_TYPE";

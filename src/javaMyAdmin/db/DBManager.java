@@ -76,10 +76,8 @@ public class DBManager extends Connector {
 	}
 	
 	public void rmDB(String dbname) throws SQLException {
-		if(JOptionPane.showConfirmDialog(null, "Remove Database: '" + dbname + "' ?") != 1){
-			connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
-			loadDB();
-		}
+		connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
+		loadDB();
 	}
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);

@@ -70,9 +70,7 @@ public class Database {
 	}
 
 	public void rmTable(String tablename) throws SQLException {
-		if (JOptionPane.showConfirmDialog(null, "Remove Table " + tablename) != 1) {
-			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
-		}
+		connect.createStatement().executeUpdate("DROP TABLE " + tablename);
 		loadTables();
 	}
 
