@@ -27,6 +27,7 @@ public class Frame extends Application {
 	private PaneToolbar toolbar;
 	private PaneTableList tableList;
 	private PaneTableContent tableContent;
+	private PaneStatusBar statusBar;
 	
 	public Frame() {
 		instance = this;
@@ -55,20 +56,21 @@ public class Frame extends Application {
 			new DialogLogin();
 			
 			/* Root-Layout initialisieren */
-			BorderPane pane = new BorderPane();
+			BorderPane root = new BorderPane();
 			SplitPane split = new SplitPane();
 			split.getItems().addAll(tableList = new PaneTableList(), tableContent = new PaneTableContent());
 			split.setDividerPosition(0, 0.2);
 			
-			pane.setTop(toolbar = new PaneToolbar());
-			pane.setCenter(split);
+			root.setTop(toolbar = new PaneToolbar());
+			root.setCenter(split);
+			root.setBottom(statusBar = new PaneStatusBar());
 			
 			BorderPane.setMargin(toolbar, new Insets(0, 0, 10, 0));
 			
-			stage.setTitle(Lang.getString("frame.title", "javaMyAdmin"));
+			stage.setTitle(Lang.getString("frame.title", "javaMyAdmin") + " - " + DBManager.getInstance().getUrl());
 			
 			/* Fenstergroesse bestimmen und Frame Content zuweisen */
-			stage.setScene(new Scene(pane, 800, 600));
+			stage.setScene(new Scene(root, 800, 600));
 			
 			/* Icons setzen */
 			stage.getIcons().addAll(Images.ICONS);
@@ -112,6 +114,15 @@ public class Frame extends Application {
 	 */
 	public PaneTableContent getTableContentPane() {
 		return tableContent;
+	}
+	
+	/**
+	 * {@link PaneStatusBar} der Anwendung.
+	 * 
+	 * @return
+	 */
+	public PaneStatusBar getStatusBar() {
+		return statusBar;
 	}
 	
 }

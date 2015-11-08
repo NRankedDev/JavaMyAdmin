@@ -62,15 +62,21 @@ public class PaneTableContent extends TableView<TableRecord> {
 		getItems().clear();
 		getColumns().clear();
 		
+		Frame.getInstance().getStatusBar().setTableInfo(table);
+		
 		if (table != null) {
 			if (table.getAbstract()) {
 				for (MenuItem item : getContextMenu().getItems()) {
 					item.setDisable(true);
 				}
+				
+				setEditable(false);
 			} else {
 				for (MenuItem item : getContextMenu().getItems()) {
 					item.setDisable(false);
 				}
+				
+				setEditable(true);
 			}
 			
 			try {

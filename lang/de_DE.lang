@@ -37,7 +37,7 @@ menu.settings.language.content=Die Einstellungen werden übernommen.
 #
 # Toolbar
 #
-sql_commands.label=SQL-Befehl(e) ausführen in %s
+sql_commands.label=SQL-Befehl(e) ausführen in '%s'
 sql_commands.execute=Ausführen
 sql_commands.clear=Leeren
 
@@ -74,3 +74,11 @@ record.add=Datensatz hinzufügen
 record.add.description=Datensätze hinzufügen für Tabelle
 record.add.records=Datensätze
 record.remove=Datensatz löschen
+
+#
+# Status
+#
+status.connected=Verbunden zum Server '%s'.
+status.table.none=Keine Tabelle selektiert.
+status.table.selected=Tabelle '%s' selektiert.
+status.table.read_only=(Read Only)

@@ -61,7 +61,7 @@ public class PaneTableList extends TreeView<String> {
 										}
 									}
 								} catch (SQLException e) {
-									e.printStackTrace();
+									FXUtil.showErrorLog(e);
 								}
 								Frame.getInstance().getToolbarPane().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
 							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
