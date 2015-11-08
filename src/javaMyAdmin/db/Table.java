@@ -178,6 +178,10 @@ public class Table {
 		return (rs=connect.createStatement().executeQuery("select `"+value+"` from information_schema.columns where table_name='"+name+"' and column_name like '"+column+"'")).next() ? rs.getString(1) : null;
 	}
 	
+	public boolean getAbstract(){
+		return abstratable;
+	}
+	
 	public Table executeSQL(String cmd) throws SQLException{
 		return Functions.executeFinal(cmd, connect, dbname);
 	}
