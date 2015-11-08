@@ -70,9 +70,7 @@ public class Database {
 	}
 
 	public void rmTable(String tablename) throws SQLException {
-		if (JOptionPane.showConfirmDialog(null, "Remove Table " + tablename) != 1) {
-			connect.createStatement().executeUpdate("DROP TABLE " + tablename);
-		}
+		connect.createStatement().executeUpdate("DROP TABLE " + tablename);
 		loadTables();
 	}
 
@@ -112,6 +110,7 @@ public class Database {
 	
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);
+		t.isAbstract(true);
 		try{
 			connect.createStatement().executeUpdate(cmd);
 			t = null;
