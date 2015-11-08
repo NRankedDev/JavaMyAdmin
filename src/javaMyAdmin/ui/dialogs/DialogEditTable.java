@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.Frame;
 import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
 import javaMyAdmin.util.Datatype;
+import javaMyAdmin.util.FXUtil;
 import javaMyAdmin.util.Index;
 import javaMyAdmin.util.Lang;
 import javafx.collections.FXCollections;
@@ -23,6 +23,16 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Dialog, der beim Erstellen <u>und</u> Aendern einer Tabelle angezeigt wird.
+ * Konstruktoren:
+ * <ul>
+ * <li>{@link #DialogEditTable()}, beim Erstellen einer Tabelle</li>
+ * <li>{@link #DialogEditTable(Table)}, beim Editieren einer Tabelle</li>
+ * </ul>
+ * 
+ * @author Nicolas
+ */
 public abstract class DialogEditTable extends DialogDynamicRows {
 	
 	private static final int MODE_ADD = 0;
@@ -70,7 +80,7 @@ public abstract class DialogEditTable extends DialogDynamicRows {
 					return;
 				}
 			} catch (SQLException e) {
-				Frame.showErrorLog(e);
+				FXUtil.showErrorLog(e);
 			}
 		}
 		

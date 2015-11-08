@@ -1,25 +1,18 @@
 package javaMyAdmin.ui;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.dialogs.DialogLogin;
 import javaMyAdmin.util.Config;
+import javaMyAdmin.util.FXUtil;
+import javaMyAdmin.util.Images;
 import javaMyAdmin.util.Lang;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 /**
@@ -28,8 +21,6 @@ import javafx.stage.Stage;
  * @author Nicolas
  */
 public class Frame extends Application {
-	
-	public static final Config CONFIG = new Config();
 	
 	private static DBManager dbManager;
 	private static Frame instance;
@@ -75,7 +66,7 @@ public class Frame extends Application {
 			Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 				@Override
 				public void uncaughtException(Thread thread, Throwable t) {
-					showErrorLog(t);
+					FXUtil.showErrorLog(t);
 				}
 			});
 			
@@ -99,7 +90,7 @@ public class Frame extends Application {
 			stage.setScene(new Scene(pane, 800, 600));
 			
 			/* Icons setzen */
-			stage.getIcons().addAll(getIcons());
+			stage.getIcons().addAll(Images.ICONS);
 			
 			/* Fenster anzeigen */
 			stage.show();
@@ -114,64 +105,31 @@ public class Frame extends Application {
 		System.exit(0);
 	}
 	
-	public PaneToolbar getToolbar() {
+	/**
+	 * {@link PaneToolbar} der Anwendung.
+	 * 
+	 * @return
+	 */
+	public PaneToolbar getToolbarPane() {
 		return toolbar;
 	}
 	
-	public PaneTableList getTableList() {
+	/**
+	 * {@link PaneTableList} der Anwendung.
+	 * 
+	 * @return
+	 */
+	public PaneTableList getTableListPane() {
 		return tableList;
 	}
 	
-	public PaneTableContent getTableValues() {
-		return tableContent;
-	}
-	
-	public static Image[] getIcons() {
-		try {
-			return new Image[] { new Image(Frame.class.getResource("/res/icon.png").toExternalForm()) };
-		} catch (Exception e) {
-			showErrorLog(e);
-			return new Image[0];
-		}
-	}
-	
 	/**
-	 * Zeigt einen Fehler in einem Fenster an. Dieser Fehler wird außerdem
-	 * automatisch in der Konsole ausgegeben.
+	 * {@link PaneTableContent} der Anwendung.
 	 * 
-	 * @param t
-	 *            Der Stacktrace des Fehlers
+	 * @return
 	 */
-	public static void showErrorLog(Throwable t) {
-		t.printStackTrace();
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(Lang.getString("error", "Error: " + t.getLocalizedMessage()));
-		alert.setHeaderText(Lang.getString("error.header", "Ein Fehler ist aufgetreten."));
-		alert.setContentText(t.getClass().equals(SQLException.class) ? Lang.getString("error.sql", "Couldn't connect to a database") : Lang.getString("error.unknown", ""));
-		
-		// Create expandable Exception.
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		t.printStackTrace(pw);
-		String exceptionText = sw.toString();
-		
-		TextArea textArea = new TextArea(exceptionText);
-		textArea.setEditable(false);
-		textArea.setWrapText(true);
-		
-		textArea.setMaxWidth(Double.MAX_VALUE);
-		textArea.setMaxHeight(Double.MAX_VALUE);
-		GridPane.setVgrow(textArea, Priority.ALWAYS);
-		GridPane.setHgrow(textArea, Priority.ALWAYS);
-		
-		GridPane expContent = new GridPane();
-		expContent.setMaxWidth(Double.MAX_VALUE);
-		expContent.addRow(1, textArea);
-		
-		alert.getDialogPane().setExpandableContent(expContent);
-		alert.getDialogPane().setMinWidth(500);
-		((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().addAll(getIcons());
-		alert.showAndWait();
+	public PaneTableContent getTableContentPane() {
+		return tableContent;
 	}
 	
 }
