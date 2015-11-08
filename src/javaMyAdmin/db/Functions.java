@@ -10,7 +10,7 @@ public class Functions {
 		Table t = null;
 		for(int i = 0; i < parts.length; i++){
 			if(dbname != null) connect.createStatement().executeQuery("USE `"+dbname+"`");
-			try{ //works but not the correct way
+			try{ //unsauber
 				t = new Table(null, new ArrayList<String>(), connect, null);
 				t.isAbstract(true);
 				t.loadLines(connect.createStatement().executeQuery(parts[i]));
