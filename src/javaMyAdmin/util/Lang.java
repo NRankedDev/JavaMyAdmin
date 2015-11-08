@@ -60,7 +60,6 @@ public class Lang {
 			files = langDirectory.list(new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String name) {
-					System.out.println(dir + " " + name);
 					return name.contains("_") && name.endsWith(".lang");
 				}
 			});
@@ -98,10 +97,16 @@ public class Lang {
 				}
 			}
 			
-			System.out.println("Locale changed to:" + locale.toString());
+			System.out.println("Locale changed to: " + locale.toString());
 		}
 		
 		Lang.locale = locale;
+		
+		if (!locale.getLanguage().equals("debug")) {
+			Config.getInstance().set("lang", locale.getLanguage() + "_" + locale.getCountry());
+		} else {
+			Config.getInstance().set("lang", "debug");
+		}
 	}
 	
 	/**
