@@ -13,8 +13,8 @@ public class Debug {
 	}
 	public static void run() throws SQLException{
 		System.out.println("run Debug!");
-		DBManager DBM = new DBManager("127.0.0.1", "root", "");
-		
+		DBManager DBM = new DBManager();
+		DBM.connect("127.0.0.1", "root", "");
 		System.out.println("end Debug!");
 	}
 }
