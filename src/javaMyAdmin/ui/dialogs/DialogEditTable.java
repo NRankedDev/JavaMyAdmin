@@ -23,6 +23,16 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Dialog, der beim Erstellen <u>und</u> Aendern einer Tabelle angezeigt wird.
+ * Konstruktoren:
+ * <ul>
+ * <li>{@link #DialogEditTable()}, beim Erstellen einer Tabelle</li>
+ * <li>{@link #DialogEditTable(Table)}, beim Editieren einer Tabelle</li>
+ * </ul>
+ * 
+ * @author Nicolas
+ */
 public abstract class DialogEditTable extends DialogDynamicRows {
 	
 	private static final int MODE_ADD = 0;

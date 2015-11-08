@@ -12,6 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Dialog beim erstellen von Datensaetzen
+ * 
+ * @author Nicolas
+ */
 public abstract class DialogAddRecords extends DialogDynamicRows {
 	
 	private final Table table;
