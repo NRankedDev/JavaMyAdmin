@@ -183,6 +183,8 @@ public class Table {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		return Functions.executeFinal(cmd, connect, dbname);
+		Table t = Functions.executeFinal(cmd, connect, dbname);
+		loadLines(null);
+		return t;
 	}
 }

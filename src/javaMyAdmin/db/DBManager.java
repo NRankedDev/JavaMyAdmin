@@ -97,6 +97,8 @@ public class DBManager extends Connector {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-		return Functions.executeFinal(cmd, connect, null);
+		Table t = Functions.executeFinal(cmd, connect, null); 
+		loadDB();
+		return t;
 	}
 }

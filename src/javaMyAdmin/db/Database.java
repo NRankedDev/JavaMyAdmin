@@ -118,7 +118,8 @@ public class Database {
 //			loadTables();
 //			t = null;
 //		}
-		
-		return Functions.executeFinal(cmd, connect, dbname);
+		Table t = Functions.executeFinal(cmd, connect, dbname);
+		loadTables();
+		return t;
 	}
 }
