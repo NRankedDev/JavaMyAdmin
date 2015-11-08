@@ -48,6 +48,12 @@ public class Table {
 		columnNames.clear();
 		lines.clear();
 	}
+	
+	public void addColumn(String columnName, String datatype, String length, boolean isNull, String index) throws SQLException{
+		String var = isNull ? "NULL": "NOT NULL";
+		String var2 = index != null ? ", ADD "+index+" (`"+columnName+"`)" : "";
+		connect.createStatement().executeUpdate("ALTER TABLE `"+name+"` ADD `"+columnName+"` "+datatype+"("+length+") "+var+var2);
+	}
 
 	public ArrayList<String> getColumnNames() throws SQLException {
 		return columnNames;

@@ -15,7 +15,7 @@ public class Debug {
 		System.out.println("run Debug!");
 		DBManager DBM = new DBManager();
 		DBM.connect("127.0.0.1", "root", "");
-		DBM.getDB("cdcol").getTable("t2").renameTable("t1");
+		DBM.getDB("cdcol").getTable("t1").addColumn("test2", "INT", "10", true, "UNIQUE");
 		System.out.println("end Debug!");
 	}
 }
