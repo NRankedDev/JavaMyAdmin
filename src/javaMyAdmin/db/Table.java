@@ -60,7 +60,7 @@ public class Table {
 		return lines.get(i);
 	}
 	
-	public void setAbstract(boolean ab){
+	public void isAbstract(boolean ab){
 		abstratable = ab;
 	}
 	
@@ -178,7 +178,7 @@ public class Table {
 	
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);
-		t.setAbstract(true);
+		t.isAbstract(true);
 		try{
 			connect.createStatement().executeUpdate(cmd);
 			t = null;

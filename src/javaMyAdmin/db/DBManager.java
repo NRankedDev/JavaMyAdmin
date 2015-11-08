@@ -83,6 +83,7 @@ public class DBManager extends Connector {
 	}
 	public Table executeSQL(String cmd) throws SQLException{
 		Table t = new Table(null, new ArrayList<String>(), connect, null);
+		t.isAbstract(true);
 		try{
 			connect.createStatement().executeUpdate(cmd);
 			t = null;
