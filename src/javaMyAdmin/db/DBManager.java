@@ -13,15 +13,28 @@ public class DBManager extends Connector {
 	private static String url;
 	private static String password;
 	private static String user;
+	private static DBManager instance;
 	private ArrayList<Database> db = new ArrayList<Database>();
 
-	public DBManager(String url, String user, String password) throws SQLException {
+	public DBManager() throws SQLException {
+		instance = this;
+	}
+	
+	public void connect(String url, String user, String password) throws SQLException{
+		this.url = Debug.check(url);
 		this.user = user;
 		this.password = password;
-		this.url = Debug.check(url);
 		connect = doConnection("");
 	}
-
+	
+    public static DBManager getInstance() {
+        return instance;
+    }
+    
+    public void close() throws SQLException {
+    	 closeConnection(connect);
+    }
+    
 	public static Connection doConnection(String dbname) throws SQLException {
 		Connector c = new Connector();
 
@@ -87,7 +100,6 @@ public class DBManager extends Connector {
 			t.loadLines(connect.createStatement().executeQuery(cmd));
 		}else{
 			connect.createStatement().executeUpdate(cmd);
-			loadDB();
 			t = null;
 		}
 		return t;
