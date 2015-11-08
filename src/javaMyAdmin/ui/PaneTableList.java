@@ -252,12 +252,13 @@ public class PaneTableList extends TreeView<String> {
 								} else {
 									throw new RuntimeException("Database `" + db + "` doesn't exists");
 								}
+								
+								refresh(database.getDbname());
 							} catch (Exception e) {
 								FXUtil.showErrorLog(e);
 								return false;
 							}
 							
-							refresh();
 							return true;
 						}
 					}.show();
@@ -288,7 +289,7 @@ public class PaneTableList extends TreeView<String> {
 						((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						if (a.showAndWait().get() == ButtonType.OK) {
 							DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
-							refresh();
+							refresh(item.getParent().getValue());
 						}
 					} catch (SQLException e) {
 						FXUtil.showErrorLog(e);
