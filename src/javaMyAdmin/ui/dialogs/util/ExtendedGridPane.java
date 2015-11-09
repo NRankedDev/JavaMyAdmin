@@ -168,12 +168,16 @@ public class ExtendedGridPane {
 				@Override
 				public void onPreRecreate(ObservableList<Node> oldItems) {
 					oldItems.remove(rowIndex * getColumnCount(), rowIndex * getColumnCount() + getColumnCount());
-					customOperation.onPreRecreate(oldItems);
+					if (customOperation != null) {
+						customOperation.onPreRecreate(oldItems);
+					}
 				}
 				
 				@Override
 				public void onPostRecreate() {
-					customOperation.onPostRecreate();
+					if (customOperation != null) {
+						customOperation.onPostRecreate();
+					}
 				}
 			});
 		}

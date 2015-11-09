@@ -6,6 +6,7 @@ import java.util.Optional;
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
+import javaMyAdmin.ui.dialogs.DialogAddTable;
 import javaMyAdmin.ui.dialogs.DialogEditTable;
 import javaMyAdmin.ui.dialogs.DialogStringInput;
 import javaMyAdmin.util.FXUtil;
@@ -238,8 +239,8 @@ public class PaneTableList extends TreeView<String> {
 						String db = Lang.getString("database", "database");
 						TextInputDialog dialog = new TextInputDialog();
 						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
-						dialog.setHeaderText(
-								String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel().getSelectedItem().getValue()));
+						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel()
+								.getSelectedItem().getValue()));
 						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), db));
 						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						
@@ -267,7 +268,7 @@ public class PaneTableList extends TreeView<String> {
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogEditTable(null) {
+					new DialogAddTable(null) {
 						@Override
 						protected boolean handle() {
 							TreeItem<String> item = getSelectionModel().getSelectedItem();
@@ -323,10 +324,13 @@ public class PaneTableList extends TreeView<String> {
 						FXUtil.showErrorLog(e);
 					}
 					
+					final Table t = table;
+					
 					if (table != null) {
 						new DialogEditTable(table) {
 							@Override
 							protected boolean handle() {
+								Frame.getInstance().getTableContentPane().refresh(t);
 								return true;
 							}
 						}.show();

@@ -282,6 +282,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 						new DialogEditTable(getCurrentShownTable()) {
 							@Override
 							protected boolean handle() {
+								refresh(getCurrentShownTable());
 								return true;
 							}
 						}.show();
