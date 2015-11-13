@@ -166,7 +166,9 @@ public abstract class DialogDynamicRows extends OptionDialog {
 				}
 				
 				// Letzten "Add" Button sichtbar machen
-				grid.getChildren().get(grid.getChildren().size() - 1).setVisible(true);
+				if (grid.getChildren().size() > 0) {
+					grid.getChildren().get(grid.getChildren().size() - 1).setVisible(true);
+				}
 			}
 		}, index);
 	}

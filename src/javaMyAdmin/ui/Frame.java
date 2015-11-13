@@ -3,6 +3,7 @@ package javaMyAdmin.ui;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import javaMyAdmin.db.DBManager;
+import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.DialogLogin;
 import javaMyAdmin.util.Config;
 import javaMyAdmin.util.FXUtil;
@@ -123,6 +124,49 @@ public class Frame extends Application {
 	 */
 	public PaneStatusBar getStatusBar() {
 		return statusBar;
+	}
+	
+	/**
+	 * Aktualisiert das Programm
+	 */
+	public void refreshAll() {
+		refreshAll(tableContent.getCurrentShownTable());
+	}
+	
+	/**
+	 * Aktualisiert das Programm
+	 * 
+	 * @param shownTable
+	 *            Die Tabelle, die angezeigt werden soll
+	 */
+	public void refreshAll(Table shownTable) {
+		tableList.refresh();
+		tableContent.refresh(shownTable);
+	}
+	
+	/**
+	 * Aktualisiert eine Datenbank
+	 * 
+	 * @param database
+	 *            Die Datenbank
+	 * @param shownTable
+	 *            Die Tabelle, die angezeigt werden soll
+	 */
+	public void refreshTables(String database) {
+		refreshTables(database, tableContent.getCurrentShownTable());
+	}
+	
+	/**
+	 * Aktualisiert eine Datenbank
+	 * 
+	 * @param database
+	 *            Die Datenbank
+	 * @param shownTable
+	 *            Die Tabelle, die angezeigt werden soll
+	 */
+	public void refreshTables(String database, Table shownTable) {
+		tableList.refresh(database);
+		tableContent.refresh(shownTable);
 	}
 	
 }

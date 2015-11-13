@@ -117,11 +117,6 @@ public class PaneTableList extends TreeView<String> {
 		
 		try {
 			for (Database db : DBManager.getInstance().getDB()) {
-				// if (db.getDbname().equals("information_schema")) {
-				// continue;
-				// TODO remove DEBUG
-				// }
-				
 				refresh(db.getDbname());
 			}
 		} catch (SQLException e) {
@@ -239,8 +234,8 @@ public class PaneTableList extends TreeView<String> {
 						String db = Lang.getString("database", "database");
 						TextInputDialog dialog = new TextInputDialog();
 						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
-						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel()
-								.getSelectedItem().getValue()));
+						dialog.setHeaderText(
+								String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel().getSelectedItem().getValue()));
 						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), db));
 						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						

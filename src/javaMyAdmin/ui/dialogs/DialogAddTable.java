@@ -53,10 +53,8 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 		addRow(null, null, null, null, false);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void addRow(String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
-		Node[] nodes = createRowNodes(grid.getRowCount(), defaultTitle, defaultDatatype, defaultLength, defaultIndex, defaultNull);
-		addRow((TextField) nodes[0], (ComboBox<String>) nodes[1], (TextField) nodes[2], (ComboBox<String>) nodes[3], (CheckBox) nodes[4]);
+		addDynamicRow(createRowNodes(grid.getRowCount(), defaultTitle, defaultDatatype, defaultLength, defaultIndex, defaultNull));
 	}
 	
 	protected Node[] createRowNodes(int newRowIndex, String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
@@ -87,37 +85,37 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 		final CheckBox nullBox = new CheckBox();
 		nullBox.setSelected(defaultNull);
 		
-		return new Node[] { title, datatype, length, index, nullBox };
+		return new Node[] { title, datatype, length, nullBox, index };
 	}
 	
-	protected void addRow(TextField title, ComboBox<String> datatype, TextField length, ComboBox<String> index, CheckBox nullCheckBox) {
-		titles.add(title);
-		datatypes.add(datatype);
-		lengths.add(length);
-		indices.add(index);
-		defaultNullOptions.add(nullCheckBox);
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addDynamicRow(Node... nodes) {
+		titles.add((TextField) nodes[0]);
+		datatypes.add((ComboBox<String>) nodes[1]);
+		lengths.add((TextField) nodes[2]);
+		defaultNullOptions.add((CheckBox) nodes[3]);
+		indices.add((ComboBox<String>) nodes[4]);
 		
-		addDynamicRow(new Label(Lang.getString("table.edit.title", "Title")), title, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.datatype", "Datatype")), datatype, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.length", "Length")), length, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nullCheckBox, new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.index", "Index")), index);
+		super.addDynamicRow(new Label(Lang.getString("table.edit.title", "Title")), nodes[0], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype", "Datatype")),
+				nodes[1], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.length", "Length")), nodes[2], new Separator(Orientation.VERTICAL),
+				new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nodes[3], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index", "Index")), nodes[4]);
+	}
+	
+	@Override
+	public void removeDynamicRow(int index) {
+		titles.remove(index);
+		datatypes.remove(index);
+		lengths.remove(index);
+		indices.remove(index);
+		defaultNullOptions.remove(index);
+		super.removeDynamicRow(index);
 	}
 	
 	@Override
 	protected void onAddButtonPressed(Button addButton) {
 		super.onAddButtonPressed(addButton);
 		addRow();
-	}
-	
-	@Override
-	protected void onRemoveButtonPressed(Button removeButton, int index) {
-		super.onRemoveButtonPressed(removeButton, index);
-		titles.remove(index);
-		datatypes.remove(index);
-		lengths.remove(index);
-		indices.remove(index);
-		defaultNullOptions.remove(index);
 	}
 	
 	@Override
