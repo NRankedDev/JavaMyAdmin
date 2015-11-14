@@ -62,9 +62,9 @@ public class FXUtil {
 		t.printStackTrace();
 		
 		Alert alert = new Alert(AlertType.ERROR);
-		alert.setHeaderText(Lang.getString("error.header", "Ein Fehler ist aufgetreten."));
+		alert.setHeaderText(Lang.getString("error.header"));
 		if (!(t instanceof SQLException)) {
-			alert.setContentText(Lang.getString("error.unknown", "An unkown error occured."));
+			alert.setContentText(Lang.getString("error.unknown"));
 		} else {
 			SQLException e = (SQLException) t;
 			alert.setContentText(e.getErrorCode() + ": " + e.getLocalizedMessage());

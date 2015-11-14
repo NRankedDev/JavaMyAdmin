@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.util.FXUtil;
+import javaMyAdmin.util.Images;
 import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,7 +27,6 @@ import javafx.scene.layout.HBox;
 public class PaneToolbar extends BorderPane {
 	
 	private static final String sqlKey = "sql_commands.label";
-	private static final String sqlDefault = "Execute SQL command(s) in %s";
 	
 	private BorderPane sql;
 	private TextArea sqlArea;
@@ -37,7 +37,7 @@ public class PaneToolbar extends BorderPane {
 	private String tableEnvironment;
 	
 	public PaneToolbar() {
-		ImageView img = new ImageView(PaneToolbar.class.getResource("/res/logo.png").toExternalForm());
+		ImageView img = new ImageView(Images.LOGO);
 		
 		sql = new BorderPane();
 		sql.setPadding(new Insets(10));
@@ -48,7 +48,7 @@ public class PaneToolbar extends BorderPane {
 		HBox box = new HBox();
 		box.setAlignment(Pos.CENTER_RIGHT);
 		
-		execute = new Button(Lang.getString("sql_commands.execute", "Execute"));
+		execute = new Button(Lang.getString("sql_commands.execute"));
 		execute.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -78,7 +78,7 @@ public class PaneToolbar extends BorderPane {
 				}
 			}
 		});
-		clear = new Button(Lang.getString("sql_commands.clear", "Clear"));
+		clear = new Button(Lang.getString("sql_commands.clear"));
 		clear.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -106,19 +106,19 @@ public class PaneToolbar extends BorderPane {
 	}
 	
 	public void setServerSQL() {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), DBManager.getInstance().getUrl()) + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey), DBManager.getInstance().getUrl()) + ":"));
 		databaseEnvironment = null;
 		tableEnvironment = null;
 	}
 	
 	public void setDatabaseSQL(String db) {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), db) + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey), db) + ":"));
 		databaseEnvironment = db;
 		tableEnvironment = null;
 	}
 	
 	public void setTableSQL(String db, String table) {
-		sql.setTop(new Label(String.format(Lang.getString(sqlKey, sqlDefault), db + "." + table) + ":"));
+		sql.setTop(new Label(String.format(Lang.getString(sqlKey), db + "." + table) + ":"));
 		this.databaseEnvironment = db;
 		this.tableEnvironment = table;
 	}

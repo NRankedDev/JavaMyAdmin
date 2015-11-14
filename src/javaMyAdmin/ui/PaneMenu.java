@@ -27,7 +27,7 @@ public class PaneMenu extends MenuBar {
 	private class File extends Menu {
 		
 		public File() {
-			super(Lang.getString("menu.file", "File"));
+			super(Lang.getString("menu.file"));
 		}
 		
 	}
@@ -35,12 +35,12 @@ public class PaneMenu extends MenuBar {
 	private class Settings extends Menu {
 		
 		public Settings() {
-			super(Lang.getString("menu.settings", "Settings"));
+			super(Lang.getString("menu.settings"));
 			
-			Menu languages = new Menu(Lang.getString("menu.settings.language", "Language"));
+			Menu languages = new Menu(Lang.getString("menu.settings.language"));
 			ToggleGroup languagesToggleGroup = new ToggleGroup();
 			for (Locale locale : Lang.availableLanguages()) {
-				RadioMenuItem item = new RadioMenuItem(locale.getDisplayLanguage());
+				RadioMenuItem item = new RadioMenuItem(locale.getDisplayLanguage(locale));
 				item.setToggleGroup(languagesToggleGroup);
 				
 				if (Lang.getLocale().equals(locale)) {
@@ -57,12 +57,12 @@ public class PaneMenu extends MenuBar {
 					if (newValue != null) {
 						RadioMenuItem item = (RadioMenuItem) newValue;
 						for (Locale locale : Lang.availableLanguages()) {
-							if (locale.getDisplayLanguage().equals(item.getText())) {
+							if (locale.getDisplayLanguage(locale).equals(item.getText())) {
 								Lang.changeLocale(locale);
 								
 								Alert a = new Alert(AlertType.WARNING);
-								a.setHeaderText(Lang.getString("menu.settings.language.header", "You have to restart the program."));
-								a.setContentText(Lang.getString("menu.settings.language.content", "The settings will be saved."));
+								a.setHeaderText(Lang.getString("menu.settings.language.header"));
+								a.setContentText(Lang.getString("menu.settings.language.content"));
 								a.showAndWait();
 							}
 						}

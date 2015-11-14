@@ -17,7 +17,7 @@ public class PaneStatusBar extends BorderPane {
 	public PaneStatusBar() {
 		HBox left = new HBox();
 		
-		left.getChildren().addAll(new Label(String.format(Lang.getString("status.connected", "Connected to server '%s'."), DBManager.getInstance().getUrl())));
+		left.getChildren().addAll(new Label(String.format(Lang.getString("status.connected"), DBManager.getInstance().getUrl())));
 		
 		HBox right = new HBox();
 		
@@ -36,13 +36,13 @@ public class PaneStatusBar extends BorderPane {
 		readOnly.setText("");
 		
 		if (table == null) {
-			tableInfo.setText(Lang.getString("status.table.none", "No table selected."));
+			tableInfo.setText(Lang.getString("status.table.none"));
 			readOnly.setVisible(false);
 		} else {
-			tableInfo.setText(String.format(Lang.getString("status.table.selected", "Table '%s' selected."), table.getName()));
+			tableInfo.setText(String.format(Lang.getString("status.table.selected"), table.getName()));
 			
 			if (table.getAbstract()) {
-				readOnly.setText(" " + Lang.getString("status.table.read_only", "(Read Only)"));
+				readOnly.setText(" " + Lang.getString("status.table.read_only"));
 				readOnly.setVisible(true);
 			} else {
 				readOnly.setVisible(false);

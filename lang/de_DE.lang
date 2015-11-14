@@ -1,10 +1,9 @@
 ﻿#
 # Basic
 #
-frame.title=javaMyAdmin
+frame.title=javaMyAdmin - %s
 error=Fehler
 error.header=Ein Fehler ist aufgetreten.
-error.sql.header=Ein SQL-Fehler ist aufgetreten.
 error.unknown=Ein unbekannter Fehler ist aufgetreten.
 
 #
@@ -49,16 +48,20 @@ sql_commands.clear=Leeren
 #
 connection=Verbindung
 database=Datenbank
-database.add=Datenbank hinzufügen
+database.add=Datenbank hinzufügen...
+database.add.title=Datenbank hinzufügen
 database.add.name=Name
-database.rename=Datenbank umbennen
-database.remove=Datenbank löschen
+database.rename=Datenbank umbennen...
+database.rename.title=Datenbank umbennen
+database.remove=Datenbank löschen...
+database.remove.title=Datenbank löschen
 table=Tabelle
 table.add=Tabelle hinzufügen
-table.edit=Tabelle bearbeiten
+table.edit=Tabelle bearbeiten...
+table.edit.title=Tabelle bearbeiten
 table.edit.table=Tabellenname
 table.edit.columns=Spalten
-table.edit.title=Titel
+table.edit.column_title=Titel
 table.edit.datatype=Datentyp
 table.edit.length=Länge
 table.edit.defaultNull=Standard Null
@@ -73,8 +76,9 @@ table.remove=Tabelle löschen
 # Table content
 #
 table.no_content=Keine Datensätze in dieser Tabelle
-record.add=Datensatz hinzufügen
-record.add.description=Datensätze hinzufügen für Tabelle
+record.add=Datensätze hinzufügen...
+record.add.title=Datensätze hinzufügen
+record.add.description=Datensätze hinzufügen für Tabelle `%s`
 record.add.records=Datensätze
 record.remove=Datensatz löschen
 

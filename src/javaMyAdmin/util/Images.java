@@ -24,6 +24,7 @@ public class Images {
 	/* General */
 	public static final Image[] ICONS = new Image[] { /* 16x16 */ DATABASE, /* 32x32 */ getResource("icon") };
 	public static final Image CONNECTION = getResource("connection");
+	public static final Image LOGO = getResource("logo");
 	
 	/**
 	 * Lädt eine Resourcedatei als Image
@@ -44,7 +45,7 @@ public class Images {
 	 */
 	public static final Image getResource(String resFileName, String fileFormat) {
 		try {
-			return new Image(Images.class.getResourceAsStream("/res/" + resFileName + "." + fileFormat.toLowerCase()));
+			return new Image(Images.class.getResourceAsStream("/res/img/" + resFileName + "." + fileFormat.toLowerCase()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

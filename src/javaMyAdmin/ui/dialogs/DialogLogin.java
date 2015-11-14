@@ -29,7 +29,7 @@ public class DialogLogin extends OptionDialog {
 	private CheckBox remember;
 	
 	public DialogLogin() {
-		super(Lang.getString("dialog.connect.title", "Connect to server"), Lang.getString("dialog.connect", "Connect"));
+		super(Lang.getString("dialog.connect.title"), Lang.getString("dialog.connect"));
 		show();
 	}
 	
@@ -41,10 +41,10 @@ public class DialogLogin extends OptionDialog {
 		password.setText(Config.getInstance().getProperty("password", ""));
 		remember = new CheckBox();
 		remember.setSelected(!url.getText().isEmpty());
-		grid.addRow(0, new Label(Lang.getString("dialog.connect.url", "URL")), url);
-		grid.addRow(1, new Label(Lang.getString("dialog.connect.username", "Username")), username);
-		grid.addRow(2, new Label(Lang.getString("dialog.connect.password", "Password")), password);
-		grid.addRow(3, new Label(Lang.getString("dialog.connect.remember", "Remember login")), remember);
+		grid.addRow(0, new Label(Lang.getString("dialog.connect.url")), url);
+		grid.addRow(1, new Label(Lang.getString("dialog.connect.username")), username);
+		grid.addRow(2, new Label(Lang.getString("dialog.connect.password")), password);
+		grid.addRow(3, new Label(Lang.getString("dialog.connect.remember")), remember);
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class DialogLogin extends OptionDialog {
 		password.setDisable(true);
 		remember.setDisable(true);
 		okButton.setDisable(true);
-		dialogStage.setTitle(Lang.getString("dialog.connect.connecting", "Connecting..."));
+		dialogStage.setTitle(Lang.getString("dialog.connect.connecting"));
 		
 		new Thread() {
 			@Override

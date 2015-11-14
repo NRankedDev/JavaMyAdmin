@@ -91,7 +91,7 @@ public abstract class DialogDynamicRows extends OptionDialog {
 		indexField.setMaxWidth(33);
 		
 		final Button remove = new Button("x");
-		remove.setTooltip(new Tooltip(Lang.getString("table.edit.remove", "Remove column")));
+		remove.setTooltip(new Tooltip(Lang.getString("table.edit.remove")));
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -104,7 +104,7 @@ public abstract class DialogDynamicRows extends OptionDialog {
 		});
 		
 		final Button add = new Button("+");
-		add.setTooltip(new Tooltip(Lang.getString("table.edit.add", "Add column")));
+		add.setTooltip(new Tooltip(Lang.getString("table.edit.add")));
 		add.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {

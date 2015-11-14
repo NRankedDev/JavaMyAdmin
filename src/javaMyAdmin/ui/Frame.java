@@ -68,7 +68,7 @@ public class Frame extends Application {
 			
 			BorderPane.setMargin(toolbar, new Insets(0, 0, 10, 0));
 			
-			stage.setTitle(Lang.getString("frame.title", "javaMyAdmin") + " - " + DBManager.getInstance().getUrl());
+			stage.setTitle(String.format(Lang.getString("frame.title"), DBManager.getInstance().getUrl()));
 			
 			/* Fenstergroesse bestimmen und Frame Content zuweisen */
 			stage.setScene(new Scene(root, 800, 600));

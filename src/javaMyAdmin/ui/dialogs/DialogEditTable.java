@@ -21,7 +21,7 @@ public abstract class DialogEditTable extends DialogAddTable {
 	private int newColumnsStart = 0;
 	
 	public DialogEditTable(Table table) {
-		super(Lang.getString("table.edit", "Edit table") + " `" + table.getName() + "`");
+		super(Lang.getString("table.edit.title") + " `" + table.getName() + "`");
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
 	}

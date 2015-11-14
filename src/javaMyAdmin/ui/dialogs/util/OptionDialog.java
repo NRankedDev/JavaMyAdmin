@@ -49,7 +49,7 @@ public abstract class OptionDialog {
 	 * @see #show()
 	 */
 	public OptionDialog(String title) {
-		this(title, Lang.getString("dialog.ok", "OK"));
+		this(title, Lang.getString("dialog.ok"));
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public abstract class OptionDialog {
 	 * @see #show()
 	 */
 	public OptionDialog(String title, String okButtonText) {
-		this(title, okButtonText, Lang.getString("dialog.cancel", "Cancel"));
+		this(title, okButtonText, Lang.getString("dialog.cancel"));
 	}
 	
 	/**

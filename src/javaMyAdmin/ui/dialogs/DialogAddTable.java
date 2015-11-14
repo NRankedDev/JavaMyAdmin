@@ -31,7 +31,7 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 	protected ArrayList<ComboBox<String>> indices = new ArrayList<ComboBox<String>>();
 	
 	public DialogAddTable() {
-		this(Lang.getString("table.add", "Add table"));
+		this(Lang.getString("table.add.title"));
 	}
 	
 	public DialogAddTable(String title) {
@@ -42,9 +42,9 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 	protected void initGrid(GridPane grid) {
 		super.initGrid(grid);
 		
-		top.addRow(0, new Label(Lang.getString("table.edit.table", "Tablename")), tableName);
+		top.addRow(0, new Label(Lang.getString("table.edit.table")), tableName);
 		top.addRow(1);
-		top.addRow(2, new Label(Lang.getString("table.edit.columns", "Columns") + ":"));
+		top.addRow(2, new Label(Lang.getString("table.edit.columns") + ":"));
 		
 		addRow();
 	}
@@ -97,9 +97,9 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 		defaultNullOptions.add((CheckBox) nodes[3]);
 		indices.add((ComboBox<String>) nodes[4]);
 		
-		super.addDynamicRow(new Label(Lang.getString("table.edit.title", "Title")), nodes[0], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype", "Datatype")),
-				nodes[1], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.length", "Length")), nodes[2], new Separator(Orientation.VERTICAL),
-				new Label(Lang.getString("table.edit.defaultNull", "Default Null")), nodes[3], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index", "Index")), nodes[4]);
+		super.addDynamicRow(new Label(Lang.getString("table.edit.title")), nodes[0], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype")), nodes[1],
+				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.length")), nodes[2], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull")),
+				nodes[3], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index")), nodes[4]);
 	}
 	
 	@Override
@@ -128,8 +128,8 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 		}
 		
 		Alert a = new Alert(AlertType.CONFIRMATION);
-		a.setHeaderText(Lang.getString("table.edit.no_primary.header", "This table has no primary key."));
-		a.setContentText(Lang.getString("table.edit.no_primary.content", "Are you sure you want to proceed without a primary key?"));
+		a.setHeaderText(Lang.getString("table.edit.no_primary.header"));
+		a.setContentText(Lang.getString("table.edit.no_primary.content"));
 		if (a.showAndWait().get() == ButtonType.OK) {
 			super.onOkButtonPressed(event);
 		}

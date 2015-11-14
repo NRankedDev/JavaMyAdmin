@@ -23,7 +23,7 @@ public abstract class DialogAddRecords extends DialogDynamicRows {
 	protected ArrayList<TextField[]> records = new ArrayList<TextField[]>();
 	
 	public DialogAddRecords(Table table) {
-		super(Lang.getString("record.add", "Add records"));
+		super(Lang.getString("record.add.title"));
 		this.table = table;
 	}
 	
@@ -34,9 +34,9 @@ public abstract class DialogAddRecords extends DialogDynamicRows {
 		TextField tableField = new TextField(table.getName());
 		tableField.setDisable(true);
 		
-		top.addRow(0, new Label(Lang.getString("record.add.description", "Add records for table")), tableField);
+		top.addRow(0, new Label(String.format(Lang.getString("record.add.description"), table.getName())), tableField);
 		top.addRow(1);
-		top.addRow(2, new Label(Lang.getString("record.add.records", "Records")));
+		top.addRow(2, new Label(Lang.getString("record.add.records")));
 		
 		addRow();
 	}

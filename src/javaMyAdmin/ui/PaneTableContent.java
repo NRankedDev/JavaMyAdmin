@@ -43,7 +43,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 	private Table table;
 	
 	public PaneTableContent() {
-		setPlaceholder(new Label(Lang.getString("table.no_content", "No records in this table.")));
+		setPlaceholder(new Label(Lang.getString("table.no_content")));
 		setContextMenu(new CustomContextMenu());
 		setEditable(true);
 	}
@@ -219,7 +219,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 	public class CustomContextMenu extends ContextMenu {
 		
 		public CustomContextMenu() {
-			MenuItem addRecord = new MenuItem(Lang.getString("record.add", "Add record"));
+			MenuItem addRecord = new MenuItem(Lang.getString("record.add"));
 			addRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -249,7 +249,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 			
-			MenuItem removeRecord = new MenuItem(Lang.getString("record.remove", "Remove record"));
+			MenuItem removeRecord = new MenuItem(Lang.getString("record.remove"));
 			removeRecord.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -273,7 +273,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				}
 			});
 			
-			MenuItem editTable = new MenuItem(Lang.getString("table.edit", "Edit table") + "...");
+			MenuItem editTable = new MenuItem(Lang.getString("table.edit"));
 			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
 			editTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override

@@ -110,7 +110,7 @@ public class PaneTableList extends TreeView<String> {
 	 * Zeigt alle Datenbanken und Tabellen neu an
 	 */
 	public void refresh() {
-		TreeItem<String> root = new TreeItem<String>(Lang.getString("connection", "Connection"));
+		TreeItem<String> root = new TreeItem<String>(Lang.getString("connection"));
 		root.setGraphic(new ImageView(Images.CONNECTION));
 		root.setExpanded(true);
 		setRoot(root);
@@ -173,12 +173,12 @@ public class PaneTableList extends TreeView<String> {
 	private class EmptyContextMenu extends ContextMenu {
 		
 		public EmptyContextMenu() {
-			final MenuItem addDatabase = new MenuItem(Lang.getString("database.add", "Add database"));
+			final MenuItem addDatabase = new MenuItem(Lang.getString("database.add"));
 			addDatabase.setGraphic(new ImageView(Images.DATABASE_ADD));
 			addDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogStringInput(addDatabase.getText(), Lang.getString("database.add.name", "Name")) {
+					new DialogStringInput(Lang.getString("database.add.title"), Lang.getString("database.add.name")) {
 						@Override
 						protected boolean handle() {
 							try {
@@ -204,12 +204,12 @@ public class PaneTableList extends TreeView<String> {
 	private class DatabaseItemContextMenu extends EmptyContextMenu {
 		
 		public DatabaseItemContextMenu() {
-			MenuItem renameDatasase = new MenuItem(Lang.getString("database.rename", "Rename database"));
+			MenuItem renameDatasase = new MenuItem(Lang.getString("database.rename"));
 			renameDatasase.setGraphic(new ImageView(Images.DATABASE_EDIT));
 			renameDatasase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogStringInput(Lang.getString("database.rename", "Rename database"), Lang.getString("database.add.name", "Name")) {
+					new DialogStringInput(Lang.getString("database.rename.title"), Lang.getString("database.add.name")) {
 						@Override
 						protected boolean handle() {
 							try {
@@ -225,18 +225,17 @@ public class PaneTableList extends TreeView<String> {
 				}
 			});
 			
-			MenuItem removeDatabase = new MenuItem(Lang.getString("database.remove", "Remove database"));
+			MenuItem removeDatabase = new MenuItem(Lang.getString("database.remove"));
 			removeDatabase.setGraphic(new ImageView(Images.DATABASE_REMOVE));
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
-						String db = Lang.getString("database", "database");
+						String db = Lang.getString("database");
 						TextInputDialog dialog = new TextInputDialog();
-						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
-						dialog.setHeaderText(
-								String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), db, getSelectionModel().getSelectedItem().getValue()));
-						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), db));
+						dialog.setTitle(Lang.getString("dialog.remove.title"));
+						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header"), db, getSelectionModel().getSelectedItem().getValue()));
+						dialog.setContentText(String.format(Lang.getString("dialog.remove.content"), db));
 						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						
 						Optional<String> result = dialog.showAndWait();
@@ -246,8 +245,8 @@ public class PaneTableList extends TreeView<String> {
 								refresh();
 							} else {
 								Alert a = new Alert(AlertType.INFORMATION);
-								a.setHeaderText(Lang.getString("dialog.remove.cancel.header", "Operation was terminated."));
-								a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content", "The entered name doesn't equal the name of the %s."), db));
+								a.setHeaderText(Lang.getString("dialog.remove.cancel.header"));
+								a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content"), db));
 								((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 								a.show();
 							}
@@ -258,7 +257,7 @@ public class PaneTableList extends TreeView<String> {
 				}
 			});
 			
-			MenuItem addTable = new MenuItem(Lang.getString("table.add", "Add table"));
+			MenuItem addTable = new MenuItem(Lang.getString("table.add"));
 			addTable.setGraphic(new ImageView(Images.TABLE_ADD));
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -305,7 +304,7 @@ public class PaneTableList extends TreeView<String> {
 	private class TableItemContextMenu extends DatabaseItemContextMenu {
 		
 		public TableItemContextMenu() {
-			MenuItem editTable = new MenuItem(Lang.getString("table.edit", "Edit table") + "...");
+			MenuItem editTable = new MenuItem(Lang.getString("table.edit"));
 			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
 			editTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -333,19 +332,19 @@ public class PaneTableList extends TreeView<String> {
 				}
 			});
 			
-			MenuItem removeTable = new MenuItem(Lang.getString("table.remove", "Remove table"));
+			MenuItem removeTable = new MenuItem(Lang.getString("table.remove"));
 			removeTable.setGraphic(new ImageView(Images.TABLE_REMOVE));
 			removeTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
 						TreeItem<String> item = getSelectionModel().getSelectedItem();
-						String table = Lang.getString("table", "table");
+						String table = Lang.getString("table");
 						
 						TextInputDialog dialog = new TextInputDialog();
-						dialog.setTitle(Lang.getString("dialog.remove.title", "Do you really want to proceed?"));
-						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header", "If you delete the %s `%s`, all data will be lost."), table, item.getValue()));
-						dialog.setContentText(String.format(Lang.getString("dialog.remove.content", "Enter the name of the %s to delete it:"), table));
+						dialog.setTitle(Lang.getString("dialog.remove.title"));
+						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header"), table, item.getValue()));
+						dialog.setContentText(String.format(Lang.getString("dialog.remove.content"), table));
 						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 						
 						Optional<String> result = dialog.showAndWait();
@@ -354,8 +353,8 @@ public class PaneTableList extends TreeView<String> {
 							refresh(item.getParent().getValue());
 						} else {
 							Alert a = new Alert(AlertType.INFORMATION);
-							a.setHeaderText(Lang.getString("dialog.remove.cancel.header", "Operation was terminated."));
-							a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content", "The entered name doesn't equal the name of the %s."), table));
+							a.setHeaderText(Lang.getString("dialog.remove.cancel.header"));
+							a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content"), table));
 							((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 							a.show();
 						}
