@@ -1,4 +1,4 @@
-package javaMyAdmin.ui.dialogs.util;
+package javaMyAdmin.util.ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

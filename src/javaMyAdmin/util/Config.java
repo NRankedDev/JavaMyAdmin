@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
+import javaMyAdmin.util.ui.FXUtil;
+
 /**
  * Erweiterung der Klasse {@link Properties}
  * 

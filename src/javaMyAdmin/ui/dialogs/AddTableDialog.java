@@ -2,14 +2,13 @@ package javaMyAdmin.ui.dialogs;
 
 import java.util.ArrayList;
 
-import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
-import javaMyAdmin.util.Datatype;
-import javaMyAdmin.util.Index;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.sql.Datatype;
+import javaMyAdmin.util.sql.Index;
+import javaMyAdmin.util.ui.DynamicRowsDialog;
+import javaMyAdmin.util.ui.Lang;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -21,7 +20,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-public abstract class DialogAddTable extends DialogDynamicRows {
+public abstract class AddTableDialog extends DynamicRowsDialog {
 	
 	protected TextField tableName = new TextField();
 	protected ArrayList<TextField> titles = new ArrayList<TextField>();
@@ -30,11 +29,11 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 	protected ArrayList<CheckBox> defaultNullOptions = new ArrayList<CheckBox>();
 	protected ArrayList<ComboBox<String>> indices = new ArrayList<ComboBox<String>>();
 	
-	public DialogAddTable() {
+	public AddTableDialog() {
 		this(Lang.getString("table.add.title"));
 	}
 	
-	public DialogAddTable(String title) {
+	public AddTableDialog(String title) {
 		super(title);
 	}
 	
@@ -54,10 +53,6 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 	}
 	
 	public void addRow(String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
-		addDynamicRow(createRowNodes(grid.getRowCount(), defaultTitle, defaultDatatype, defaultLength, defaultIndex, defaultNull));
-	}
-	
-	protected Node[] createRowNodes(int newRowIndex, String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
 		// Title
 		final TextField title = new TextField(defaultTitle == null ? "" : defaultTitle);
 		
@@ -73,6 +68,10 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 		// Length
 		final TextField length = new TextField(defaultLength == null ? "" : defaultLength);
 		
+		// Null Box
+		final CheckBox nullBox = new CheckBox();
+		nullBox.setSelected(defaultNull);
+		
 		// Index
 		final ComboBox<String> index = new ComboBox<String>(FXCollections.observableArrayList(Index.nameValues()));
 		if (defaultIndex == null) {
@@ -81,25 +80,15 @@ public abstract class DialogAddTable extends DialogDynamicRows {
 			index.getSelectionModel().select(defaultIndex.name());
 		}
 		
-		// Null Box
-		final CheckBox nullBox = new CheckBox();
-		nullBox.setSelected(defaultNull);
+		titles.add(title);
+		datatypes.add(datatype);
+		lengths.add(length);
+		defaultNullOptions.add(nullBox);
+		indices.add(index);
 		
-		return new Node[] { title, datatype, length, nullBox, index };
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void addDynamicRow(Node... nodes) {
-		titles.add((TextField) nodes[0]);
-		datatypes.add((ComboBox<String>) nodes[1]);
-		lengths.add((TextField) nodes[2]);
-		defaultNullOptions.add((CheckBox) nodes[3]);
-		indices.add((ComboBox<String>) nodes[4]);
-		
-		super.addDynamicRow(new Label(Lang.getString("table.edit.title")), nodes[0], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype")), nodes[1],
-				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.length")), nodes[2], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull")),
-				nodes[3], new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index")), nodes[4]);
+		addDynamicRow(new Label(Lang.getString("table.edit.column")), title, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.datatype")), datatype,
+				new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.length")), length, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.defaultNull")),
+				nullBox, new Separator(Orientation.VERTICAL), new Label(Lang.getString("table.edit.index")), index);
 	}
 	
 	@Override

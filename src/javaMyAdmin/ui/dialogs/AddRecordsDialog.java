@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.dialogs.util.DialogDynamicRows;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.DynamicRowsDialog;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Lang;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -17,12 +17,12 @@ import javafx.scene.layout.GridPane;
  * 
  * @author Nicolas
  */
-public abstract class DialogAddRecords extends DialogDynamicRows {
+public abstract class AddRecordsDialog extends DynamicRowsDialog {
 	
 	private final Table table;
 	protected ArrayList<TextField[]> records = new ArrayList<TextField[]>();
 	
-	public DialogAddRecords(Table table) {
+	public AddRecordsDialog(Table table) {
 		super(Lang.getString("record.add.title"));
 		this.table = table;
 	}

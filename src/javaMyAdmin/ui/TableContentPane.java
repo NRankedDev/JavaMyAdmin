@@ -7,12 +7,12 @@ import java.util.HashMap;
 
 import javaMyAdmin.db.Line;
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.PaneTableContent.TableRecord;
-import javaMyAdmin.ui.dialogs.DialogAddRecords;
-import javaMyAdmin.ui.dialogs.DialogEditTable;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Images;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.ui.TableContentPane.TableRecord;
+import javaMyAdmin.ui.dialogs.AddRecordsDialog;
+import javaMyAdmin.ui.dialogs.EditTableDialog;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Images;
+import javaMyAdmin.util.ui.Lang;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -38,11 +38,11 @@ import javafx.util.Callback;
  * 
  * @author Nicolas
  */
-public class PaneTableContent extends TableView<TableRecord> {
+public class TableContentPane extends TableView<TableRecord> {
 	
 	private Table table;
 	
-	public PaneTableContent() {
+	public TableContentPane() {
 		setPlaceholder(new Label(Lang.getString("table.no_content")));
 		setContextMenu(new CustomContextMenu());
 		setEditable(true);
@@ -224,7 +224,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				@Override
 				public void handle(ActionEvent event) {
 					if (getCurrentShownTable() != null) {
-						new DialogAddRecords(getCurrentShownTable()) {
+						new AddRecordsDialog(getCurrentShownTable()) {
 							@Override
 							protected boolean handle() {
 								for (TextField[] record : records) {
@@ -235,7 +235,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 									
 									try {
 										table.addTupel(strings);
-										PaneTableContent.this.addRow(strings);
+										TableContentPane.this.addRow(strings);
 									} catch (SQLException e) {
 										FXUtil.showErrorLog(e);
 										return false;
@@ -265,7 +265,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 						
 						try {
 							getCurrentShownTable().rmTupel(values);
-							PaneTableContent.this.getItems().remove(getSelectionModel().getSelectedIndex());
+							TableContentPane.this.getItems().remove(getSelectionModel().getSelectedIndex());
 						} catch (SQLException e) {
 							FXUtil.showErrorLog(e);
 						}
@@ -279,7 +279,7 @@ public class PaneTableContent extends TableView<TableRecord> {
 				@Override
 				public void handle(ActionEvent event) {
 					if (getCurrentShownTable() != null) {
-						new DialogEditTable(getCurrentShownTable()) {
+						new EditTableDialog(getCurrentShownTable()) {
 							@Override
 							protected boolean handle() {
 								refresh(getCurrentShownTable());

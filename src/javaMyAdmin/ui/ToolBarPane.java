@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Table;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Images;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Images;
+import javaMyAdmin.util.ui.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,7 +24,7 @@ import javafx.scene.layout.HBox;
  * @author Nicolas
  * 		
  */
-public class PaneToolbar extends BorderPane {
+public class ToolBarPane extends BorderPane {
 	
 	private static final String sqlKey = "sql_commands.label";
 	
@@ -36,7 +36,7 @@ public class PaneToolbar extends BorderPane {
 	private String databaseEnvironment;
 	private String tableEnvironment;
 	
-	public PaneToolbar() {
+	public ToolBarPane() {
 		ImageView img = new ImageView(Images.LOGO);
 		
 		sql = new BorderPane();
@@ -93,7 +93,7 @@ public class PaneToolbar extends BorderPane {
 		sql.setBottom(box);
 		BorderPane.setMargin(sqlArea, new Insets(10, 0, 10, 0));
 		
-		setTop(new PaneMenu());
+		setTop(new MenuPane());
 		setLeft(img);
 		setCenter(sql);
 		

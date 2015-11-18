@@ -6,12 +6,13 @@ import java.util.Optional;
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.dialogs.DialogAddTable;
-import javaMyAdmin.ui.dialogs.DialogEditTable;
-import javaMyAdmin.ui.dialogs.DialogStringInput;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Images;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.ui.dialogs.AddTableDialog;
+import javaMyAdmin.ui.dialogs.EditTableDialog;
+import javaMyAdmin.ui.dialogs.JoinDialog;
+import javaMyAdmin.ui.dialogs.StringInputDialog;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Images;
+import javaMyAdmin.util.ui.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -33,7 +34,7 @@ import javafx.util.Callback;
  * 
  * @author Nicolas
  */
-public class PaneTableList extends TreeView<String> {
+public class TableListPane extends TreeView<String> {
 	
 	private static final int databaseLayer = 1;
 	private static final int tableLayer = 2;
@@ -42,7 +43,7 @@ public class PaneTableList extends TreeView<String> {
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
 	private final ContextMenu tableItemContextMenu = new TableItemContextMenu();
 	
-	public PaneTableList() {
+	public TableListPane() {
 		getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
 			
@@ -178,7 +179,7 @@ public class PaneTableList extends TreeView<String> {
 			addDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogStringInput(Lang.getString("database.add.title"), Lang.getString("database.add.name")) {
+					new StringInputDialog(Lang.getString("database.add.title"), Lang.getString("database.add.name")) {
 						@Override
 						protected boolean handle() {
 							try {
@@ -209,7 +210,7 @@ public class PaneTableList extends TreeView<String> {
 			renameDatasase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogStringInput(Lang.getString("database.rename.title"), Lang.getString("database.add.name")) {
+					new StringInputDialog(String.format(Lang.getString("database.rename.title"), getSelectionModel().getSelectedItem().getValue()), Lang.getString("database.add.name")) {
 						@Override
 						protected boolean handle() {
 							try {
@@ -262,7 +263,7 @@ public class PaneTableList extends TreeView<String> {
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new DialogAddTable(null) {
+					new AddTableDialog(null) {
 						@Override
 						protected boolean handle() {
 							TreeItem<String> item = getSelectionModel().getSelectedItem();
@@ -321,7 +322,7 @@ public class PaneTableList extends TreeView<String> {
 					final Table t = table;
 					
 					if (table != null) {
-						new DialogEditTable(table) {
+						new EditTableDialog(table) {
 							@Override
 							protected boolean handle() {
 								Frame.getInstance().getTableContentPane().refresh(t);
@@ -363,7 +364,31 @@ public class PaneTableList extends TreeView<String> {
 					}
 				}
 			});
-			getItems().addAll(editTable, removeTable);
+			
+			MenuItem joinTable = new MenuItem(Lang.getString("table.join"));
+			joinTable.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					TreeItem<String> item = getSelectionModel().getSelectedItem();
+					try {
+						Table table = DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
+						if (table != null) {
+							new JoinDialog(table) {
+								@Override
+								protected boolean handle() {
+									return true;
+								}
+							}.show();
+						} else {
+							throw new SQLException();
+						}
+					} catch (SQLException e) {
+						FXUtil.showErrorLog(e);
+					}
+				}
+			});
+			
+			getItems().addAll(editTable, removeTable, new SeparatorMenuItem(), joinTable);
 		}
 		
 	}

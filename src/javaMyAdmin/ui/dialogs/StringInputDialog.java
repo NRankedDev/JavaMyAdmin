@@ -1,6 +1,6 @@
 package javaMyAdmin.ui.dialogs;
 
-import javaMyAdmin.ui.dialogs.util.OptionDialog;
+import javaMyAdmin.util.ui.OptionDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -11,12 +11,12 @@ import javafx.scene.layout.GridPane;
  * 
  * @author Nicolas
  */
-public abstract class DialogStringInput extends OptionDialog {
+public abstract class StringInputDialog extends OptionDialog {
 	
 	protected TextField input;
 	protected String inputDescr;
 	
-	public DialogStringInput(String frameTitle, String inputDescr) {
+	public StringInputDialog(String frameTitle, String inputDescr) {
 		super(frameTitle);
 		this.inputDescr = inputDescr;
 	}

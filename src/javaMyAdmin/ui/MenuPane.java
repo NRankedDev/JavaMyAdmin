@@ -2,7 +2,7 @@ package javaMyAdmin.ui;
 
 import java.util.Locale;
 
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.Lang;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
@@ -18,9 +18,9 @@ import javafx.scene.control.ToggleGroup;
  * 
  * @author Nicolas
  */
-public class PaneMenu extends MenuBar {
+public class MenuPane extends MenuBar {
 	
-	public PaneMenu() {
+	public MenuPane() {
 		getMenus().addAll(new File(), new Settings());
 	}
 	

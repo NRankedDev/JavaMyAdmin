@@ -3,10 +3,10 @@ package javaMyAdmin.ui.dialogs;
 import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
-import javaMyAdmin.ui.dialogs.util.OptionDialog;
 import javaMyAdmin.util.Config;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Lang;
+import javaMyAdmin.util.ui.OptionDialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;
@@ -21,14 +21,14 @@ import javafx.scene.layout.GridPane;
  * 
  * @author Nicolas
  */
-public class DialogLogin extends OptionDialog {
+public class LoginDialog extends OptionDialog {
 	
 	private TextField url;
 	private TextField username;
 	private PasswordField password;
 	private CheckBox remember;
 	
-	public DialogLogin() {
+	public LoginDialog() {
 		super(Lang.getString("dialog.connect.title"), Lang.getString("dialog.connect"));
 		show();
 	}

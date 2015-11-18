@@ -1,4 +1,4 @@
-package javaMyAdmin.util;
+package javaMyAdmin.util.sql;
 
 import java.sql.Date;
 import java.util.ArrayList;

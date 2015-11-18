@@ -1,4 +1,4 @@
-package javaMyAdmin.util;
+package javaMyAdmin.util.ui;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
+
+import javaMyAdmin.util.Config;
 
 /**
  * Klasse, die beim Start alle unterstuetzen Sprachen laedt. Wird fuer das

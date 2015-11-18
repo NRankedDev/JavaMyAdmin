@@ -4,11 +4,11 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Table;
-import javaMyAdmin.ui.dialogs.DialogLogin;
+import javaMyAdmin.ui.dialogs.LoginDialog;
 import javaMyAdmin.util.Config;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Images;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Images;
+import javaMyAdmin.util.ui.Lang;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -25,10 +25,10 @@ public class Frame extends Application {
 	
 	private static Frame instance;
 	
-	private PaneToolbar toolbar;
-	private PaneTableList tableList;
-	private PaneTableContent tableContent;
-	private PaneStatusBar statusBar;
+	private ToolBarPane toolbar;
+	private TableListPane tableList;
+	private TableContentPane tableContent;
+	private StatusBarPane statusBar;
 	
 	public Frame() {
 		instance = this;
@@ -54,17 +54,17 @@ public class Frame extends Application {
 			});
 			
 			/* Login Dialog starten und auf Usereingaben warten */
-			new DialogLogin();
+			new LoginDialog();
 			
 			/* Root-Layout initialisieren */
 			BorderPane root = new BorderPane();
 			SplitPane split = new SplitPane();
-			split.getItems().addAll(tableList = new PaneTableList(), tableContent = new PaneTableContent());
+			split.getItems().addAll(tableList = new TableListPane(), tableContent = new TableContentPane());
 			split.setDividerPosition(0, 0.2);
 			
-			root.setTop(toolbar = new PaneToolbar());
+			root.setTop(toolbar = new ToolBarPane());
 			root.setCenter(split);
-			root.setBottom(statusBar = new PaneStatusBar());
+			root.setBottom(statusBar = new StatusBarPane());
 			
 			BorderPane.setMargin(toolbar, new Insets(0, 0, 10, 0));
 			
@@ -91,38 +91,38 @@ public class Frame extends Application {
 	}
 	
 	/**
-	 * {@link PaneToolbar} der Anwendung.
+	 * {@link ToolBarPane} der Anwendung.
 	 * 
 	 * @return
 	 */
-	public PaneToolbar getToolbarPane() {
+	public ToolBarPane getToolbarPane() {
 		return toolbar;
 	}
 	
 	/**
-	 * {@link PaneTableList} der Anwendung.
+	 * {@link TableListPane} der Anwendung.
 	 * 
 	 * @return
 	 */
-	public PaneTableList getTableListPane() {
+	public TableListPane getTableListPane() {
 		return tableList;
 	}
 	
 	/**
-	 * {@link PaneTableContent} der Anwendung.
+	 * {@link TableContentPane} der Anwendung.
 	 * 
 	 * @return
 	 */
-	public PaneTableContent getTableContentPane() {
+	public TableContentPane getTableContentPane() {
 		return tableContent;
 	}
 	
 	/**
-	 * {@link PaneStatusBar} der Anwendung.
+	 * {@link StatusBarPane} der Anwendung.
 	 * 
 	 * @return
 	 */
-	public PaneStatusBar getStatusBar() {
+	public StatusBarPane getStatusBar() {
 		return statusBar;
 	}
 	

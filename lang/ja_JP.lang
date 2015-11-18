@@ -1,0 +1,8 @@
+dialog.ok=はい
+dialog.cancel=キャンセル
+dialog.connect=つなぎます
+dialog.connect.title=サーバーに接続します
+dialog.connect.url=アドレス
+dialog.connect.username=ユーザ名
+dialog.connect.password=パスワード
+dialog.connect.remember=ログインを覚えています

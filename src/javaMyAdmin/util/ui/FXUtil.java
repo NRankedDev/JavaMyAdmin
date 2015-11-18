@@ -1,4 +1,4 @@
-package javaMyAdmin.util;
+package javaMyAdmin.util.ui;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -2,19 +2,19 @@ package javaMyAdmin.ui;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Table;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.Lang;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
-public class PaneStatusBar extends BorderPane {
+public class StatusBarPane extends BorderPane {
 	
 	private Label tableInfo;
 	private Label readOnly;
 	
-	public PaneStatusBar() {
+	public StatusBarPane() {
 		HBox left = new HBox();
 		
 		left.getChildren().addAll(new Label(String.format(Lang.getString("status.connected"), DBManager.getInstance().getUrl())));

@@ -1,7 +1,5 @@
-package javaMyAdmin.ui.dialogs.util;
+package javaMyAdmin.util.ui;
 
-import javaMyAdmin.util.Images;
-import javaMyAdmin.util.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

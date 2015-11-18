@@ -1,7 +1,6 @@
-package javaMyAdmin.ui.dialogs.util;
+package javaMyAdmin.util.ui;
 
-import javaMyAdmin.ui.dialogs.util.ExtendedGridPane.GridOperation;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.ui.ExtendedGridPane.GridOperation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,7 +23,7 @@ import javafx.scene.layout.GridPane;
  * @see #addDynamicRow(Node...)
  * @see #removeDynamicRow(int)
  */
-public abstract class DialogDynamicRows extends OptionDialog {
+public abstract class DynamicRowsDialog extends OptionDialog {
 	
 	/**
 	 * ExtendedGridPane API
@@ -39,15 +38,15 @@ public abstract class DialogDynamicRows extends OptionDialog {
 	private BorderPane layout;
 	private ScrollPane bottom;
 	
-	public DialogDynamicRows(String title) {
+	public DynamicRowsDialog(String title) {
 		super(title);
 	}
 	
-	public DialogDynamicRows(String title, String okButtonText) {
+	public DynamicRowsDialog(String title, String okButtonText) {
 		super(title, okButtonText);
 	}
 	
-	public DialogDynamicRows(String title, String okButtonText, String cancelButtonText) {
+	public DynamicRowsDialog(String title, String okButtonText, String cancelButtonText) {
 		super(title, okButtonText, cancelButtonText);
 	}
 	
@@ -117,6 +116,10 @@ public abstract class DialogDynamicRows extends OptionDialog {
 		totalNodes.addAll(nodes);
 		totalNodes.addAll(remove, add);
 		
+		if (grid.getColumnCount() > 0 && grid.getColumnCount() != totalNodes.size()) {
+			throw new IllegalArgumentException("nodes.length doesn't match to columns");
+		}
+		
 		grid.addRow(new GridOperation() {
 			
 			@Override
@@ -171,6 +174,41 @@ public abstract class DialogDynamicRows extends OptionDialog {
 				}
 			}
 		}, index);
+	}
+	
+	/**
+	 * Liefert alle Elemente, die in einer Reihe enthalten sind
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public Node[] getAllNodes(int index) {
+		int columns = grid.getColumnCount();
+		Node[] nodes = new Node[columns];
+		
+		for (int i = 0; i < columns; i++) {
+			nodes[i] = grid.getChildren().get(index * columns + i);
+		}
+		
+		return nodes;
+	}
+	
+	/**
+	 * Liefert nur die Elemente, die in einer Reihe enthalten sind und die man
+	 * selbst hinzugefügt hat
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public Node[] getCustomNodes(int index) {
+		Node[] all = getAllNodes(index);
+		Node[] nodes = new Node[all.length - 3];
+		
+		for (int i = 0; i < nodes.length; i++) {
+			nodes[i] = all[i + 1];
+		}
+		
+		return nodes;
 	}
 	
 	/**

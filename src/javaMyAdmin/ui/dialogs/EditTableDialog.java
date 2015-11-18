@@ -5,23 +5,23 @@ import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.Frame;
-import javaMyAdmin.util.Datatype;
-import javaMyAdmin.util.FXUtil;
-import javaMyAdmin.util.Index;
-import javaMyAdmin.util.Lang;
+import javaMyAdmin.util.sql.Datatype;
+import javaMyAdmin.util.sql.Index;
+import javaMyAdmin.util.ui.FXUtil;
+import javaMyAdmin.util.ui.Lang;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
-public abstract class DialogEditTable extends DialogAddTable {
+public abstract class EditTableDialog extends AddTableDialog {
 	
 	private final ArrayList<String> toRemoveColumns = new ArrayList<String>();
 	private final Table table;
 	private int newColumnsStart = 0;
 	
-	public DialogEditTable(Table table) {
-		super(Lang.getString("table.edit.title") + " `" + table.getName() + "`");
+	public EditTableDialog(Table table) {
+		super(String.format(Lang.getString("table.edit.title"), table.getName()));
 		tableName.setText(table == null ? "" : table.getName());
 		this.table = table;
 	}
@@ -48,8 +48,9 @@ public abstract class DialogEditTable extends DialogAddTable {
 	}
 	
 	@Override
-	protected Node[] createRowNodes(int newRowIndex, String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
-		Node[] nodes = super.createRowNodes(newRowIndex, defaultTitle, defaultDatatype, defaultLength, defaultIndex, defaultNull);
+	public void addRow(String defaultTitle, Datatype<?> defaultDatatype, String defaultLength, Index defaultIndex, boolean defaultNull) {
+		super.addRow(defaultTitle, defaultDatatype, defaultLength, defaultIndex, defaultNull);
+		Node[] nodes = getCustomNodes(grid.getRowCount() - 1);
 		
 		if (defaultTitle != null && !defaultTitle.isEmpty()) {
 			for (int i = 0; i < nodes.length; i++) {
@@ -59,8 +60,6 @@ public abstract class DialogEditTable extends DialogAddTable {
 			}
 			newColumnsStart++;
 		}
-		
-		return nodes;
 	}
 	
 	@Override
