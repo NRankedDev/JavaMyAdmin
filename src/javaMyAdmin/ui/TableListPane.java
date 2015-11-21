@@ -112,7 +112,9 @@ public class TableListPane extends TreeView<String> {
 		setRoot(root);
 		
 		try {
+			System.out.println("----------- REFRESH ---------------");
 			for (Database db : DBManager.getInstance().getDB()) {
+				System.out.println(db.getDbname());
 				refresh(db.getDbname());
 			}
 		} catch (SQLException e) {
@@ -151,6 +153,7 @@ public class TableListPane extends TreeView<String> {
 				dbItem.getChildren().clear();
 				
 				for (Table table : db.getTable()) {
+					System.out.println("\t" + table.getName());
 					TreeItem<String> item = new TreeItem<String>(table.getName());
 					item.setGraphic(new ImageView(Images.TABLE));
 					dbItem.getChildren().add(item);
