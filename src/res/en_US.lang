@@ -87,6 +87,7 @@ record.remove=Remove record
 # Status
 #
 status.connected=Connected to server '%s'.
+status.table.search=Search
 status.table.none=No table selected.
 status.table.selected=Table '%s' selected.
 status.table.read_only=(Read Only)

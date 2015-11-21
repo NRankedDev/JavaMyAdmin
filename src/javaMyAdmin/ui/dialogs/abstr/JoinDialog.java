@@ -1,4 +1,4 @@
-package javaMyAdmin.ui.dialogs;
+package javaMyAdmin.ui.dialogs.abstr;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+/* TODO Beta v0.3 */
 public abstract class JoinDialog extends DynamicRowsDialog {
 	
 	private final Table joinFrom;

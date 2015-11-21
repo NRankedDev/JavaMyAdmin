@@ -224,27 +224,7 @@ public class TableContentPane extends TableView<TableRecord> {
 				@Override
 				public void handle(ActionEvent event) {
 					if (getCurrentShownTable() != null) {
-						new AddRecordsDialog(getCurrentShownTable()) {
-							@Override
-							protected boolean handle() {
-								for (TextField[] record : records) {
-									ArrayList<String> strings = new ArrayList<String>();
-									for (int i = 0; i < record.length; i++) {
-										strings.add(record[i].getText());
-									}
-									
-									try {
-										table.addTupel(strings);
-										TableContentPane.this.addRow(strings);
-									} catch (SQLException e) {
-										FXUtil.showErrorLog(e);
-										return false;
-									}
-								}
-								
-								return true;
-							};
-						}.show();
+						new AddRecordsDialog(getCurrentShownTable()).show();
 					}
 				}
 			});
@@ -279,13 +259,7 @@ public class TableContentPane extends TableView<TableRecord> {
 				@Override
 				public void handle(ActionEvent event) {
 					if (getCurrentShownTable() != null) {
-						new EditTableDialog(getCurrentShownTable()) {
-							@Override
-							protected boolean handle() {
-								refresh(getCurrentShownTable());
-								return true;
-							}
-						}.show();
+						new EditTableDialog(getCurrentShownTable()).show();
 					}
 				}
 			});

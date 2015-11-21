@@ -1,4 +1,4 @@
-package javaMyAdmin.ui.dialogs;
+package javaMyAdmin.ui.dialogs.abstr;
 
 import java.util.Optional;
 

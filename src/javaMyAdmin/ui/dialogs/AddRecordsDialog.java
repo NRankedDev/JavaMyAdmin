@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javaMyAdmin.db.Table;
+import javaMyAdmin.ui.Frame;
 import javaMyAdmin.util.ui.DynamicRowsDialog;
 import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Lang;
@@ -17,7 +18,7 @@ import javafx.scene.layout.GridPane;
  * 
  * @author Nicolas
  */
-public abstract class AddRecordsDialog extends DynamicRowsDialog {
+public class AddRecordsDialog extends DynamicRowsDialog {
 	
 	private final Table table;
 	protected ArrayList<TextField[]> records = new ArrayList<TextField[]>();
@@ -67,6 +68,26 @@ public abstract class AddRecordsDialog extends DynamicRowsDialog {
 	protected void onRemoveButtonPressed(Button removeButton, int index) {
 		super.onRemoveButtonPressed(removeButton, index);
 		records.remove(index);
+	}
+	
+	@Override
+	protected boolean handle() {
+		for (TextField[] record : records) {
+			ArrayList<String> strings = new ArrayList<String>();
+			for (int i = 0; i < record.length; i++) {
+				strings.add(record[i].getText());
+			}
+			
+			try {
+				table.addTupel(strings);
+				Frame.getInstance().getTableContentPane().addRow(strings);
+			} catch (SQLException e) {
+				FXUtil.showErrorLog(e);
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 }

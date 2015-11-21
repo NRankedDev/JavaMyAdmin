@@ -52,7 +52,7 @@ database=Datenbank
 database.add=Datenbank hinzufügen...
 database.add.title=Datenbank hinzufügen
 database.add.name=Name
-database.rename=Datenbank umbennen...
+database.rename=Datenbank umbenennen...
 database.rename.title=Datenbank `%s` umbennen
 database.remove=Datenbank löschen
 table=Tabelle
@@ -87,6 +87,7 @@ record.remove=Datensatz löschen
 # Status
 #
 status.connected=Verbunden zum Server '%s'.
+status.table.search=Suchen
 status.table.none=Keine Tabelle selektiert.
 status.table.selected=Tabelle '%s' selektiert.
 status.table.read_only=(Read Only)

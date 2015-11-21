@@ -6,9 +6,9 @@ import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.AddTableDialog;
-import javaMyAdmin.ui.dialogs.ConfirmRemoveDialog;
 import javaMyAdmin.ui.dialogs.EditTableDialog;
-import javaMyAdmin.ui.dialogs.StringInputDialog;
+import javaMyAdmin.ui.dialogs.abstr.ConfirmRemoveDialog;
+import javaMyAdmin.ui.dialogs.abstr.StringInputDialog;
 import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Images;
 import javaMyAdmin.util.ui.Lang;
@@ -31,8 +31,8 @@ import javafx.util.Callback;
  */
 public class TableListPane extends TreeView<String> {
 	
-	private static final int databaseLayer = 1;
-	private static final int tableLayer = 2;
+	public static final int LAYER_DATABASE = 1;
+	public static final int LAYER_TABLE = 2;
 	
 	private final ContextMenu emptyContextMenu = new EmptyContextMenu();
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
@@ -49,7 +49,7 @@ public class TableListPane extends TreeView<String> {
 					public void updateSelected(boolean selected) {
 						super.updateSelected(selected);
 						if (selected) {
-							if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
+							if (FXUtil.getLayer(getTreeItem()) == LAYER_TABLE) {
 								try {
 									Database db = DBManager.getInstance().getDB(getTreeItem().getParent().getValue());
 									
@@ -62,7 +62,7 @@ public class TableListPane extends TreeView<String> {
 									FXUtil.showErrorLog(e);
 								}
 								Frame.getInstance().getToolbarPane().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
-							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == LAYER_DATABASE) {
 								Frame.getInstance().getToolbarPane().setDatabaseSQL(getTreeItem().getValue());
 								Frame.getInstance().getTableContentPane().refresh(null);
 							} else {
@@ -86,9 +86,9 @@ public class TableListPane extends TreeView<String> {
 							
 							if (empty || FXUtil.isRoot(getTreeItem())) {
 								setContextMenu(emptyContextMenu);
-							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == LAYER_DATABASE) {
 								setContextMenu(databaseItemContextMenu);
-							} else if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == LAYER_TABLE) {
 								setContextMenu(tableItemContextMenu);
 							}
 						}
@@ -250,35 +250,7 @@ public class TableListPane extends TreeView<String> {
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new AddTableDialog() {
-						@Override
-						protected boolean handle() {
-							TreeItem<String> item = getSelectionModel().getSelectedItem();
-							String db = null;
-							
-							if (FXUtil.getLayer(item) == databaseLayer) {
-								db = item.getValue();
-							} else if (FXUtil.getLayer(item) == tableLayer) {
-								db = item.getParent().getValue();
-							}
-							
-							try {
-								Database database = DBManager.getInstance().getDB(db);
-								if (database != null) {
-									database.addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
-								} else {
-									throw new RuntimeException("Database `" + db + "` doesn't exists");
-								}
-								
-								refresh(database.getDbname());
-							} catch (Exception e) {
-								FXUtil.showErrorLog(e);
-								return false;
-							}
-							
-							return true;
-						}
-					}.show();
+					new AddTableDialog().show();
 				}
 			});
 			
@@ -306,16 +278,8 @@ public class TableListPane extends TreeView<String> {
 						FXUtil.showErrorLog(e);
 					}
 					
-					final Table t = table;
-					
 					if (table != null) {
-						new EditTableDialog(table) {
-							@Override
-							protected boolean handle() {
-								Frame.getInstance().getTableContentPane().refresh(t);
-								return true;
-							}
-						}.show();
+						new EditTableDialog(table).show();
 					}
 				}
 			});

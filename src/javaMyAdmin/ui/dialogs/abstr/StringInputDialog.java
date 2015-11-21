@@ -1,4 +1,4 @@
-package javaMyAdmin.ui.dialogs;
+package javaMyAdmin.ui.dialogs.abstr;
 
 import javaMyAdmin.util.ui.OptionDialog;
 import javafx.scene.control.Label;
