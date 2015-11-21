@@ -22,7 +22,8 @@ dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
 dialog.remove.title=Möchtest du die Aktion wirklich durchführen?
 dialog.remove.header=Wenn du die %s `%s` löschst, werden alle Daten verloren gehen.
-dialog.remove.content=Gib den Namen der %s ein, um fortzufahren:
+dialog.remove.header_2=Gib den Namen der %s ein, um fortzufahren.
+dialog.remove.name=Name:
 dialog.remove.cancel.header=Aktion wurde abgebrochen.
 dialog.remove.cancel.content=Der eingegebene Name stimmt nicht mit dem Namen der %s überein.
 
@@ -51,7 +52,7 @@ database=Datenbank
 database.add=Datenbank hinzufügen...
 database.add.title=Datenbank hinzufügen
 database.add.name=Name
-database.rename=Datenbank umbennen...
+database.rename=Datenbank umbenennen...
 database.rename.title=Datenbank `%s` umbennen
 database.remove=Datenbank löschen
 table=Tabelle
@@ -86,6 +87,7 @@ record.remove=Datensatz löschen
 # Status
 #
 status.connected=Verbunden zum Server '%s'.
+status.table.search=Suchen
 status.table.none=Keine Tabelle selektiert.
 status.table.selected=Tabelle '%s' selektiert.
 status.table.read_only=(Read Only)

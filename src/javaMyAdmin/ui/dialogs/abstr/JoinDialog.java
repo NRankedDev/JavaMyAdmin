@@ -1,4 +1,4 @@
-package javaMyAdmin.ui.dialogs;
+package javaMyAdmin.ui.dialogs.abstr;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,10 +21,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
+/* TODO Beta v0.3 */
 public abstract class JoinDialog extends DynamicRowsDialog {
 	
 	private final Table joinFrom;
-	private final Table joinTo;
+	// private final Table joinTo;
 	
 	public JoinDialog(Table table1) {
 		this(table1, null);
@@ -33,7 +34,7 @@ public abstract class JoinDialog extends DynamicRowsDialog {
 	public JoinDialog(Table table1, Table table2) {
 		super(Lang.getString("table.join.title"));
 		this.joinFrom = table1;
-		this.joinTo = table2;
+		// this.joinTo = table2;
 	}
 	
 	@Override

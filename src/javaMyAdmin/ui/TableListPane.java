@@ -1,32 +1,27 @@
 package javaMyAdmin.ui;
 
 import java.sql.SQLException;
-import java.util.Optional;
 
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.db.Database;
 import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.AddTableDialog;
 import javaMyAdmin.ui.dialogs.EditTableDialog;
-import javaMyAdmin.ui.dialogs.JoinDialog;
-import javaMyAdmin.ui.dialogs.StringInputDialog;
+import javaMyAdmin.ui.dialogs.abstr.ConfirmRemoveDialog;
+import javaMyAdmin.ui.dialogs.abstr.StringInputDialog;
 import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Images;
 import javaMyAdmin.util.ui.Lang;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -36,8 +31,8 @@ import javafx.util.Callback;
  */
 public class TableListPane extends TreeView<String> {
 	
-	private static final int databaseLayer = 1;
-	private static final int tableLayer = 2;
+	public static final int LAYER_DATABASE = 1;
+	public static final int LAYER_TABLE = 2;
 	
 	private final ContextMenu emptyContextMenu = new EmptyContextMenu();
 	private final ContextMenu databaseItemContextMenu = new DatabaseItemContextMenu();
@@ -54,7 +49,7 @@ public class TableListPane extends TreeView<String> {
 					public void updateSelected(boolean selected) {
 						super.updateSelected(selected);
 						if (selected) {
-							if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
+							if (FXUtil.getLayer(getTreeItem()) == LAYER_TABLE) {
 								try {
 									Database db = DBManager.getInstance().getDB(getTreeItem().getParent().getValue());
 									
@@ -67,7 +62,7 @@ public class TableListPane extends TreeView<String> {
 									FXUtil.showErrorLog(e);
 								}
 								Frame.getInstance().getToolbarPane().setTableSQL(getTreeItem().getParent().getValue(), getTreeItem().getValue());
-							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == LAYER_DATABASE) {
 								Frame.getInstance().getToolbarPane().setDatabaseSQL(getTreeItem().getValue());
 								Frame.getInstance().getTableContentPane().refresh(null);
 							} else {
@@ -91,9 +86,9 @@ public class TableListPane extends TreeView<String> {
 							
 							if (empty || FXUtil.isRoot(getTreeItem())) {
 								setContextMenu(emptyContextMenu);
-							} else if (FXUtil.getLayer(getTreeItem()) == databaseLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == LAYER_DATABASE) {
 								setContextMenu(databaseItemContextMenu);
-							} else if (FXUtil.getLayer(getTreeItem()) == tableLayer) {
+							} else if (FXUtil.getLayer(getTreeItem()) == LAYER_TABLE) {
 								setContextMenu(tableItemContextMenu);
 							}
 						}
@@ -210,11 +205,14 @@ public class TableListPane extends TreeView<String> {
 			renameDatasase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new StringInputDialog(String.format(Lang.getString("database.rename.title"), getSelectionModel().getSelectedItem().getValue()), Lang.getString("database.add.name")) {
+					final TreeItem<String> item = getSelectionModel().getSelectedItem();
+					
+					new StringInputDialog(String.format(Lang.getString("database.rename.title"), item.getValue()), Lang.getString("database.add.name"), item.getValue()) {
 						@Override
 						protected boolean handle() {
 							try {
-								DBManager.getInstance().getDB(getSelectionModel().getSelectedItem().getValue()).renameDatabase(input.getText());
+								DBManager.getInstance().getDB(item.getValue()).renameDatabase(input.getText());
+								refresh();
 								return true;
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
@@ -231,30 +229,19 @@ public class TableListPane extends TreeView<String> {
 			removeDatabase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					try {
-						String db = Lang.getString("database");
-						TextInputDialog dialog = new TextInputDialog();
-						dialog.setTitle(Lang.getString("dialog.remove.title"));
-						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header"), db, getSelectionModel().getSelectedItem().getValue()));
-						dialog.setContentText(String.format(Lang.getString("dialog.remove.content"), db));
-						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
-						
-						Optional<String> result = dialog.showAndWait();
-						if (result.isPresent()) {
-							if (result.get().equals(getSelectionModel().getSelectedItem().getValue())) {
+					final TreeItem<String> item = getSelectionModel().getSelectedItem();
+					
+					new ConfirmRemoveDialog(Lang.getString("database"), item.getValue()) {
+						@Override
+						protected void handle() {
+							try {
 								DBManager.getInstance().rmDB(getSelectionModel().getSelectedItem().getValue());
 								refresh();
-							} else {
-								Alert a = new Alert(AlertType.INFORMATION);
-								a.setHeaderText(Lang.getString("dialog.remove.cancel.header"));
-								a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content"), db));
-								((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
-								a.show();
+							} catch (SQLException e) {
+								FXUtil.showErrorLog(e);
 							}
 						}
-					} catch (SQLException e) {
-						FXUtil.showErrorLog(e);
-					}
+					};
 				}
 			});
 			
@@ -263,35 +250,7 @@ public class TableListPane extends TreeView<String> {
 			addTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new AddTableDialog(null) {
-						@Override
-						protected boolean handle() {
-							TreeItem<String> item = getSelectionModel().getSelectedItem();
-							String db = null;
-							
-							if (FXUtil.getLayer(item) == databaseLayer) {
-								db = item.getValue();
-							} else if (FXUtil.getLayer(item) == tableLayer) {
-								db = item.getParent().getValue();
-							}
-							
-							try {
-								Database database = DBManager.getInstance().getDB(db);
-								if (database != null) {
-									database.addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
-								} else {
-									throw new RuntimeException("Database `" + db + "` doesn't exists");
-								}
-								
-								refresh(database.getDbname());
-							} catch (Exception e) {
-								FXUtil.showErrorLog(e);
-								return false;
-							}
-							
-							return true;
-						}
-					}.show();
+					new AddTableDialog().show();
 				}
 			});
 			
@@ -319,16 +278,8 @@ public class TableListPane extends TreeView<String> {
 						FXUtil.showErrorLog(e);
 					}
 					
-					final Table t = table;
-					
 					if (table != null) {
-						new EditTableDialog(table) {
-							@Override
-							protected boolean handle() {
-								Frame.getInstance().getTableContentPane().refresh(t);
-								return true;
-							}
-						}.show();
+						new EditTableDialog(table).show();
 					}
 				}
 			});
@@ -338,57 +289,50 @@ public class TableListPane extends TreeView<String> {
 			removeTable.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					try {
-						TreeItem<String> item = getSelectionModel().getSelectedItem();
-						String table = Lang.getString("table");
-						
-						TextInputDialog dialog = new TextInputDialog();
-						dialog.setTitle(Lang.getString("dialog.remove.title"));
-						dialog.setHeaderText(String.format(Lang.getString("dialog.remove.header"), table, item.getValue()));
-						dialog.setContentText(String.format(Lang.getString("dialog.remove.content"), table));
-						((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
-						
-						Optional<String> result = dialog.showAndWait();
-						if (result.get().equals(getSelectionModel().getSelectedItem().getValue())) {
-							DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
-							refresh(item.getParent().getValue());
-						} else {
-							Alert a = new Alert(AlertType.INFORMATION);
-							a.setHeaderText(Lang.getString("dialog.remove.cancel.header"));
-							a.setContentText(String.format(Lang.getString("dialog.remove.cancel.content"), table));
-							((Stage) a.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
-							a.show();
+					final TreeItem<String> item = getSelectionModel().getSelectedItem();
+					
+					new ConfirmRemoveDialog(Lang.getString("table"), item.getValue()) {
+						@Override
+						protected void handle() {
+							try {
+								DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
+								refresh(item.getParent().getValue());
+							} catch (SQLException e) {
+								FXUtil.showErrorLog(e);
+							}
 						}
-					} catch (SQLException e) {
-						FXUtil.showErrorLog(e);
-					}
+					};
 				}
 			});
 			
-			MenuItem joinTable = new MenuItem(Lang.getString("table.join"));
-			joinTable.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					TreeItem<String> item = getSelectionModel().getSelectedItem();
-					try {
-						Table table = DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
-						if (table != null) {
-							new JoinDialog(table) {
-								@Override
-								protected boolean handle() {
-									return true;
-								}
-							}.show();
-						} else {
-							throw new SQLException();
-						}
-					} catch (SQLException e) {
-						FXUtil.showErrorLog(e);
-					}
-				}
-			});
+			/* TODO Beta v0.3 */
 			
-			getItems().addAll(editTable, removeTable, new SeparatorMenuItem(), joinTable);
+			// MenuItem joinTable = new MenuItem(Lang.getString("table.join"));
+			// joinTable.setOnAction(new EventHandler<ActionEvent>() {
+			// @Override
+			// public void handle(ActionEvent event) {
+			// TreeItem<String> item = getSelectionModel().getSelectedItem();
+			// try {
+			// Table table =
+			// DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
+			// if (table != null) {
+			// new JoinDialog(table) {
+			// @Override
+			// protected boolean handle() {
+			// return true;
+			// }
+			// }.show();
+			// } else {
+			// throw new SQLException();
+			// }
+			// } catch (SQLException e) {
+			// FXUtil.showErrorLog(e);
+			// }
+			// }
+			// });
+			
+			getItems().addAll(editTable,
+					removeTable/* , new SeparatorMenuItem(), joinTable */);
 		}
 		
 	}

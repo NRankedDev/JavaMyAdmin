@@ -3,10 +3,14 @@ package javaMyAdmin.util.ui;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
@@ -92,6 +96,51 @@ public class FXUtil {
 		alert.getDialogPane().setMinWidth(500);
 		((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().addAll(Images.ICONS);
 		alert.showAndWait();
+	}
+	
+	/**
+	 * Liefert eine Liste aller Werte der TextFelder
+	 * 
+	 * @param fields
+	 * @return
+	 */
+	public static ArrayList<String> getTextFieldValues(ArrayList<TextField> fields) {
+		ArrayList<String> arrayList = new ArrayList<String>();
+		for (TextField textField : fields) {
+			arrayList.add(textField.getText());
+		}
+		
+		return arrayList;
+	}
+	
+	/**
+	 * Liefert eine Liste aller Werte der CheckBoxes
+	 * 
+	 * @param fields
+	 * @return
+	 */
+	public static ArrayList<Boolean> getCheckBoxValues(ArrayList<CheckBox> boxes) {
+		ArrayList<Boolean> arrayList = new ArrayList<Boolean>();
+		for (CheckBox checkBox : boxes) {
+			arrayList.add(checkBox.isSelected());
+		}
+		
+		return arrayList;
+	}
+	
+	/**
+	 * Liefert eine Liste aller Werte der ComboBoxes
+	 * 
+	 * @param fields
+	 * @return
+	 */
+	public static ArrayList<String> getComboBoxValues(ArrayList<ComboBox<String>> boxes) {
+		ArrayList<String> arrayList = new ArrayList<String>();
+		for (ComboBox<String> comboBox : boxes) {
+			arrayList.add(comboBox.getValue());
+		}
+		
+		return arrayList;
 	}
 	
 }

@@ -14,7 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
-public abstract class EditTableDialog extends AddTableDialog {
+public class EditTableDialog extends AddTableDialog {
 	
 	private final ArrayList<String> toRemoveColumns = new ArrayList<String>();
 	private final Table table;
@@ -22,7 +22,7 @@ public abstract class EditTableDialog extends AddTableDialog {
 	
 	public EditTableDialog(Table table) {
 		super(String.format(Lang.getString("table.edit.title"), table.getName()));
-		tableName.setText(table == null ? "" : table.getName());
+		tableName.setText(table.getName());
 		this.table = table;
 	}
 	
@@ -54,7 +54,7 @@ public abstract class EditTableDialog extends AddTableDialog {
 		
 		if (defaultTitle != null && !defaultTitle.isEmpty()) {
 			for (int i = 0; i < nodes.length; i++) {
-				if (i != 0) {
+				if (i > 1) {
 					nodes[i].setDisable(true);
 				}
 			}
@@ -74,12 +74,23 @@ public abstract class EditTableDialog extends AddTableDialog {
 	
 	@Override
 	protected void onOkButtonPressed(ActionEvent event) {
+		// Renaming table
+		if (!table.getName().equalsIgnoreCase(tableName.getText())) {
+			try {
+				table.renameTable(tableName.getText());
+			} catch (SQLException e) {
+				FXUtil.showErrorLog(e);
+				return;
+			}
+		}
+		
 		// Removing old columns
 		for (String column : toRemoveColumns) {
 			try {
 				table.removeColumn(column);
 			} catch (SQLException e) {
 				FXUtil.showErrorLog(e);
+				return;
 			}
 		}
 		
@@ -97,10 +108,19 @@ public abstract class EditTableDialog extends AddTableDialog {
 				}
 			} catch (SQLException e) {
 				FXUtil.showErrorLog(e);
+				return;
 			}
 		}
 		
 		super.onOkButtonPressed(event);
-		Frame.getInstance().getTableContentPane().refresh(table);
 	}
+	
+	@Override
+	protected boolean handle() {
+		Frame.getInstance().getTableContentPane()
+				.refresh(/* TODO table.getDatabase() */);
+		Frame.getInstance().getTableContentPane().refresh(table);
+		return true;
+	}
+	
 }

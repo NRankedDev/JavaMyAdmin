@@ -2,9 +2,14 @@ package javaMyAdmin.ui.dialogs;
 
 import java.util.ArrayList;
 
+import javaMyAdmin.db.DBManager;
+import javaMyAdmin.db.Database;
+import javaMyAdmin.ui.Frame;
+import javaMyAdmin.ui.TableListPane;
 import javaMyAdmin.util.sql.Datatype;
 import javaMyAdmin.util.sql.Index;
 import javaMyAdmin.util.ui.DynamicRowsDialog;
+import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Lang;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -18,9 +23,16 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.GridPane;
 
-public abstract class AddTableDialog extends DynamicRowsDialog {
+/**
+ * Dialog der beim Erstellen von Tabellen gezeigt wird.
+ * 
+ * @author Nicolas
+ * 		
+ */
+public class AddTableDialog extends DynamicRowsDialog {
 	
 	protected TextField tableName = new TextField();
 	protected ArrayList<TextField> titles = new ArrayList<TextField>();
@@ -124,55 +136,58 @@ public abstract class AddTableDialog extends DynamicRowsDialog {
 		}
 	}
 	
+	@Override
+	protected boolean handle() {
+		final TableListPane pane = Frame.getInstance().getTableListPane();
+		final TreeItem<String> item = pane.getSelectionModel().getSelectedItem();
+		
+		String db = null;
+		
+		if (FXUtil.getLayer(item) == TableListPane.LAYER_DATABASE) {
+			db = item.getValue();
+		} else if (FXUtil.getLayer(item) == TableListPane.LAYER_TABLE) {
+			db = item.getParent().getValue();
+		}
+		
+		try {
+			Database database = DBManager.getInstance().getDB(db);
+			if (database != null) {
+				database.addTable(getTableName().getText(), getTitles(), getDatatypes(), getLength(), getDefaultNull(), getIndices());
+			} else {
+				throw new RuntimeException("Database `" + db + "` doesn't exists");
+			}
+			
+			pane.refresh(database.getDbname());
+		} catch (Exception e) {
+			FXUtil.showErrorLog(e);
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public TextField getTableName() {
 		return tableName;
 	}
 	
 	public ArrayList<String> getTitles() {
-		return convertTextFields(titles);
+		return FXUtil.getTextFieldValues(titles);
 	}
 	
 	public ArrayList<String> getDatatypes() {
-		return convertComboBoxes(datatypes);
+		return FXUtil.getComboBoxValues(datatypes);
 	}
 	
 	public ArrayList<String> getLength() {
-		return convertTextFields(lengths);
+		return FXUtil.getTextFieldValues(lengths);
 	}
 	
 	public ArrayList<Boolean> getDefaultNull() {
-		return convertCheckBoxes(defaultNullOptions);
+		return FXUtil.getCheckBoxValues(defaultNullOptions);
 	}
 	
 	public ArrayList<String> getIndices() {
-		return convertComboBoxes(indices);
-	}
-	
-	private ArrayList<String> convertTextFields(ArrayList<TextField> fields) {
-		ArrayList<String> arrayList = new ArrayList<String>();
-		for (TextField textField : fields) {
-			arrayList.add(textField.getText());
-		}
-		
-		return arrayList;
-	}
-	
-	private ArrayList<Boolean> convertCheckBoxes(ArrayList<CheckBox> boxes) {
-		ArrayList<Boolean> arrayList = new ArrayList<Boolean>();
-		for (CheckBox checkBox : boxes) {
-			arrayList.add(checkBox.isSelected());
-		}
-		
-		return arrayList;
-	}
-	
-	private ArrayList<String> convertComboBoxes(ArrayList<ComboBox<String>> boxes) {
-		ArrayList<String> arrayList = new ArrayList<String>();
-		for (ComboBox<String> comboBox : boxes) {
-			arrayList.add(comboBox.getValue());
-		}
-		
-		return arrayList;
+		return FXUtil.getComboBoxValues(indices);
 	}
 	
 }
