@@ -66,8 +66,13 @@ public class Database {
 	}
 
 	public void renameDatabase(String newName) throws SQLException {
+		loadTables();
+		connect.createStatement().executeUpdate("CREATE DATABASE " + newName);
+		for(Table lst : getTable()){
+			connect.createStatement().executeUpdate("RENAME TABLE " + dbname + "." + lst.getName()+ " TO " + newName + "." + lst.getName());
+		}
+		connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
 		dbname = newName;
-		connect.createStatement().executeUpdate("RENAME TABLE "+dbname+" TO "+newName);
 	}
 
 	public void rmTable(String tablename) throws SQLException {
