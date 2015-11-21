@@ -87,6 +87,10 @@ public class Table {
 		return lines;
 	}
 	
+	public Database getDatabase() throws SQLException{
+		return DBManager.getInstance().getDB("dbname");
+	}
+	
 	public String getDatentyp(String column) throws SQLException{
 		return getColumnInfo(column, 1);
 	}
@@ -204,4 +208,5 @@ public class Table {
 		Table t = Functions.executeFinal(cmd, connect, dbname);
 		return t;
 	}
+	
 }
