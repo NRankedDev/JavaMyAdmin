@@ -88,7 +88,7 @@ public class Table {
 	}
 	
 	public Database getDatabase() throws SQLException{
-		return DBManager.getInstance().getDB("dbname");
+		return DBManager.getInstance().getDB(dbname);
 	}
 	
 	public String getDatentyp(String column) throws SQLException{
