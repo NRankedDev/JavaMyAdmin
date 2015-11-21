@@ -73,6 +73,7 @@ public class Database {
 		}
 		connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
 		dbname = newName;
+		DBManager.getInstance().loadDB();
 	}
 
 	public void rmTable(String tablename) throws SQLException {
