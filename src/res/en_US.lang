@@ -22,7 +22,8 @@ dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
 dialog.remove.title=Do you really want to proceed?
 dialog.remove.header=If you delete the %s `%s`, all data will be lost.
-dialog.remove.content=Enter the name of the %s to delete it:
+dialog.remove.header_2=Enter the name of the %s to delete it.
+dialog.remove.name=Name:
 dialog.remove.cancel.header=Operation was terminated.
 dialog.remove.cancel.content=The entered name doesn't equal the name of the %s.
 
