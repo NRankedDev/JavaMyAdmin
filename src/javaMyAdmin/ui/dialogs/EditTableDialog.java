@@ -1,6 +1,5 @@
 package javaMyAdmin.ui.dialogs;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -119,9 +118,7 @@ public class EditTableDialog extends AddTableDialog {
 	@Override
 	protected boolean handle() {
 		try {
-			Field f = table.getClass().getDeclaredField("dbname");
-			f.setAccessible(true);
-			Frame.getInstance().getTableListPane().refresh((String) f.get(table));
+			Frame.getInstance().getTableListPane().refresh(table.getDatabase().getDbname());
 		} catch (Exception e) {
 			FXUtil.showErrorLog(e);
 		}
