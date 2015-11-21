@@ -15,15 +15,21 @@ public abstract class StringInputDialog extends OptionDialog {
 	
 	protected TextField input;
 	protected String inputDescr;
+	protected String defaultValue;
 	
 	public StringInputDialog(String frameTitle, String inputDescr) {
+		this(frameTitle, inputDescr, null);
+	}
+	
+	public StringInputDialog(String frameTitle, String inputDescr, String defaultValue) {
 		super(frameTitle);
 		this.inputDescr = inputDescr;
+		this.defaultValue = defaultValue == null ? "" : defaultValue;
 	}
 	
 	@Override
 	protected void initGrid(GridPane grid) {
-		this.input = new TextField();
+		this.input = new TextField(defaultValue);
 		
 		grid.addRow(0, new Label(inputDescr), input);
 	}

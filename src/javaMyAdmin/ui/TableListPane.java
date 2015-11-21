@@ -205,11 +205,14 @@ public class TableListPane extends TreeView<String> {
 			renameDatasase.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					new StringInputDialog(String.format(Lang.getString("database.rename.title"), getSelectionModel().getSelectedItem().getValue()), Lang.getString("database.add.name")) {
+					final TreeItem<String> item = getSelectionModel().getSelectedItem();
+					
+					new StringInputDialog(String.format(Lang.getString("database.rename.title"), item.getValue()), Lang.getString("database.add.name"), item.getValue()) {
 						@Override
 						protected boolean handle() {
 							try {
-								DBManager.getInstance().getDB(getSelectionModel().getSelectedItem().getValue()).renameDatabase(input.getText());
+								DBManager.getInstance().getDB(item.getValue()).renameDatabase(input.getText());
+								refresh();
 								return true;
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
@@ -364,7 +367,8 @@ public class TableListPane extends TreeView<String> {
 			// }
 			// });
 			
-			getItems().addAll(editTable, removeTable, new SeparatorMenuItem()/* , joinTable */);
+			getItems().addAll(editTable,
+					removeTable/* , new SeparatorMenuItem(), joinTable */);
 		}
 		
 	}

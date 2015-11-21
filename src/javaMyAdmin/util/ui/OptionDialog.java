@@ -3,13 +3,13 @@ package javaMyAdmin.util.ui;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -107,9 +107,8 @@ public abstract class OptionDialog {
 		
 		initGrid(grid);
 		
-		HBox box = new HBox();
-		box.setPadding(new Insets(10, 10, 10, 0));
-		box.setAlignment(Pos.CENTER_RIGHT);
+		ButtonBar buttonBar = new ButtonBar();
+		buttonBar.setPadding(new Insets(10));
 		
 		okButton = new Button(okButtonText);
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -126,12 +125,15 @@ public abstract class OptionDialog {
 				onCancelButtonPressed(event);
 			}
 		});
-		box.getChildren().addAll(okButton, cancelButton);
+		
+		buttonBar.getButtons().addAll(okButton, cancelButton);
 		
 		root.setTop(grid);
 		root.setCenter(new Separator());
-		root.setBottom(box);
-		HBox.setMargin(okButton, new Insets(0, 10, 0, 0));
+		root.setBottom(buttonBar);
+		
+		ButtonBar.setButtonData(okButton, ButtonData.OK_DONE);
+		ButtonBar.setButtonData(cancelButton, ButtonData.CANCEL_CLOSE);
 		
 		dialogStage.setResizable(false);
 		dialogStage.setScene(new Scene(root));

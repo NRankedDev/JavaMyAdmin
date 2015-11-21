@@ -24,7 +24,7 @@ import javafx.scene.layout.GridPane;
 public abstract class JoinDialog extends DynamicRowsDialog {
 	
 	private final Table joinFrom;
-	private final Table joinTo;
+	// private final Table joinTo;
 	
 	public JoinDialog(Table table1) {
 		this(table1, null);
@@ -33,7 +33,7 @@ public abstract class JoinDialog extends DynamicRowsDialog {
 	public JoinDialog(Table table1, Table table2) {
 		super(Lang.getString("table.join.title"));
 		this.joinFrom = table1;
-		this.joinTo = table2;
+		// this.joinTo = table2;
 	}
 	
 	@Override
