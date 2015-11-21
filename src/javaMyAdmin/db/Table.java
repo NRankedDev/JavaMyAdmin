@@ -51,7 +51,7 @@ public class Table {
 	
 	public void addColumn(String columnName, String datatype, String length, boolean isNull, String index) throws SQLException{
 		String var = isNull ? "NULL": "NOT NULL";
-		String var2 = index != null ? ", ADD "+index+" (`"+columnName+"`)" : "";
+		String var2 = index.equals("NONE") ? "":", ADD "+index+" (`"+columnName+"`)";
 		connect.createStatement().executeUpdate("ALTER TABLE `"+name+"` ADD `"+columnName+"` "+datatype+"("+length+") "+var+var2);
 	}
 	
