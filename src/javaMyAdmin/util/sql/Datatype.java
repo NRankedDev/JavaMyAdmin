@@ -27,7 +27,7 @@ public class Datatype<T> {
 	public static final Datatype<Byte> BYTE = new Datatype<Byte>(Kind.NUMERIC, "BYTE");
 	public static final Datatype<Byte> TINYINT = new Datatype<Byte>(Kind.NUMERIC, "TINYINT");
 	public static final Datatype<Short> SMALLINT = new Datatype<Short>(Kind.NUMERIC, "SMALLINT");
-	public static final Datatype<Integer> INTEGER = new Datatype<Integer>(Kind.NUMERIC, "INTEGER");
+	public static final Datatype<Integer> INTEGER = new Datatype<Integer>(Kind.NUMERIC, "INT");
 	public static final Datatype<Long> BIGINT = new Datatype<Long>(Kind.NUMERIC, "BIGINT");
 	public static final Datatype<Float> FLOAT = new Datatype<Float>(Kind.NUMERIC, "FLOAT");
 	public static final Datatype<Double> DOUBLE = new Datatype<Double>(Kind.NUMERIC, "DOUBLE");
