@@ -112,10 +112,8 @@ public class TableListPane extends TreeView<String> {
 		setRoot(root);
 		
 		try {
-			System.out.println("----------- REFRESH ---------------");
 			for (Database db : DBManager.getInstance().getDB()) {
-				System.out.println(db.getDbname());
-				refresh(db.getDbname());
+				refresh(db.getDbname(), null);
 			}
 		} catch (SQLException e) {
 			FXUtil.showErrorLog(e);
@@ -124,45 +122,67 @@ public class TableListPane extends TreeView<String> {
 	
 	/**
 	 * Zeigt <b>eine</b> Datenbank und ihre Tabellen neu an
+	 * 
+	 * @param database
+	 *            Die Datenbank, die neu geladen werden soll
+	 * @param table
+	 *            Die Tabelle, die selektiert sein soll. Bei <code>null</code>
+	 *            wird keine selektiert.
 	 */
-	public void refresh(String database) {
+	public void refresh(String database, String table) {
 		try {
-			TreeItem<String> root = getRoot();
-			if (root == null) {
-				refresh();
-				return;
-			}
-			
-			Database db = DBManager.getInstance().getDB(database);
-			TreeItem<String> dbItem = null;
-			
-			for (TreeItem<String> item : root.getChildren()) {
-				if (item.getValue().equalsIgnoreCase(db.getDbname())) {
-					dbItem = item;
-					break;
-				}
-			}
-			
-			if (dbItem == null) {
-				dbItem = new TreeItem<String>(db.getDbname());
-				dbItem.setGraphic(new ImageView(Images.DATABASE));
-				root.getChildren().add(dbItem);
-			}
-			
-			try {
-				dbItem.getChildren().clear();
-				
-				for (Table table : db.getTable()) {
-					System.out.println("\t" + table.getName());
-					TreeItem<String> item = new TreeItem<String>(table.getName());
-					item.setGraphic(new ImageView(Images.TABLE));
-					dbItem.getChildren().add(item);
-				}
-			} catch (SQLException e) {
-				FXUtil.showErrorLog(new SQLException("Error while loading tables for " + db.getDbname(), e));
-			}
+			refresh(DBManager.getInstance().getDB(database), table);
 		} catch (SQLException e) {
 			FXUtil.showErrorLog(e);
+		}
+	}
+	
+	/**
+	 * Zeigt <b>eine</b> Datenbank und ihre Tabellen neu an
+	 * 
+	 * @param database
+	 *            Die Datenbank, die neu geladen werden soll
+	 * @param table
+	 *            Die Tabelle, die selektiert sein soll. Bei <code>null</code>
+	 *            wird keine selektiert.
+	 */
+	public void refresh(Database database, String table) {
+		TreeItem<String> root = getRoot();
+		if (root == null) {
+			refresh();
+			return;
+		}
+		
+		TreeItem<String> dbItem = null;
+		
+		for (TreeItem<String> item : root.getChildren()) {
+			if (item.getValue().equalsIgnoreCase(database.getDbname())) {
+				dbItem = item;
+				break;
+			}
+		}
+		
+		if (dbItem == null) {
+			dbItem = new TreeItem<String>(database.getDbname());
+			dbItem.setGraphic(new ImageView(Images.DATABASE));
+			root.getChildren().add(dbItem);
+		}
+		
+		try {
+			dbItem.getChildren().clear();
+			
+			for (Table t : database.getTable()) {
+				TreeItem<String> item = new TreeItem<String>(t.getName());
+				item.setGraphic(new ImageView(Images.TABLE));
+				dbItem.getChildren().add(item);
+				
+				if (table != null && t.getName().equalsIgnoreCase(table)) {
+					dbItem.setExpanded(true);
+					getSelectionModel().select(item);
+				}
+			}
+		} catch (SQLException e) {
+			FXUtil.showErrorLog(new SQLException("Error while loading tables for " + database.getDbname(), e));
 		}
 	}
 	
@@ -214,8 +234,10 @@ public class TableListPane extends TreeView<String> {
 						@Override
 						protected boolean handle() {
 							try {
-								DBManager.getInstance().getDB(item.getValue()).renameDatabase(input.getText());
-								refresh();
+								Database db = DBManager.getInstance().getDB(item.getValue());
+								db.renameDatabase(input.getText());
+								getRoot().getChildren().remove(item);
+								refresh(db, db.getTable().size() > 0 ? db.getTable().get(0).getName() : null);
 								return true;
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
@@ -298,8 +320,9 @@ public class TableListPane extends TreeView<String> {
 						@Override
 						protected void handle() {
 							try {
-								DBManager.getInstance().getDB(item.getParent().getValue()).rmTable(item.getValue());
-								refresh(item.getParent().getValue());
+								Database db = DBManager.getInstance().getDB(item.getParent().getValue());
+								db.rmTable(item.getValue());
+								refresh(item.getParent().getValue(), db.getTable().size() > 0 ? db.getTable().get(0).getName() : null);
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
 							}

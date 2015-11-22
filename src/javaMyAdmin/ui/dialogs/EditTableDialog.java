@@ -118,7 +118,7 @@ public class EditTableDialog extends AddTableDialog {
 	@Override
 	protected boolean handle() {
 		try {
-			Frame.getInstance().getTableListPane().refresh(table.getDatabase().getDbname());
+			Frame.getInstance().getTableListPane().refresh(table.getDatabase().getDbname(), table.getName());
 		} catch (Exception e) {
 			FXUtil.showErrorLog(e);
 		}

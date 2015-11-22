@@ -3,6 +3,7 @@ package javaMyAdmin.ui.dialogs;
 import java.sql.SQLException;
 
 import javaMyAdmin.db.DBManager;
+import javaMyAdmin.db.Database;
 import javaMyAdmin.util.Config;
 import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Lang;
@@ -27,9 +28,10 @@ public class LoginDialog extends OptionDialog {
 	private TextField username;
 	private PasswordField password;
 	private CheckBox remember;
+	private boolean exit;
 	
 	public LoginDialog() {
-		super(Lang.getString("dialog.connect.title"), Lang.getString("dialog.connect"));
+		super(Lang.getString("dialog.connect.title"), Lang.getString("dialog.connect"), Lang.getString("dialog.connect.quit"));
 		show();
 	}
 	
@@ -49,7 +51,7 @@ public class LoginDialog extends OptionDialog {
 	
 	@Override
 	protected boolean handle() {
-		return true;
+		return false;
 	}
 	
 	@Override
@@ -75,14 +77,25 @@ public class LoginDialog extends OptionDialog {
 						Config.getInstance().remove("username");
 						Config.getInstance().remove("password");
 					}
+					
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
+							dialogStage.setTitle(Lang.getString("dialog.connect.loading"));
+							
+							/* Loading databases */
 							try {
-								DBManager.getInstance().getDB();
+								for (Database db : DBManager.getInstance().getDB()) {
+									try {
+										db.loadTables();
+									} catch (SQLException e) {
+										FXUtil.showErrorLog(e);
+									}
+								}
 							} catch (SQLException e) {
-								throw new RuntimeException(e);
+								FXUtil.showErrorLog(e);
 							}
+							
 							hideDialog();
 						}
 					});
@@ -103,6 +116,17 @@ public class LoginDialog extends OptionDialog {
 	@Override
 	protected void onCancelButtonPressed(ActionEvent event) {
 		super.onCancelButtonPressed(event);
-		Platform.exit();
+		exit = true;
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Platform.exit();
+				System.exit(0);
+			}
+		});
+	}
+	
+	public boolean getExit() {
+		return exit;
 	}
 }

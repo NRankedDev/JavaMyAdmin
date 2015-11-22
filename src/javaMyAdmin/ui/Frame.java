@@ -3,7 +3,6 @@ package javaMyAdmin.ui;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import javaMyAdmin.db.DBManager;
-import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.LoginDialog;
 import javaMyAdmin.util.Config;
 import javaMyAdmin.util.ui.FXUtil;
@@ -54,7 +53,10 @@ public class Frame extends Application {
 			});
 			
 			/* Login Dialog starten und auf Usereingaben warten */
-			new LoginDialog();
+			LoginDialog login = new LoginDialog();
+			if (login.getExit()) {
+				return;
+			}
 			
 			/* Root-Layout initialisieren */
 			BorderPane root = new BorderPane();
@@ -68,7 +70,7 @@ public class Frame extends Application {
 			
 			BorderPane.setMargin(toolbar, new Insets(0, 0, 10, 0));
 			
-			stage.setTitle(String.format(Lang.getString("frame.title"), DBManager.getInstance().getUrl()));
+			stage.setTitle(String.format(Lang.getString("frame.title"), "Beta v0.3", DBManager.getInstance().getUrl()));
 			
 			/* Fenstergroesse bestimmen und Frame Content zuweisen */
 			stage.setScene(new Scene(root, 800, 600));
@@ -124,49 +126,6 @@ public class Frame extends Application {
 	 */
 	public StatusBarPane getStatusBar() {
 		return statusBar;
-	}
-	
-	/**
-	 * Aktualisiert das Programm
-	 */
-	public void refreshAll() {
-		refreshAll(tableContent.getCurrentShownTable());
-	}
-	
-	/**
-	 * Aktualisiert das Programm
-	 * 
-	 * @param shownTable
-	 *            Die Tabelle, die angezeigt werden soll
-	 */
-	public void refreshAll(Table shownTable) {
-		tableList.refresh();
-		tableContent.refresh(shownTable);
-	}
-	
-	/**
-	 * Aktualisiert eine Datenbank
-	 * 
-	 * @param database
-	 *            Die Datenbank
-	 * @param shownTable
-	 *            Die Tabelle, die angezeigt werden soll
-	 */
-	public void refreshTables(String database) {
-		refreshTables(database, tableContent.getCurrentShownTable());
-	}
-	
-	/**
-	 * Aktualisiert eine Datenbank
-	 * 
-	 * @param database
-	 *            Die Datenbank
-	 * @param shownTable
-	 *            Die Tabelle, die angezeigt werden soll
-	 */
-	public void refreshTables(String database, Table shownTable) {
-		tableList.refresh(database);
-		tableContent.refresh(shownTable);
 	}
 	
 }

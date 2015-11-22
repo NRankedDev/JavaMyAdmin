@@ -1,7 +1,7 @@
 ﻿#
 # Basic
 #
-frame.title=javaMyAdmin - %s
+frame.title=javaMyAdmin (%s) - %s
 error=Error
 error.header=An error occured.
 error.unknown=An unknown error occured.
@@ -12,12 +12,14 @@ error.unknown=An unknown error occured.
 dialog.ok=OK
 dialog.cancel=Cancel
 dialog.connect=Connect
+dialog.connect.quit=Quit
 dialog.connect.title=Connect to server
 dialog.connect.url=URL
 dialog.connect.username=Username
 dialog.connect.password=Password
 dialog.connect.remember=Remember login
 dialog.connect.connecting=Connecting...
+dialog.connect.loading=Loading databases....
 dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
 dialog.remove.title=Do you really want to proceed?
@@ -31,6 +33,7 @@ dialog.remove.cancel.content=The entered name doesn't equal the name of the %s.
 # Menu
 #
 menu.file=File
+menu.file.exit=Exit
 menu.settings=Settings
 menu.settings.language=Language
 menu.settings.language.header=You have to restart the program.

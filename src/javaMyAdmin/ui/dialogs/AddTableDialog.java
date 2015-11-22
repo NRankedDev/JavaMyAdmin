@@ -157,7 +157,7 @@ public class AddTableDialog extends DynamicRowsDialog {
 				throw new RuntimeException("Database `" + db + "` doesn't exists");
 			}
 			
-			pane.refresh(database.getDbname());
+			pane.refresh(database.getDbname(), getTableName().getText());
 		} catch (Exception e) {
 			FXUtil.showErrorLog(e);
 			return false;
