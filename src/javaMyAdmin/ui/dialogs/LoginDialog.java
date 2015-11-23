@@ -87,7 +87,7 @@ public class LoginDialog extends OptionDialog {
 							try {
 								for (Database db : DBManager.getInstance().getDB()) {
 									try {
-										db.loadTables();
+										db.getTable();
 									} catch (SQLException e) {
 										FXUtil.showErrorLog(e);
 									}

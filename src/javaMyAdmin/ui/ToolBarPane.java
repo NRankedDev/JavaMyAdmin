@@ -58,7 +58,7 @@ public class ToolBarPane extends BorderPane {
 					
 					if (databaseEnvironment == null && tableEnvironment == null) {
 						table = DBManager.getInstance().executeSQL(sql);
-						Frame.getInstance().getTableListPane().refresh();
+						Frame.getInstance().getTableListPane().refreshDatabases();
 					} else if (databaseEnvironment != null && tableEnvironment == null) {
 						table = DBManager.getInstance().getDB(databaseEnvironment).executeSQL(sql);
 						Frame.getInstance().getTableListPane().refresh(databaseEnvironment, null);
