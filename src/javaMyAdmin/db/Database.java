@@ -3,11 +3,8 @@ package javaMyAdmin.db;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
 
 public class Database {
 
@@ -19,9 +16,8 @@ public class Database {
 		this.dbname = dbname;
 		connect = DBManager.doConnection(dbname);
 	}
-	
-	//Methoden
-	public void loadTables() throws SQLException {
+
+	public /*protected*/ void loadTables() throws SQLException {
 		table.clear();
 		DatabaseMetaData md = connect.getMetaData();
 		ResultSet rs = md.getTables(null, null, "%", null);
@@ -66,14 +62,13 @@ public class Database {
 	}
 
 	public void renameDatabase(String newName) throws SQLException {
-		loadTables();
 		connect.createStatement().executeUpdate("CREATE DATABASE " + newName);
 		for(Table lst : getTable()){
 			connect.createStatement().executeUpdate("RENAME TABLE " + dbname + "." + lst.getName()+ " TO " + newName + "." + lst.getName());
 		}
 		connect.createStatement().executeUpdate("DROP DATABASE " + dbname);
 		dbname = newName;
-		DBManager.getInstance().loadDB();
+		connect = DBManager.doConnection(dbname);
 	}
 
 	public void rmTable(String tablename) throws SQLException {
@@ -116,15 +111,6 @@ public class Database {
 	}
 	
 	public Table executeSQL(String cmd) throws SQLException{
-//		Table t = new Table(null, new ArrayList<String>(), connect, null);
-//		t.isAbstract(true);
-//		if(connect.createStatement().execute(cmd)){
-//			t.loadLines(connect.createStatement().executeQuery(cmd));
-//		}else{
-//			connect.createStatement().executeUpdate(cmd);
-//			loadTables();
-//			t = null;
-//		}
 		Table t = Functions.executeFinal(cmd, connect, dbname);
 		loadTables();
 		return t;

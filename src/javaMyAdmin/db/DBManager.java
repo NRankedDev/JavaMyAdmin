@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 public class DBManager extends Connector {
 	
 	private Connection connect;
@@ -21,9 +19,9 @@ public class DBManager extends Connector {
 	}
 	
 	public void connect(String url, String user, String password) throws SQLException{
-		this.url = Debug.check(url);
-		this.user = user;
-		this.password = password;
+		DBManager.url = Debug.check(url);
+		DBManager.user = user;
+		DBManager.password = password;
 		connect = doConnection("");
 	}
 	
@@ -35,7 +33,7 @@ public class DBManager extends Connector {
     	 closeConnection(connect);
     }
     
-	public static Connection doConnection(String dbname) throws SQLException {
+	protected static Connection doConnection(String dbname) throws SQLException {
 		Connector c = new Connector();
 
 		return c.getConnection((url + "/" + dbname), user, password);
@@ -43,7 +41,7 @@ public class DBManager extends Connector {
 
 
 	//Methoden
-	public ArrayList<Database> loadDB() throws SQLException {
+	protected ArrayList<Database> loadDB() throws SQLException {
 		db.clear();
 		ResultSet rs = connect.getMetaData().getCatalogs();
 		while (rs.next()) {

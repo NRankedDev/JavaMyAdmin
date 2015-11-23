@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public class Line {
 	private ArrayList<String> values;
 
-	public Line() {
-		values = new ArrayList();
+	protected Line() {
+		values = new ArrayList<String>();
 	}
 
-	public void AddValue(String value) {
+	protected void AddValue(String value) {
 		values.add(value);
 	}
 

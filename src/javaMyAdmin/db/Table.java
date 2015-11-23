@@ -1,7 +1,6 @@
 package javaMyAdmin.db;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -23,7 +22,7 @@ public class Table {
 		this.columnNames = columnNames;
 	}
 	
-	public void isAbstract(boolean ab){
+	protected void isAbstract(boolean ab){
 		abstratable = ab;
 	}
 
@@ -36,15 +35,15 @@ public class Table {
 		name = newName;
 	}
 	
-	public void AddColumn(String name) {
+	protected void AddColumn(String name) {
 		columnNames.add(name);
 	}
 
-	public void AddLine(Line line) {
+	protected void AddLine(Line line) {
 		lines.add(line);
 	}
 
-	public void clear() {
+	protected void clear() {
 		columnNames.clear();
 		lines.clear();
 	}
@@ -118,7 +117,7 @@ public class Table {
 		}
 	}
 	
-	public int loadColumns(ResultSet rs) throws SQLException{
+	protected int loadColumns(ResultSet rs) throws SQLException{
 		ResultSetMetaData metaData = rs.getMetaData();
 		int i = 1;
 		int count = metaData.getColumnCount();
@@ -128,7 +127,7 @@ public class Table {
 		}
 		return count;
 	}
-	public void loadLines(ResultSet rs) throws SQLException {
+	protected void loadLines(ResultSet rs) throws SQLException {
 		clear();
 		if (rs == null) {
 			rs = connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "`");
@@ -177,7 +176,7 @@ public class Table {
 		return getLines(connect.createStatement().executeQuery("SELECT * FROM `" + getName() + "` WHERE `" + getColumnNames(column) + "` =" + suche));
 	}
 	
-	public String getColumnInfo(String column, int i) throws SQLException{
+	protected String getColumnInfo(String column, int i) throws SQLException{
 		String value;
 		ResultSet rs;
 		switch(i){
