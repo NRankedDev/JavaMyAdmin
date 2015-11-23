@@ -35,6 +35,7 @@ public abstract class JoinDialog extends DynamicRowsDialog {
 		super(Lang.getString("table.join.title"));
 		this.joinFrom = table1;
 		// this.joinTo = table2;
+		hideScrollPane = true;
 	}
 	
 	@Override
@@ -76,12 +77,15 @@ public abstract class JoinDialog extends DynamicRowsDialog {
 		databases.sort(null);
 		
 		final ComboBox<String> databaseBox = new ComboBox<String>(databases);
+		databaseBox.setMaxWidth(125);
 		final ComboBox<String> tableBox = new ComboBox<String>();
-		tableBox.setMaxWidth(200);
+		tableBox.setMaxWidth(125);
 		
 		final TextField column1 = new TextField();
-		column1.promptTextProperty().set("Column from " + joinFrom.getName());
+		column1.promptTextProperty().set("Column " + joinFrom.getName());
+		column1.setMaxWidth(125);
 		final TextField column2 = new TextField();
+		column2.setMaxWidth(125);
 		
 		databaseBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -99,7 +103,7 @@ public abstract class JoinDialog extends DynamicRowsDialog {
 		tableBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				column2.promptTextProperty().set("Column from " + newValue);
+				column2.promptTextProperty().set("Column " + newValue);
 			}
 		});
 		

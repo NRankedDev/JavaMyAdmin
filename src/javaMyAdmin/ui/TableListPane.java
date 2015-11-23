@@ -8,6 +8,7 @@ import javaMyAdmin.db.Table;
 import javaMyAdmin.ui.dialogs.AddTableDialog;
 import javaMyAdmin.ui.dialogs.EditTableDialog;
 import javaMyAdmin.ui.dialogs.abstr.ConfirmRemoveDialog;
+import javaMyAdmin.ui.dialogs.abstr.JoinDialog;
 import javaMyAdmin.ui.dialogs.abstr.StringInputDialog;
 import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Images;
@@ -99,13 +100,26 @@ public class TableListPane extends TreeView<String> {
 		
 		setPrefSize(200, 0);
 		
-		refresh();
+		refreshDatabases();
 	}
 	
 	/**
 	 * Zeigt alle Datenbanken und Tabellen neu an
 	 */
-	public void refresh() {
+	public void refreshDatabases() {
+		refreshDatabases(null, null);
+	}
+	
+	/**
+	 * Zeigt alle Datenbanken und Tabellen neu an
+	 * 
+	 * @param database 
+	 * 				Die Datenbank, die selektiert sein soll.
+	 * @param table
+	 *            Die Tabelle, die selektiert sein soll. Bei <code>null</code>
+	 *            wird keine selektiert.
+	 */
+	public void refreshDatabases(String database, String table) {
 		TreeItem<String> root = new TreeItem<String>(Lang.getString("connection"));
 		root.setGraphic(new ImageView(Images.CONNECTION));
 		root.setExpanded(true);
@@ -113,7 +127,7 @@ public class TableListPane extends TreeView<String> {
 		
 		try {
 			for (Database db : DBManager.getInstance().getDB()) {
-				refresh(db.getDbname(), null);
+				refresh(db.getDbname(), db.getDbname().equalsIgnoreCase(database) ? table : null);
 			}
 		} catch (SQLException e) {
 			FXUtil.showErrorLog(e);
@@ -149,7 +163,7 @@ public class TableListPane extends TreeView<String> {
 	public void refresh(Database database, String table) {
 		TreeItem<String> root = getRoot();
 		if (root == null) {
-			refresh();
+			refreshDatabases(database.getDbname(), table);
 			return;
 		}
 		
@@ -202,7 +216,7 @@ public class TableListPane extends TreeView<String> {
 						protected boolean handle() {
 							try {
 								DBManager.getInstance().addDB(input.getText());
-								refresh();
+								refreshDatabases();
 								return true;
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
@@ -237,7 +251,9 @@ public class TableListPane extends TreeView<String> {
 								Database db = DBManager.getInstance().getDB(item.getValue());
 								db.renameDatabase(input.getText());
 								getRoot().getChildren().remove(item);
-								refresh(db, db.getTable().size() > 0 ? db.getTable().get(0).getName() : null);
+								
+								db = DBManager.getInstance().getDB(input.getText());
+								refreshDatabases(db.getDbname(), db.getTable().size() > 0 ? db.getTable().get(0).getName() : null);
 								return true;
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
@@ -261,7 +277,7 @@ public class TableListPane extends TreeView<String> {
 						protected void handle() {
 							try {
 								DBManager.getInstance().rmDB(getSelectionModel().getSelectedItem().getValue());
-								refresh();
+								refreshDatabases();
 							} catch (SQLException e) {
 								FXUtil.showErrorLog(e);
 							}
@@ -333,32 +349,32 @@ public class TableListPane extends TreeView<String> {
 			
 			/* TODO Beta v0.3 */
 			
-			// MenuItem joinTable = new MenuItem(Lang.getString("table.join"));
-			// joinTable.setOnAction(new EventHandler<ActionEvent>() {
-			// @Override
-			// public void handle(ActionEvent event) {
-			// TreeItem<String> item = getSelectionModel().getSelectedItem();
-			// try {
-			// Table table =
-			// DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
-			// if (table != null) {
-			// new JoinDialog(table) {
-			// @Override
-			// protected boolean handle() {
-			// return true;
-			// }
-			// }.show();
-			// } else {
-			// throw new SQLException();
-			// }
-			// } catch (SQLException e) {
-			// FXUtil.showErrorLog(e);
-			// }
-			// }
-			// });
+			 MenuItem joinTable = new MenuItem(Lang.getString("table.join"));
+			 joinTable.setOnAction(new EventHandler<ActionEvent>() {
+			 @Override
+			 public void handle(ActionEvent event) {
+			 TreeItem<String> item = getSelectionModel().getSelectedItem();
+			 try {
+			 Table table =
+			 DBManager.getInstance().getDB(item.getParent().getValue()).getTable(item.getValue());
+			 if (table != null) {
+			 new JoinDialog(table) {
+			 @Override
+			 protected boolean handle() {
+			 return true;
+			 }
+			 }.show();
+			 } else {
+			 throw new SQLException();
+			 }
+			 } catch (SQLException e) {
+			 FXUtil.showErrorLog(e);
+			 }
+			 }
+			 });
 			
 			getItems().addAll(editTable,
-					removeTable/* , new SeparatorMenuItem(), joinTable */);
+					removeTable , new SeparatorMenuItem(), joinTable );
 		}
 		
 	}

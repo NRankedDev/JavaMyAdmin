@@ -35,6 +35,10 @@ public abstract class DynamicRowsDialog extends OptionDialog {
 	 */
 	protected GridPane top;
 	
+	protected boolean hideScrollPane = false;
+	protected boolean autoShowHorizontalScrolls = true;
+	protected boolean autoShowVerticalScrolls = true;
+	
 	private BorderPane layout;
 	private ScrollPane bottom;
 	
@@ -62,8 +66,12 @@ public abstract class DynamicRowsDialog extends OptionDialog {
 		top.setVgap(10);
 		
 		bottom.setFocusTraversable(false);
-		bottom.setMaxHeight(500);
-		bottom.setMaxWidth(1250);
+		if (autoShowVerticalScrolls) {
+			bottom.setMaxHeight(500);
+		}
+		if (autoShowHorizontalScrolls) {
+			bottom.setMaxWidth(1250);
+		}
 		bottom.setFitToHeight(true);
 		
 		layout.setTop(top);
