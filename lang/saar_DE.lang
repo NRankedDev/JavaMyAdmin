@@ -1,0 +1,100 @@
+#
+# Handfest Gorales
+#
+
+
+#
+# Basic
+#
+frame.title=javaMyAdmin (%s) - %s
+error=Do is was falsch!
+error.header=Do gibbet en Fehla.
+error.unknown=Do gibbet irgend en Fehla.
+#
+# Dialogs
+#
+dialog.ok=Ei gudd
+dialog.cancel=Nommo zurück
+dialog.connect=Verbinne
+dialog.connect.quit=Dat lo schließe
+dialog.connect.title=Verbinnung herstelle
+dialog.connect.url=Ei dat Link Ding
+dialog.connect.username=Dei Name
+dialog.connect.password=Dei Gehämnis
+dialog.connect.remember=De Login lo merke
+dialog.connect.connecting=Verbinne doch...
+dialog.connect.loading=Datenbanke lade noch...
+dialog.connect.error.header=Do wor ken Verbinnung mechlich.
+dialog.connect.error.content=Überprüf mol die Verbinnung loh..
+dialog.remove.title=Willsche dat wirklich mache??
+dialog.remove.header=Wenn dau `%s` löschd, dann is et alles wech..
+dialog.remove.header_2=Dau muschd loh so en Prozennt mit dem s angebe.
+dialog.remove.name=Dei Name:
+dialog.remove.cancel.header=Ei die Aktion loh givvt et nimmer..
+dialog.remove.cancel.content=Der Name loh stimmd ned mit dem anneren loh üvverän.
+
+#
+# Menu
+#
+menu.file=Dadai
+menu.file.exit=Beenne doch
+menu.settings=Ei loh stelsche inn
+menu.settings.language=Et givvt loh nur saarlännisch!
+menu.settings.language.header=Stard et dommo neu
+menu.settings.language.content=Der Quatsch loh bleibt jetzt..
+
+
+#
+# Toolbar
+#
+sql_commands.label=De Befeehle inn `%s` ausführe
+sql_commands.execute=De Buchstabe laafe lasse
+sql_commands.clear=Nommo alles weg mache
+
+#
+# Table list
+#
+connection=Verbinnung
+database=Dadebannk
+database.add=Dadebannk äddön...
+database.add.title=Dadebannk dazumache...
+database.add.name=Dei Name
+database.rename=Dadebannk umbenenne...
+database.rename.title=Dadebannk `%s` umbenne
+database.remove=Dadebannk wegmache
+table=Tabell
+table.add=Tabell hinzufüge...
+table.add.title=Tabell hinzufüge
+table.edit=Tabell bearbeite...
+table.edit.title=Tabell `%s` bearbeite
+table.edit.table=Da Name von da Tabell
+table.edit.columns=Spalde
+table.edit.column=Tittel
+table.edit.datatype=Dadetüp
+table.edit.length=Läng
+table.edit.defaultNull=Ei meischdens 0
+table.edit.index=De Index
+table.edit.remove=Spalde lösche
+table.edit.add=Spalde hinzufüge
+table.edit.no_primary.header=Die Tabell loh hat kei Erschdschlüssel
+table.edit.no_primary.content=Bischd dau deppert?? Sicha dass de de Tabell ohne Erschdschlüssel mache willschd?..
+table.remove=Tabell lösche
+
+#
+# Table content
+#
+table.no_content=Do is nix in da Tabell
+record.add=Dadesätze dazumache..
+record.add.title=Dadesätze dazumache
+record.add.description=Dadesätze dazumache mit dem Prozennt S loh
+record.add.records=Dadesätze
+record.remove=Dadesatz wegmache
+
+#
+# Status
+#
+status.connected=Bischd mit '%s' verbunn.
+status.table.search=Loh kannsche suche.
+status.table.none=De Tabell haschd ned gekligget 
+status.table.selected=Tabell '%s' gekligget.
+status.table.read_only=(Nur gucke)
