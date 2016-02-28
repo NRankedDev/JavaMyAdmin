@@ -5,6 +5,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import javaMyAdmin.db.DBManager;
 import javaMyAdmin.ui.dialogs.LoginDialog;
 import javaMyAdmin.util.Config;
+import javaMyAdmin.util.Reference;
 import javaMyAdmin.util.ui.FXUtil;
 import javaMyAdmin.util.ui.Images;
 import javaMyAdmin.util.ui.Lang;
@@ -70,7 +71,7 @@ public class Frame extends Application {
 			
 			BorderPane.setMargin(toolbar, new Insets(0, 0, 10, 0));
 			
-			stage.setTitle(String.format(Lang.getString("frame.title"), "Beta v0.3", DBManager.getInstance().getUrl()));
+			stage.setTitle(String.format(Lang.getString("frame.title"), Reference.LOCALIZED_VERION, DBManager.getInstance().getUrl()));
 			
 			/* Fenstergroesse bestimmen und Frame Content zuweisen */
 			stage.setScene(new Scene(root, 800, 600));
