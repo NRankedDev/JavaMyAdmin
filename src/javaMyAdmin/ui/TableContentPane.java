@@ -253,6 +253,17 @@ public class TableContentPane extends TableView<TableRecord> {
 				}
 			});
 			
+			MenuItem refreshTable = new MenuItem(Lang.getString("table.refresh"));
+			refreshTable.setGraphic(new ImageView());
+			refreshTable.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					if (getCurrentShownTable() != null) {
+						refresh(getCurrentShownTable());
+					}
+				}
+			});
+			
 			MenuItem editTable = new MenuItem(Lang.getString("table.edit"));
 			editTable.setGraphic(new ImageView(Images.TABLE_EDIT));
 			editTable.setOnAction(new EventHandler<ActionEvent>() {
@@ -264,7 +275,7 @@ public class TableContentPane extends TableView<TableRecord> {
 				}
 			});
 			
-			getItems().addAll(addRecord, removeRecord, new SeparatorMenuItem(), editTable);
+			getItems().addAll(addRecord, removeRecord,new SeparatorMenuItem(), refreshTable, new SeparatorMenuItem(), editTable);
 		}
 	}
 }

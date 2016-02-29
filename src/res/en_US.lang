@@ -85,6 +85,7 @@ record.add.title=Add records
 record.add.description=Add records for table `%s`
 record.add.records=Records
 record.remove=Remove record
+table.refresh=Reload table
 
 #
 # Status
