@@ -105,8 +105,6 @@ public abstract class OptionDialog {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		
-		initGrid(grid);
-		
 		ButtonBar buttonBar = new ButtonBar();
 		buttonBar.setPadding(new Insets(10));
 		
@@ -127,6 +125,8 @@ public abstract class OptionDialog {
 		});
 		
 		buttonBar.getButtons().addAll(okButton, cancelButton);
+		
+		initGrid(grid);
 		
 		root.setTop(grid);
 		root.setCenter(new Separator());

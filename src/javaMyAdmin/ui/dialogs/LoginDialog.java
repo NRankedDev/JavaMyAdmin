@@ -10,10 +10,12 @@ import javaMyAdmin.util.ui.Lang;
 import javaMyAdmin.util.ui.OptionDialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -24,6 +26,7 @@ import javafx.scene.layout.GridPane;
  */
 public class LoginDialog extends OptionDialog {
 	
+	private LoginDialogState state;
 	private TextField url;
 	private TextField username;
 	private PasswordField password;
@@ -31,8 +34,31 @@ public class LoginDialog extends OptionDialog {
 	private boolean exit;
 	
 	public LoginDialog() {
-		super(Lang.getString("dialog.connect.title"), Lang.getString("dialog.connect"), Lang.getString("dialog.connect.quit"));
+		super("", Lang.getString("dialog.connect"), Lang.getString("dialog.connect.quit"));
 		show();
+	}
+	
+	public void setState(LoginDialogState state) {
+		this.state = state;
+		dialogStage.setTitle(state.getTitleText());
+		
+		if(state.isDisabled()) {
+			url.setDisable(true);
+			username.setDisable(true);
+			password.setDisable(true);
+			remember.setDisable(true);
+			okButton.setDisable(true);
+		} else {
+			url.setDisable(false);
+			username.setDisable(false);
+			password.setDisable(false);
+			remember.setDisable(false);
+			okButton.setDisable(false);
+		}
+	}
+	
+	public LoginDialogState getState() {
+		return state;
 	}
 	
 	@Override
@@ -47,6 +73,8 @@ public class LoginDialog extends OptionDialog {
 		grid.addRow(1, new Label(Lang.getString("dialog.connect.username")), username);
 		grid.addRow(2, new Label(Lang.getString("dialog.connect.password")), password);
 		grid.addRow(3, new Label(Lang.getString("dialog.connect.remember")), remember);
+		
+		setState(LoginDialogState.READY);
 	}
 	
 	@Override
@@ -56,12 +84,7 @@ public class LoginDialog extends OptionDialog {
 	
 	@Override
 	protected void onOkButtonPressed(ActionEvent event) {
-		url.setDisable(true);
-		username.setDisable(true);
-		password.setDisable(true);
-		remember.setDisable(true);
-		okButton.setDisable(true);
-		dialogStage.setTitle(Lang.getString("dialog.connect.connecting"));
+		setState(LoginDialogState.CONNECTING);
 		
 		new Thread() {
 			@Override
@@ -81,7 +104,7 @@ public class LoginDialog extends OptionDialog {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							dialogStage.setTitle(Lang.getString("dialog.connect.loading"));
+							setState(LoginDialogState.LOADING_DATABASES);
 							
 							/* Loading databases */
 							try {
@@ -99,13 +122,20 @@ public class LoginDialog extends OptionDialog {
 							hideDialog();
 						}
 					});
-				} catch (final Exception e) {
+				} catch(final Exception e) { 
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							FXUtil.showErrorLog(e);
-							Platform.exit();
-							System.exit(0);
+							setState(LoginDialogState.READY);
+					
+							if(e instanceof SQLException && ((SQLException) e).getErrorCode() == 1045) {
+								Alert a = new Alert(AlertType.ERROR);
+								a.setHeaderText(Lang.getString("dialog.connect.access_denied.header"));
+								a.setContentText(Lang.getString("dialog.connect.access_denied.content"));
+								a.showAndWait();
+							} else {
+								FXUtil.showErrorLog(e);
+							}
 						}
 					});
 				}
