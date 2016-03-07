@@ -18,16 +18,18 @@ dialog.connect.url=URL
 dialog.connect.username=Username
 dialog.connect.password=Password
 dialog.connect.remember=Remember login
-dialog.connect.connecting=Connecting...
-dialog.connect.loading=Loading databases....
-dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
-dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
+dialog.connect.connecting=Connecting..
+dialog.connect.loading=Loading databases..
+dialog.connect.error.header=Connection failed..
+dialog.connect.error.content=Please check availability of database.
+dialog.connect.access_denied.header=Access denied.
+dialog.connect.access_denied.content=Incorrect password or username.
 dialog.remove.title=Do you really want to proceed?
 dialog.remove.header=If you delete the %s `%s`, all data will be lost.
 dialog.remove.header_2=Enter the name of the %s to delete it.
 dialog.remove.name=Name:
-dialog.remove.cancel.header=Operation was terminated.
-dialog.remove.cancel.content=The entered name doesn't equal the name of the %s.
+dialog.remove.cancel.header=Operation has been terminated.
+dialog.remove.cancel.content=The entered name does not equal the name of the %s.
 
 #
 # Menu
@@ -52,16 +54,16 @@ sql_commands.clear=Clear
 #
 connection=Connection
 database=database
-database.add=Add database...
+database.add=Add database..
 database.add.title=Add database
 database.add.name=Name
-database.rename=Rename database...
+database.rename=Rename database..
 database.rename.tilte=Rename database `%s`
 database.remove=Delete database
 table=table
-table.add=Add table...
+table.add=Add table..
 table.add.title=Add table
-table.edit=Edit table...
+table.edit=Edit table..
 table.edit.title=Edit table `%s` 
 table.edit.table=Table Name
 table.edit.columns=Columns
@@ -80,7 +82,7 @@ table.remove=Delete table
 # Table content
 #
 table.no_content=No records in this table.
-record.add=Add records...
+record.add=Add records..
 record.add.title=Add records
 record.add.description=Add records for table `%s`
 record.add.records=Records

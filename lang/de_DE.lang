@@ -22,6 +22,8 @@ dialog.connect.connecting=Verbinden...
 dialog.connect.loading=Datenbanken laden...
 dialog.connect.error.header=Verbindung konnte nicht hergestellt werden.
 dialog.connect.error.content=Bitte überprüfe die Verbindung zur Datenbank.
+dialog.connect.access_denied.header=Zugang verweigert.
+dialog.connect.access_denied.content=Passwort oder Benutzername inkorrekt.
 dialog.remove.title=Möchtest du die Aktion wirklich durchführen?
 dialog.remove.header=Wenn du die %s `%s` löschst, werden alle Daten verloren gehen.
 dialog.remove.header_2=Gib den Namen der %s ein, um fortzufahren.
@@ -85,6 +87,7 @@ record.add.title=Datensätze hinzufügen
 record.add.description=Datensätze hinzufügen für Tabelle `%s`
 record.add.records=Datensätze
 record.remove=Datensatz löschen
+table.refresh=Aktualisieren
 
 #
 # Status
